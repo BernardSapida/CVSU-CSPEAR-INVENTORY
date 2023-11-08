@@ -1,4 +1,4 @@
-import UserSettings from "./UserSettings";
+import UserSettings from "../../../components/account/UserSettings";
 import { checkAuth } from "@/lib/auth/utils";
 import { currentUser } from '@clerk/nextjs';
 
