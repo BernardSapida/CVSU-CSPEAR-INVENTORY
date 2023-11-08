@@ -1,0 +1,17 @@
+{
+  "hasSrc": true,
+  "packages": [
+    "prisma",
+    "clerk",
+    "trpc"
+  ],
+  "preferredPackageManager": "npm",
+  "t3": false,
+  "alias": "@",
+  "rootPath": "src/",
+  "componentLib": null,
+  "provider": "planetscale",
+  "orm": "prisma",
+  "driver": "mysql",
+  "auth": "clerk"
+}
