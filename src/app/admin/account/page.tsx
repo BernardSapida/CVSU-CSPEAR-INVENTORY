@@ -1,6 +1,6 @@
-import UserSettings from "../../../components/users/account/UserSettings";
 import { checkAuth } from "@/lib/auth/utils";
 import { currentUser } from '@clerk/nextjs';
+import UserSettings from "../../../components/admin/account/UserSettings";
 
 export default async function Account() {
   await checkAuth();

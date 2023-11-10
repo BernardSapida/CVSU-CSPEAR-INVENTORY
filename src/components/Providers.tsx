@@ -7,7 +7,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <NextUIProvider>
             <ProgressBar
-                height="4px"
+                height="3px"
                 color="#F45B69"
                 options={{ showSpinner: false }}
                 shallowRouting

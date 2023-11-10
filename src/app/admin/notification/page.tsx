@@ -1,4 +1,4 @@
-import Card from '@/components/users/notification/Card';
+import Card from '@/components/admin/notification/Card';
 
 function Notification() {
     return (

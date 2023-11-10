@@ -1,8 +1,12 @@
 function Dashboard() {
     return (
-        <div className='mt-5'>
-            <h1>Dashboard page</h1>
-        </div>
+        <>
+            <h1 className="text-3xl font-semibold my-6">Dashboard</h1>
+            <hr />
+            <div className='mt-5'>
+
+            </div>
+        </>
     );
 }
 

@@ -9,6 +9,7 @@ import { Providers } from '@/components/Providers';
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -31,6 +32,7 @@ export default function RootLayout({
                 <section className='w-full px-5 h-screen overflow-y-auto'>
                   {children}
                 </section>
+                <Toaster richColors position="top-right" />
               </main>
             </Providers>
           </TrpcProvider>

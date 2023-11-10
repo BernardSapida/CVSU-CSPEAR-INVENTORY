@@ -7,13 +7,13 @@ import Menu from './Menu';
 
 export default async function Navbar() {
   const { session } = await getUserAuth();
-  const role = 'user';
+  const role = 'admin';
 
   if (session?.user) {
     return (
       <nav className="p-2 flex flex-col transition-all duration-300 border-r-1 h-screen">
         <h1 className="font-semibold hover:opacity-75 transition-hover cursor-pointer">
-          <Link href="/">CSPEAR</Link>
+          <Link href="/user/equipment-catalog">GYMTORY</Link>
         </h1>
         <Menu role={role} />
         <UserAvatar />

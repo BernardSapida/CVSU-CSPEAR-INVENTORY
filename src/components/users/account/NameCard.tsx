@@ -13,7 +13,7 @@ const NameCard: FunctionComponent<NameCardProps> = ({ firstName, lastName }) => 
       params={{
         header: "Full Name",
         description:
-          "Your full name or a display name.",
+          "A full name or a display name.",
       }}
     >
       <AccountCardBody>

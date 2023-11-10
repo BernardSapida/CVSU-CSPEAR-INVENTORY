@@ -1,9 +1,8 @@
 import { User } from '@clerk/nextjs/server';
 
 import { FunctionComponent } from 'react';
-import NameCard from './NameCard';
 import EmailCard from './EmailCard';
-import DepartmentCard from './DepartmentCard';
+import NameCard from './NameCard';
 import RoleCard from './RoleCard';
 
 interface UserSettingsProps {
@@ -26,11 +25,8 @@ const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
       <EmailCard
         email={email ?? ''}
       />
-      <DepartmentCard
-        college={'CEIT' ?? ''}
-      />
       <RoleCard
-        role={'Student' ?? ''}
+        role={'Admin' ?? ''}
       />
     </>
   );

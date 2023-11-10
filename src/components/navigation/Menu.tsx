@@ -18,11 +18,11 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
     const pathname = usePathname();
     const menu: Record<string, any[]> = {
         user: [
-            {
-                name: "Dashboard",
-                path: "/user/dashboard",
-                icon: <AiOutlineDashboard />,
-            },
+            // {
+            //     name: "Dashboard",
+            //     path: "/user/dashboard",
+            //     icon: <AiOutlineDashboard />,
+            // },
             {
                 name: "Equipment Catalog",
                 path: "/user/equipment-catalog",
@@ -50,14 +50,14 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
             },
         ],
         admin: [
+            // {
+            //     name: "Dashboard",
+            //     path: "/admin/dashboard",
+            //     icon: <AiOutlineDashboard />,
+            // },
             {
-                name: "Dashboard",
-                path: "/admin/dashboard",
-                icon: <AiOutlineDashboard />,
-            },
-            {
-                name: "Equipments",
-                path: "/admin/equipments",
+                name: "Equipment Catalog",
+                path: "/admin/equipment-catalog",
                 icon: <LuClipboardList />,
             },
             {
@@ -74,11 +74,6 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
                 name: "Notification",
                 path: "/admin/notification",
                 icon: <GrNotification />,
-            },
-            {
-                name: "History",
-                path: "/admin/history",
-                icon: <LuHistory />,
             },
             {
                 name: "Reports",
