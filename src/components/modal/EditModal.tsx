@@ -2,40 +2,32 @@ import { Dispatch, FunctionComponent, SetStateAction } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, RadioGroup, Radio, Input, Select, SelectItem } from "@nextui-org/react";
 import { toast } from 'sonner';
 
-interface AddModalProps {
+interface EditModalProps {
+    equipment: Record<string, any>;
     isOpen: boolean;
-    onOpen: () => void;
     onOpenChange: () => void;
-    setEquipmentsList: Dispatch<SetStateAction<{
-        id: number;
-        equipment: string;
-        quantity: number;
-        stock: number;
-        status: string;
-    }[]>>
+    setEquipmentList: Dispatch<SetStateAction<Record<string, any>[]>>
+
 }
 
-const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpen, onOpenChange, setEquipmentsList }) => {
+const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpenChange, setEquipmentList }) => {
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
 
         const target = event.target as HTMLFormElement;
         const form = new FormData(target);
-        const input = Object.fromEntries(form.entries());
+        const { equipment_name, stock, status } = Object.fromEntries(form.entries()) as any;
 
-        setEquipmentsList(prevState => {
-            const size = prevState.length + 1;
+        setEquipmentList((eqs: any) => {
+            return [...eqs.map((eq: any) => {
+                if (eq.id == equipment.id) {
+                    eq.equipment = equipment_name;
+                    eq.stock = Number(stock);
+                    eq.status = status;
+                }
 
-            return [
-                ...prevState,
-                {
-                    id: size,
-                    equipment: input.name.toString(),
-                    status: input.status.toString(),
-                    stock: input.stock.toString(),
-                    quantity: 1
-                } as any
-            ]
+                return { ...eq };
+            })]
         })
     };
 
@@ -48,16 +40,17 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpen, onOpenChan
             <ModalContent>
                 {(onClose) => (
                     <>
-                        <ModalHeader className="flex flex-col gap-1">Add equipment</ModalHeader>
+                        <ModalHeader className="flex flex-col gap-1">Edit equipment</ModalHeader>
                         <ModalBody>
-                            <form id='add-equipment' onSubmit={handleSubmit}>
+                            <form id='edit-equipment' onSubmit={handleSubmit}>
                                 <Input
                                     className='mb-2'
-                                    name='name'
+                                    name='equipment_name'
                                     labelPlacement='inside'
                                     label="Equipment Name"
                                     type='text'
                                     size='sm'
+                                    defaultValue={equipment.equipment}
                                 />
                                 <Input
                                     className='mb-2'
@@ -67,18 +60,19 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpen, onOpenChan
                                     type='number'
                                     size='sm'
                                     min='0'
+                                    defaultValue={equipment.stock}
                                 />
                                 <Select
                                     className='mb-2'
                                     name='status'
                                     placeholder="Select Status"
                                     labelPlacement="outside"
-                                // defaultSelectedKeys={['Available']}
+                                    defaultSelectedKeys={[equipment.status]}
                                 >
                                     {
                                         ['available', 'unavailable'].map(status => (
-                                            <SelectItem key={status} value={status} textValue={status}>
-                                                {status}
+                                            <SelectItem className='capitalize' key={status} value={status} textValue={status}>
+                                                <span className='capitalize'>{status}</span>
                                             </SelectItem>
                                         ))
                                     }
@@ -93,12 +87,12 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpen, onOpenChan
                                 type='submit'
                                 color="primary"
                                 onPress={() => {
-                                    toast.success('You have successfully added new equipment.')
-                                    // onClose()
+                                    toast.success('You have successfully updated the equipment.')
+                                    onClose()
                                 }}
-                                form='add-equipment'
+                                form='edit-equipment'
                             >
-                                Add
+                                Update
                             </Button>
                         </ModalFooter>
                     </>
@@ -108,4 +102,4 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpen, onOpenChan
     );
 }
 
-export default AddModal;
+export default EditModal;

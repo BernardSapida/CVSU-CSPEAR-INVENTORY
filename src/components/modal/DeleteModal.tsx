@@ -5,18 +5,11 @@ import { toast } from 'sonner';
 interface DeleteModalProps {
     equipment: Record<string, any>;
     isOpen: boolean;
-    onOpen: () => void;
     onOpenChange: () => void;
-    setEquipmentsList: Dispatch<SetStateAction<{
-        id: number;
-        equipment: string;
-        quantity: number;
-        stock: number;
-        status: string;
-    }[]>>
+    setEquipmentList: Dispatch<SetStateAction<Record<string, any>[]>>
 }
 
-const DeleteModal: FunctionComponent<DeleteModalProps> = ({ equipment, isOpen, onOpen, onOpenChange, setEquipmentsList }) => {
+const DeleteModal: FunctionComponent<DeleteModalProps> = ({ equipment, isOpen, onOpenChange, setEquipmentList }) => {
     return (
         <Modal
             isOpen={isOpen}
@@ -35,7 +28,7 @@ const DeleteModal: FunctionComponent<DeleteModalProps> = ({ equipment, isOpen, o
                                 Cancel
                             </Button>
                             <Button color="danger" onPress={() => {
-                                setEquipmentsList(eqs => eqs.filter(eq => eq.id != equipment.id))
+                                setEquipmentList(eqs => eqs.filter(eq => eq.id != equipment.id))
                                 toast.success('You have successfully deleted the equipment.')
                                 onClose();
                             }}>

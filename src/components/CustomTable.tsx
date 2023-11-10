@@ -1,5 +1,6 @@
 'use client'
 
+import { statusColorMap } from '@/utils/table-utils';
 import {
     Button,
     Chip,
@@ -18,85 +19,34 @@ import {
     useDisclosure,
 } from "@nextui-org/react";
 import { FunctionComponent, useCallback, useMemo, useState } from 'react';
-import { AiOutlineCheckCircle, AiOutlineEdit } from 'react-icons/ai';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { AiOutlineCheckCircle, AiOutlineDown } from 'react-icons/ai';
 import { LiaTimesCircle } from 'react-icons/lia';
-import EditModal from './EditModal';
-import DeleteModal from './DeleteModal';
-import AddModal from './AddModal';
+import { toast } from 'sonner';
+import TableActions from './TableActions';
+import AddModal from './modal/AddModal';
+import DeleteModal from './modal/DeleteModal';
+import EditModal from './modal/EditModal';
+import IconChip from './IconChip';
 
-const ChevronDownIcon = <svg
-    aria-hidden="true"
-    fill="none"
-    focusable="false"
-    height="1em"
-    role="presentation"
-    viewBox="0 0 24 24"
-    width="1em"
-    className="text-small"
->
-    <path
-        d="m19.92 8.95-6.52 6.52c-.77.77-2.03.77-2.8 0L4.08 8.95"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeMiterlimit={10}
-        strokeWidth={1.5}
-    />
-</svg>;
-
-const statusColorMap: Record<string, "success" | "danger" | "warning" | "default" | "primary" | "secondary" | undefined> = {
-    available: "success",
-    unavailable: "danger",
-};
-
-const INITIAL_VISIBLE_COLUMNS = ["id", "equipment", "stock", "status", "actions"];
-
-interface EquipmentTableProps {
-    columns: ({
-        name: string;
-        uid: string;
-        sortable: boolean;
-    } | {
-        name: string;
-        uid: string;
-        sortable?: undefined;
-    })[],
-    equipments: {
-        id: number;
-        equipment: string;
-        status: string;
-        quantity: number;
-        stock: number;
-    }[],
-    statusOptions: {
-        name: string;
-        uid: string;
-    }[]
-}
-
-function capitalize(str: string) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equipments, statusOptions }) => {
-    const [filterValue, setFilterValue] = useState("");
+const CustomTable: FunctionComponent<CustomizableTableProps> = ({
+    columns,
+    equipments,
+    statusOptions,
+    INITIAL_VISIBLE_COLUMNS,
+    role,
+    type
+}) => {
+    const [equipmentList, setEquipmentList] = useState<Record<string, any>[]>(equipments);
     const [visibleColumns, setVisibleColumns] = useState<any>(new Set(INITIAL_VISIBLE_COLUMNS));
+    const [filterValue, setFilterValue] = useState("");
     const [statusFilter, setStatusFilter] = useState<any>("all");
+    const [page, setPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [activeEquipment, setActiveEquipment] = useState<Record<string, any>>({});
     const [sortDescriptor, setSortDescriptor] = useState<any>({
         column: "age",
         direction: "ascending",
     });
-    const [equipmentsList, setEquipmentsList] = useState<{
-        id: number;
-        equipment: string;
-        quantity: number;
-        stock: number;
-        status: string;
-    }[]>(equipments);
-    const [page, setPage] = useState(1);
+    const [activeEquipment, setActiveEquipment] = useState<Record<string, any>>({});
     const addDisclosure = useDisclosure();
     const editDisclosure = useDisclosure();
     const deleteDisclosure = useDisclosure();
@@ -110,13 +60,14 @@ const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equip
     }, [visibleColumns]);
 
     const filteredItems = useMemo(() => {
-        let filteredItems = [...equipmentsList];
+        let filteredItems = [...equipmentList];
 
         if (hasSearchFilter) {
             filteredItems = filteredItems.filter((equipment) =>
                 equipment.equipment.toLowerCase().includes(filterValue.toLowerCase()),
             );
         }
+
         if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
             filteredItems = filteredItems.filter((equipment) =>
                 Array.from(statusFilter).includes(equipment.status),
@@ -124,7 +75,7 @@ const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equip
         }
 
         return filteredItems;
-    }, [equipmentsList, filterValue, statusFilter]);
+    }, [equipmentList, filterValue, statusFilter]);
 
     const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -145,47 +96,83 @@ const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equip
         });
     }, [sortDescriptor, items]);
 
+    const updateDeleteEquipment: (eq?: any, action?: any) => void = (eq: any, action: any) => {
+        setActiveEquipment(eq);
+
+        if (action == "update") {
+            editDisclosure.onOpen();
+        }
+
+        if (action == "delete") {
+            deleteDisclosure.onOpen();
+        }
+    }
+
+    const addToBorrow: () => void = () => {
+        toast.success('Equipment has been added')
+    }
+
+    const removeEquipment: (eq?: any) => void = (eq: any) => {
+        setEquipmentList(prevState => {
+            const newList = [...prevState.filter((e) => e.id != eq.id)];
+            return newList;
+        })
+        toast.success('Equipment has been removed')
+    }
+
+    const CB = (() => {
+        if (role === 'USER') {
+            switch (type) {
+                case 'CATALOG':
+                    return addToBorrow
+                case 'REQUEST':
+                    return removeEquipment
+            }
+        }
+
+        if (role === 'ADMIN') {
+            switch (type) {
+                case 'CATALOG':
+                    return updateDeleteEquipment;
+                case 'REQUEST':
+                    return removeEquipment
+            }
+        }
+    })()!;
+
     const renderCell = useCallback((equipment: any, columnKey: any) => {
         const cellValue = equipment[columnKey];
 
         switch (columnKey) {
             case "status":
                 return (
-                    <Chip
-                        className="capitalize"
-                        color={statusColorMap[equipment.status]}
-                        size="sm"
-                        variant="flat"
-                        startContent={equipment.status == 'available' ? <AiOutlineCheckCircle /> : <LiaTimesCircle />}
-                    >
-                        {cellValue}
-                    </Chip>
+                    <IconChip status={cellValue} />
+                );
+            case "borrow_status":
+                return (
+                    <IconChip status={cellValue} />
+                );
+            case "condition":
+                return (
+                    <IconChip status={cellValue} />
+                );
+            case "quantity":
+                return (
+                    type == 'VIEW-REQUEST' ?
+                        cellValue :
+                        <Input
+                            aria-label={equipment.id}
+                            name={equipment.id}
+                            type='number'
+                            min="1"
+                            max={equipment.stock.toString()}
+                            variant='bordered'
+                            size='sm'
+                            defaultValue={cellValue}
+                        />
                 );
             case "actions":
-                return (
-                    <div className="flex gap-1">
-                        <Button
-                            isIconOnly
-                            startContent={<AiOutlineEdit />}
-                            size='sm'
-                            className='bg-default-900 text-white'
-                            onClick={() => {
-                                setActiveEquipment(equipment)
-                                editDisclosure.onOpen()
-                            }}
-                        />
-                        <Button
-                            isIconOnly
-                            startContent={<FaRegTrashAlt />}
-                            size='sm'
-                            color="danger"
-                            onClick={() => {
-                                setActiveEquipment(equipment)
-                                deleteDisclosure.onOpen()
-                            }}
-                        />
-                    </div>
-                );
+                return <TableActions role={role} type={type} CB={CB} equipment={equipment} />;
             case "stock":
                 return `${cellValue}pcs`
             default:
@@ -267,7 +254,7 @@ const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equip
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
                                 <Button endContent={
-                                    ChevronDownIcon
+                                    <AiOutlineDown />
                                 } variant="flat">
                                     Status
                                 </Button>
@@ -279,16 +266,18 @@ const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equip
                                 selectionMode="multiple"
                                 onSelectionChange={setStatusFilter}
                             >
-                                {statusOptions.map((status) => (
+                                {statusOptions.map((status: any) => (
                                     <DropdownItem key={status.uid} className="capitalize">
-                                        {capitalize(status.name)}
+                                        <span className='capitalize'>{status.name}</span>
                                     </DropdownItem>
                                 ))}
                             </DropdownMenu>
                         </Dropdown>
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
-                                <Button endContent={ChevronDownIcon} variant="flat">
+                                <Button endContent={
+                                    <AiOutlineDown />
+                                } variant="flat">
                                     Columns
                                 </Button>
                             </DropdownTrigger>
@@ -300,23 +289,17 @@ const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equip
                                 selectionMode="multiple"
                                 onSelectionChange={setVisibleColumns}
                             >
-                                {columns.map((column) => (
+                                {columns.map((column: any) => (
                                     <DropdownItem key={column.uid} className="capitalize">
-                                        {capitalize(column.name)}
+                                        <span className='capitalize'>{column.name}</span>
                                     </DropdownItem>
                                 ))}
                             </DropdownMenu>
                         </Dropdown>
-                        <Button
-                            color='primary'
-                            onPress={addDisclosure.onOpen}
-                        >
-                            Add equipment
-                        </Button>
                     </div>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-default-400 text-small">Total {equipmentsList.length} equipments</span>
+                    <span className="text-default-400 text-small">Total {equipments.length} equipments</span>
                     <label className="flex items-center text-default-400 text-small">
                         Rows per page:
                         <select
@@ -336,7 +319,7 @@ const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equip
         statusFilter,
         visibleColumns,
         onRowsPerPageChange,
-        equipmentsList.length,
+        equipmentList.length,
         onSearchChange,
         hasSearchFilter,
     ]);
@@ -377,7 +360,7 @@ const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equip
                 onSortChange={setSortDescriptor}
             >
                 <TableHeader columns={headerColumns}>
-                    {(column) => (
+                    {(column: any) => (
                         <TableColumn
                             key={column.uid}
                             align={column.uid === "actions" ? "center" : "start"}
@@ -397,26 +380,23 @@ const EquipmentTable: FunctionComponent<EquipmentTableProps> = ({ columns, equip
             </Table>
             <AddModal
                 isOpen={addDisclosure.isOpen}
-                onOpen={addDisclosure.onOpen}
                 onOpenChange={addDisclosure.onOpenChange}
-                setEquipmentsList={setEquipmentsList}
+                setEquipmentList={setEquipmentList}
             />
             <EditModal
                 isOpen={editDisclosure.isOpen}
-                onOpen={editDisclosure.onOpen}
                 onOpenChange={editDisclosure.onOpenChange}
                 equipment={activeEquipment}
-                setEquipmentsList={setEquipmentsList}
+                setEquipmentList={setEquipmentList}
             />
             <DeleteModal
                 isOpen={deleteDisclosure.isOpen}
-                onOpen={deleteDisclosure.onOpen}
                 onOpenChange={deleteDisclosure.onOpenChange}
                 equipment={activeEquipment}
-                setEquipmentsList={setEquipmentsList}
+                setEquipmentList={setEquipmentList}
             />
         </>
     );
 }
 
-export default EquipmentTable;
+export default CustomTable;

@@ -1,7 +1,11 @@
-import { CardStatus, ConditionStatus } from './model/ChipMode';
+import { AvailabilityStatus, CardStatus, ConditionStatus } from '../model/ChipMode';
 
 export const getColor = (status: string) => {
     switch (status.toLowerCase()) {
+        case 'available':
+            return AvailabilityStatus.available;
+        case 'unavailable':
+            return AvailabilityStatus.unavailable;
         case 'pending':
             return CardStatus.pending;
         case 'to pickup':

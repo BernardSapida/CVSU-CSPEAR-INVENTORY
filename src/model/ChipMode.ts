@@ -10,3 +10,8 @@ export enum ConditionStatus {
     misplaced = 'warning',
     damaged = 'danger',
 }
+
+export enum AvailabilityStatus {
+    available = 'success',
+    unavailable = 'warning',
+}

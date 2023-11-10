@@ -1,4 +1,4 @@
-import { getColor } from '@/utils';
+import { getColor } from '@/utils/chip-utils';
 import { Chip } from '@nextui-org/react';
 import { FunctionComponent } from 'react';
 import { LiaTimesCircle } from 'react-icons/lia';
@@ -24,9 +24,13 @@ const IconChip: FunctionComponent<IconChipProps> = ({ status, variant = "flat" }
                 return <AiOutlineCheckCircle />;
             case 'good':
                 return <AiOutlineCheckCircle />;
+            case 'available':
+                return <AiOutlineCheckCircle />;
             case 'misplaced':
                 return <BsQuestionCircle />
             case 'damaged':
+                return <LiaTimesCircle />
+            case 'unavailable':
                 return <LiaTimesCircle />
         }
     }

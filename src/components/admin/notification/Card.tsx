@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react';
 
-import { getMessage } from '@/utils';
+import { getMessage } from '@/utils/chip-utils';
 import CustomButton from '../../CustomButton';
 import ChipWithIcon from '../../IconChip';
 

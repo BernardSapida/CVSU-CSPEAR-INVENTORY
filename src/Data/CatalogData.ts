@@ -1,5 +1,5 @@
 const columns = [
-    // { name: "ID", uid: "id", sortable: true },
+    { name: "ID", uid: "id", sortable: true },
     { name: "EQUIPMENT", uid: "equipment", sortable: true },
     { name: "QUANTITY", uid: "quantity", sortable: true },
     { name: "STOCK", uid: "stock", sortable: true },

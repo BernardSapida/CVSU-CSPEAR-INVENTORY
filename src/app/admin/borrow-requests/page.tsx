@@ -1,19 +1,22 @@
-import EquipmentTable from '@/components/admin/borrow-requests/EquipmentTable';
 import { columns, requestsList, borrowStatusOptions, conditionOptions } from "../../../Data/AdminRequestsData";
+import CustomTable from '@/components/CustomTable';
 
 function BorrowRequests({ params }: { params: { request_id: string } }) {
     const { request_id } = params;
+    const INITIAL_VISIBLE_COLUMNS = ["id", 'name', "equipnamement", "email", "role", "borrow_status", "condition", "borrow_date", "return_date", 'actions'];
 
     return (
         <>
             <h1 className="text-3xl font-semibold my-6">Borrow Requests</h1>
             <hr />
             <div className='mt-5'>
-                <EquipmentTable
+                <CustomTable
                     columns={columns}
-                    requestsList={requestsList}
-                    conditionOptions={conditionOptions}
-                    borrowStatusOptions={borrowStatusOptions}
+                    equipments={requestsList}
+                    statusOptions={borrowStatusOptions}
+                    INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
+                    role={'ADMIN'}
+                    type={'REQUEST'}
                 />
             </div>
         </>

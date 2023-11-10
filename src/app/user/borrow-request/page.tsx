@@ -1,9 +1,12 @@
-import EquipmentTable from '@/components/users/borrow-request/EquipmentTable';
 import { Button, Input, Textarea } from '@nextui-org/react';
 import { TbSend } from "react-icons/tb";
-import { columns, equipments, statusOptions } from "../../../Data/Data";
+import { columns, equipments, statusOptions } from "../../../Data/RequestData";
+
+import CustomTable from '@/components/CustomTable';
 
 function BorrowRequest() {
+    const INITIAL_VISIBLE_COLUMNS = ["id", "equipment", "quantity", "stock", "status", "actions"];
+
     const handleSubmit = async (formData: FormData) => {
         'use server'
         console.log(formData);
@@ -18,10 +21,13 @@ function BorrowRequest() {
                 <form action={handleSubmit}>
                     <div className='flex gap-3'>
                         <div className='w-full'>
-                            <EquipmentTable
+                            <CustomTable
                                 columns={columns}
                                 equipments={equipments}
                                 statusOptions={statusOptions}
+                                INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
+                                role={'USER'}
+                                type={'REQUEST'}
                             />
                         </div>
                         <div className='shadow-md border-1 max-w-xs w-full h-max p-3 rounded-xl'>

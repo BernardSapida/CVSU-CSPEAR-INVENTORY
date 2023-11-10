@@ -1,11 +1,11 @@
 'use client'
 
 import CustomTable from '@/components/CustomTable';
-import { Button, Input, Select, SelectItem, Textarea } from '@nextui-org/react';
+import IconChip from '@/components/IconChip';
+import { Input, Textarea } from '@nextui-org/react';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { BiTimeFive, BiWalk } from 'react-icons/bi';
 import { BsBoxSeam } from 'react-icons/bs';
-import { TbSend } from 'react-icons/tb';
 import { columns, equipments, statusOptions } from "../../../../Data/ViewRequestData";
 
 function BorrowRequest({ params }: { params: { request_id: string } }) {
@@ -118,38 +118,14 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                         <h1 className='mb-3 text-xl'><strong>Borrow Status</strong></h1>
                         <hr />
                         <div className='mt-3'>
-                            <Select
-                                label="Borrow Status"
-                                className='mb-2'
-                                name='status'
-                                placeholder="Select Status"
-                                labelPlacement="inside"
-                            // defaultSelectedKeys={['available']}
-                            >
-                                {
-                                    ['pending', 'to pickup', 'picked up', 'returned'].map(status => (
-                                        <SelectItem className='capitalize' key={status} value={status} textValue={status}>
-                                            <span className='capitalize'>{status}</span>
-                                        </SelectItem>
-                                    ))
-                                }
-                            </Select>
-                            <Select
-                                label="Equipments Condition"
-                                className='mb-2'
-                                name='status'
-                                placeholder="Select condition"
-                                labelPlacement="inside"
-                            // defaultSelectedKeys={['available']}
-                            >
-                                {
-                                    ['good', 'lost', 'damaged'].map(status => (
-                                        <SelectItem className='capitalize' key={status} value={status} textValue={status}>
-                                            {status}
-                                        </SelectItem>
-                                    ))
-                                }
-                            </Select>
+                            <div className='flex gap-2 my-5'>
+                                <p className='font-semibold'>Borrow Status:</p>
+                                <IconChip status='Pending' />
+                            </div>
+                            <div className='flex gap-2 my-5'>
+                                <p className='font-semibold'>Condition Status:</p>
+                                <IconChip status='good' />
+                            </div>
                             <Textarea
                                 name='note'
                                 label="Note"
@@ -163,15 +139,8 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                 }}
                                 className='mb-2'
                                 defaultValue='Gagamitin sa FITT3'
+                                disabled
                             />
-                            <div className='flex justify-end'>
-                                <Button
-                                    startContent={<TbSend />}
-                                    color='primary'
-                                    type='submit'
-                                    size='sm'
-                                >Update status</Button>
-                            </div>
                         </div>
                     </div>
                 </div>
