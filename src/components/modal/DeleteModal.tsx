@@ -6,10 +6,10 @@ interface DeleteModalProps {
     equipment: Record<string, any>;
     isOpen: boolean;
     onOpenChange: () => void;
-    setEquipmentList: Dispatch<SetStateAction<Record<string, any>[]>>
+    setData: Dispatch<SetStateAction<Record<string, any>[]>>
 }
 
-const DeleteModal: FunctionComponent<DeleteModalProps> = ({ equipment, isOpen, onOpenChange, setEquipmentList }) => {
+const DeleteModal: FunctionComponent<DeleteModalProps> = ({ equipment, isOpen, onOpenChange, setData }) => {
     return (
         <Modal
             isOpen={isOpen}
@@ -28,7 +28,7 @@ const DeleteModal: FunctionComponent<DeleteModalProps> = ({ equipment, isOpen, o
                                 Cancel
                             </Button>
                             <Button color="danger" onPress={() => {
-                                setEquipmentList(eqs => eqs.filter(eq => eq.id != equipment.id))
+                                setData(eqs => eqs.filter(eq => eq.id != equipment.id))
                                 toast.success('You have successfully deleted the equipment.')
                                 onClose();
                             }}>

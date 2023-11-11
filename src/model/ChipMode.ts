@@ -13,5 +13,5 @@ export enum ConditionStatus {
 
 export enum AvailabilityStatus {
     available = 'success',
-    unavailable = 'warning',
+    unavailable = 'danger',
 }

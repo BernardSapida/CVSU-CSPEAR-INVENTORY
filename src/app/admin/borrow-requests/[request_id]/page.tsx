@@ -7,6 +7,7 @@ import { BiTimeFive, BiWalk } from 'react-icons/bi';
 import { BsBoxSeam } from 'react-icons/bs';
 import { TbSend } from 'react-icons/tb';
 import { columns, equipments, statusOptions } from "../../../../Data/ViewRequestData";
+import { capitalize } from '@/utils/text';
 
 function BorrowRequest({ params }: { params: { request_id: string } }) {
     const { request_id } = params;
@@ -25,11 +26,15 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
         }
     }
 
-    // const handleSubmit = async (formData: FormData) => {
-    //     'use server'
-    //     console.log(formData);
-    // };
+    const handleSubmit = async (event: React.SyntheticEvent) => {
+        event.preventDefault();
 
+        const target = event.target as HTMLFormElement;
+        const form = new FormData(target);
+        const input = Object.fromEntries(form.entries());
+
+        console.log(input)
+    };
     return (
         <>
             <h1 className="text-3xl font-semibold my-6">Borrow Request Details</h1>
@@ -38,7 +43,7 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                 <div className='w-full my-5'>
                     <CustomTable
                         columns={columns}
-                        equipments={equipments}
+                        records={equipments}
                         statusOptions={statusOptions}
                         INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
                         role={'USER'}
@@ -119,33 +124,44 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                         <hr />
                         <div className='mt-3'>
                             <Select
+                                name='borrow_status'
                                 label="Borrow Status"
                                 className='mb-2'
-                                name='status'
                                 placeholder="Select Status"
                                 labelPlacement="inside"
+                                aria-label='Borrow status select'
                             // defaultSelectedKeys={['available']}
                             >
                                 {
                                     ['pending', 'to pickup', 'picked up', 'returned'].map(status => (
-                                        <SelectItem className='capitalize' key={status} value={status} textValue={status}>
+                                        <SelectItem
+                                            className='capitalize'
+                                            key={status}
+                                            value={status}
+                                            textValue={capitalize(status)}
+                                        >
                                             <span className='capitalize'>{status}</span>
                                         </SelectItem>
                                     ))
                                 }
                             </Select>
                             <Select
+                                name='equipment_condition'
                                 label="Equipments Condition"
                                 className='mb-2'
-                                name='status'
                                 placeholder="Select condition"
                                 labelPlacement="inside"
+                                aria-label='Equipment condition select'
                             // defaultSelectedKeys={['available']}
                             >
                                 {
-                                    ['good', 'lost', 'damaged'].map(status => (
-                                        <SelectItem className='capitalize' key={status} value={status} textValue={status}>
-                                            {status}
+                                    ['good', 'misplaced', 'damaged'].map(status => (
+                                        <SelectItem
+                                            className='capitalize'
+                                            key={status} value={status}
+                                            textValue={capitalize(status)}
+                                        >
+                                            <span className='capitalize'>{status}</span>
                                         </SelectItem>
                                     ))
                                 }

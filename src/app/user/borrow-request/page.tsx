@@ -23,7 +23,7 @@ function BorrowRequest() {
                         <div className='w-full'>
                             <CustomTable
                                 columns={columns}
-                                equipments={equipments}
+                                records={equipments}
                                 statusOptions={statusOptions}
                                 INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
                                 role={'USER'}

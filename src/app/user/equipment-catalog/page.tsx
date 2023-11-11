@@ -11,7 +11,7 @@ function EquipmentCatalog() {
             <div className='mt-5'>
                 <CustomTable
                     columns={columns}
-                    equipments={equipments}
+                    records={equipments}
                     statusOptions={statusOptions}
                     INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
                     role={'USER'}

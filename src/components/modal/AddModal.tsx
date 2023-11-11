@@ -5,10 +5,10 @@ import { toast } from 'sonner';
 interface AddModalProps {
     isOpen: boolean;
     onOpenChange: () => void;
-    setEquipmentList: Dispatch<SetStateAction<Record<string, any>[]>>
+    setData: Dispatch<SetStateAction<Record<string, any>[]>>
 }
 
-const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setEquipmentList }) => {
+const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setData }) => {
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
 
@@ -16,7 +16,7 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setE
         const form = new FormData(target);
         const input = Object.fromEntries(form.entries());
 
-        setEquipmentList(prevState => {
+        setData(prevState => {
             const size = prevState.length + 1;
 
             return [

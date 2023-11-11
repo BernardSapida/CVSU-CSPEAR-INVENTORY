@@ -4,7 +4,6 @@ import { FunctionComponent } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
-import { toast } from 'sonner';
 
 interface TableActionsProps {
     equipment: any;
@@ -41,18 +40,20 @@ const TableActions: FunctionComponent<TableActionsProps> = ({ equipment, role, t
     const AdminCatalogActions = (
         <div className="flex gap-1">
             <Button
-                isIconOnly
                 startContent={<AiOutlineEdit />}
+                aria-labelledby='Edit equipment button'
                 size='sm'
                 className='bg-default-900 text-white'
                 onClick={() => CB(equipment, 'update')}
+                isIconOnly
             />
             <Button
-                isIconOnly
                 startContent={<FaRegTrashAlt />}
+                aria-labelledby='Delete equipment button'
                 size='sm'
                 color="danger"
                 onClick={() => CB(equipment, 'delete')}
+                isIconOnly
             />
         </div>
     )

@@ -1,9 +1,7 @@
 'use client'
 
-import { statusColorMap } from '@/utils/table-utils';
 import {
     Button,
-    Chip,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -16,27 +14,27 @@ import {
     TableColumn,
     TableHeader,
     TableRow,
-    useDisclosure,
+    useDisclosure
 } from "@nextui-org/react";
 import { FunctionComponent, useCallback, useMemo, useState } from 'react';
-import { AiOutlineCheckCircle, AiOutlineDown } from 'react-icons/ai';
-import { LiaTimesCircle } from 'react-icons/lia';
+import { AiOutlineDown } from 'react-icons/ai';
 import { toast } from 'sonner';
+import IconChip from './IconChip';
 import TableActions from './TableActions';
 import AddModal from './modal/AddModal';
 import DeleteModal from './modal/DeleteModal';
 import EditModal from './modal/EditModal';
-import IconChip from './IconChip';
+import moment from 'moment';
 
 const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     columns,
-    equipments,
+    records,
     statusOptions,
     INITIAL_VISIBLE_COLUMNS,
     role,
     type
 }) => {
-    const [equipmentList, setEquipmentList] = useState<Record<string, any>[]>(equipments);
+    const [data, setData] = useState<Records[]>(records ?? []);
     const [visibleColumns, setVisibleColumns] = useState<any>(new Set(INITIAL_VISIBLE_COLUMNS));
     const [filterValue, setFilterValue] = useState("");
     const [statusFilter, setStatusFilter] = useState<any>("all");
@@ -60,11 +58,11 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     }, [visibleColumns]);
 
     const filteredItems = useMemo(() => {
-        let filteredItems = [...equipmentList];
+        let filteredItems = [...data];
 
         if (hasSearchFilter) {
-            filteredItems = filteredItems.filter((equipment) =>
-                equipment.equipment.toLowerCase().includes(filterValue.toLowerCase()),
+            filteredItems = filteredItems.filter((obj) =>
+                obj?.equipment?.toLowerCase().includes(filterValue.toLowerCase()),
             );
         }
 
@@ -75,7 +73,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
         }
 
         return filteredItems;
-    }, [equipmentList, filterValue, statusFilter]);
+    }, [data, filterValue, statusFilter]);
 
     const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -113,7 +111,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     }
 
     const removeEquipment: (eq?: any) => void = (eq: any) => {
-        setEquipmentList(prevState => {
+        setData(prevState => {
             const newList = [...prevState.filter((e) => e.id != eq.id)];
             return newList;
         })
@@ -175,6 +173,10 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                 return <TableActions role={role} type={type} CB={CB} equipment={equipment} />;
             case "stock":
                 return `${cellValue}pcs`
+            case "borrow_date":
+                return moment(cellValue).format('MMM D, YYYY')
+            case "return_date":
+                return moment(cellValue).format('MMM D, YYYY')
             default:
                 return cellValue;
         }
@@ -219,7 +221,8 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                         isClearable
                         className="w-full sm:max-w-[44%]"
                         size='sm'
-                        placeholder="Search by equipment name..."
+                        placeholder="Search by name..."
+                        name='search'
                         startContent={
                             <svg
                                 aria-hidden="true"
@@ -251,11 +254,26 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                         onValueChange={onSearchChange}
                     />
                     <div className="flex gap-3">
+                        {
+                            role == "ADMIN" &&
+                            type == "CATALOG" &&
+                            <Button
+                                aria-label='Add new equipment'
+                                color='primary'
+                                onClick={addDisclosure.onOpen}
+                            >
+                                Add equipment
+                            </Button>
+                        }
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
-                                <Button endContent={
-                                    <AiOutlineDown />
-                                } variant="flat">
+                                <Button
+                                    endContent={
+                                        <AiOutlineDown />
+                                    }
+                                    variant="flat"
+                                    aria-label='Status dropdown'
+                                >
                                     Status
                                 </Button>
                             </DropdownTrigger>
@@ -275,9 +293,13 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                         </Dropdown>
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
-                                <Button endContent={
-                                    <AiOutlineDown />
-                                } variant="flat">
+                                <Button
+                                    endContent={
+                                        <AiOutlineDown />
+                                    }
+                                    variant="flat"
+                                    aria-label='Column dropdown'
+                                >
                                     Columns
                                 </Button>
                             </DropdownTrigger>
@@ -299,12 +321,13 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                     </div>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-default-400 text-small">Total {equipments.length} equipments</span>
+                    <span className="text-default-400 text-small">Total {data.length} records</span>
                     <label className="flex items-center text-default-400 text-small">
                         Rows per page:
                         <select
                             className="bg-transparent outline-none text-default-400 text-small"
                             onChange={onRowsPerPageChange}
+                            name='numrows'
                         >
                             <option value="5">5</option>
                             <option value="10">10</option>
@@ -319,7 +342,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
         statusFilter,
         visibleColumns,
         onRowsPerPageChange,
-        equipmentList.length,
+        data.length,
         onSearchChange,
         hasSearchFilter,
     ]);
@@ -343,6 +366,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                     page={page}
                     total={pages}
                     onChange={setPage}
+                    aria-disabled
                 />
             </div>
         );
@@ -370,7 +394,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                         </TableColumn>
                     )}
                 </TableHeader>
-                <TableBody emptyContent={"No equipments found"} items={sortedItems}>
+                <TableBody emptyContent={"No record found"} items={sortedItems}>
                     {(item) => (
                         <TableRow key={item.id}>
                             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
@@ -381,19 +405,19 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
             <AddModal
                 isOpen={addDisclosure.isOpen}
                 onOpenChange={addDisclosure.onOpenChange}
-                setEquipmentList={setEquipmentList}
+                setData={setData}
             />
             <EditModal
                 isOpen={editDisclosure.isOpen}
                 onOpenChange={editDisclosure.onOpenChange}
                 equipment={activeEquipment}
-                setEquipmentList={setEquipmentList}
+                setData={setData}
             />
             <DeleteModal
                 isOpen={deleteDisclosure.isOpen}
                 onOpenChange={deleteDisclosure.onOpenChange}
                 equipment={activeEquipment}
-                setEquipmentList={setEquipmentList}
+                setData={setData}
             />
         </>
     );

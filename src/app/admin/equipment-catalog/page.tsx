@@ -1,4 +1,4 @@
-import { columns, equipments, statusOptions } from "../../../Data/CatalogData";
+import { columns, equipments, statusOptions } from "../../../Data/AdminCatalogData";
 import CustomTable from '@/components/CustomTable';
 
 function EquipmentCatalog() {
@@ -11,7 +11,7 @@ function EquipmentCatalog() {
             <div className='mt-5'>
                 <CustomTable
                     columns={columns}
-                    equipments={equipments}
+                    records={equipments}
                     statusOptions={statusOptions}
                     INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
                     role={'ADMIN'}

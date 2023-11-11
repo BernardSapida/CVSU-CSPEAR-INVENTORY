@@ -1,32 +1,22 @@
 import { PrismaClient } from '@prisma/client'
-import { ObjectId } from 'mongodb'
+import { populateUsers } from './seeder/users';
+import { populateUserBorrowRequest } from './seeder/UserBorrowRequests';
+import { populateEquipments } from './seeder/Equipments';
+import { populateAdminBorrowRequest } from './seeder/AdminBorrowRequests';
+import { populateHistory } from './seeder/UserHistory';
+import { populateUserNotification } from './seeder/UserNotification';
+import { populateAdminNotification } from './seeder/AdminNotification';
 
 const prisma = new PrismaClient();
 
 async function main() {
-    const user1 = await prisma.users.upsert({
-        where: { email: 'bernardsapida1706@gmail.com' },
-        update: {},
-        create: {
-            id: new ObjectId().toString(),
-            given_name: 'Bernard',
-            family_name: 'Sapida',
-            email: 'bernardsapida1706@gmail.com',
-        },
-    })
-
-    const user2 = await prisma.users.upsert({
-        where: { email: 'julliannecabagay@gmail.com' },
-        update: {},
-        create: {
-            id: new ObjectId().toString(),
-            given_name: 'Jullianne',
-            family_name: 'Cabagay',
-            email: 'julliannecabagay@gmail.com',
-        },
-    })
-
-    console.log({ user1, user2 })
+    // await populateUsers();
+    // await populateEquipments();
+    await populateUserBorrowRequest();
+    await populateAdminBorrowRequest();
+    // await populateHistory();
+    // await populateUserNotification();
+    // await populateAdminNotification();
 }
 
 main()

@@ -6,11 +6,11 @@ interface EditModalProps {
     equipment: Record<string, any>;
     isOpen: boolean;
     onOpenChange: () => void;
-    setEquipmentList: Dispatch<SetStateAction<Record<string, any>[]>>
+    setData: Dispatch<SetStateAction<Record<string, any>[]>>
 
 }
 
-const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpenChange, setEquipmentList }) => {
+const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpenChange, setData }) => {
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
 
@@ -18,7 +18,7 @@ const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpe
         const form = new FormData(target);
         const { equipment_name, stock, status } = Object.fromEntries(form.entries()) as any;
 
-        setEquipmentList((eqs: any) => {
+        setData((eqs: any) => {
             return [...eqs.map((eq: any) => {
                 if (eq.id == equipment.id) {
                     eq.equipment = equipment_name;

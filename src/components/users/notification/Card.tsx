@@ -6,19 +6,19 @@ import IconChip from '../../IconChip';
 
 interface CardProps {
     title: string;
-    status: string;
+    borrow_status: string;
     time: string;
 }
 
-const Card: FunctionComponent<CardProps> = ({ title, status, time }) => {
+const Card: FunctionComponent<CardProps> = ({ title, borrow_status, time }) => {
     return (
         <div className='p-3 border-1 shadow rounded-md flex justify-between items-center'>
             <div>
                 <div className='flex gap-1'>
                     <p className='mb-2'><strong>{title}</strong></p>
-                    <IconChip status={status} />
+                    <IconChip status={borrow_status} />
                 </div>
-                <p className='text-sm'>{getMessage(status)}</p>
+                <p className='text-sm'>{getMessage(borrow_status)}</p>
 
             </div>
             <div className='text-right'>

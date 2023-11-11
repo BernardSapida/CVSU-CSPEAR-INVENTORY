@@ -2,7 +2,6 @@ import { columns, requestsList, borrowStatusOptions, conditionOptions } from "..
 import CustomTable from '@/components/CustomTable';
 
 function BorrowRequests({ params }: { params: { request_id: string } }) {
-    const { request_id } = params;
     const INITIAL_VISIBLE_COLUMNS = ["id", 'name', "equipnamement", "email", "role", "borrow_status", "condition", "borrow_date", "return_date", 'actions'];
 
     return (
@@ -12,7 +11,7 @@ function BorrowRequests({ params }: { params: { request_id: string } }) {
             <div className='mt-5'>
                 <CustomTable
                     columns={columns}
-                    equipments={requestsList}
+                    records={requestsList}
                     statusOptions={borrowStatusOptions}
                     INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
                     role={'ADMIN'}

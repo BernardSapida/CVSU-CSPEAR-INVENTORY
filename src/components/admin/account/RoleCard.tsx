@@ -26,15 +26,6 @@ const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
           className="block text-sm w-full px-3 py-2 rounded-md border border-slate-200 focus:outline-slate-700"
         />
       </AccountCardBody>
-      <AccountCardFooter description="">
-        <button
-          className={`bg-slate-900 py-2.5 px-3.5 rounded-md font-medium text-white text-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed`}
-          onClick={() => toast.success('Role has been updated')}
-        // disabled={true}
-        >
-          Update Role
-        </button>
-      </AccountCardFooter>
     </AccountCard>
   );
 }

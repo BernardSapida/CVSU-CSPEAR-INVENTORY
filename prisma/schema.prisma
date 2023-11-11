@@ -7,12 +7,12 @@ generator client {
 
 generator zod {
   provider              = "zod-prisma"
-  output                = "./zod" 
-  relationModel         = true 
-  modelCase             = "camelCase" 
-  modelSuffix           = "Schema" 
-  useDecimalJs          = true 
-  prismaJsonNullability = true 
+  output                = "./zod"
+  relationModel         = true
+  modelCase             = "camelCase"
+  modelSuffix           = "Schema"
+  useDecimalJs          = true
+  prismaJsonNullability = true
 }
 
 datasource db {
@@ -21,10 +21,109 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+type QuantityAndID {
+  id       String
+  quantity Int?
+}
+
+enum BorrowStatus {
+  Pending
+  ToPickup
+  PickedUp
+  Returned
+}
+
+enum Condition {
+  Good
+  Misplaced
+  Damaged
+}
+
+enum Role {
+  Student
+  Faculty
+  Admin
+}
+
+enum College {
+  CED
+  CEMDS
+  CEIT
+  CON
+  CSPEAR
+  CVMBS
+  COM
+}
 
 model Users {
-  id              String      @id @map("_id")
-  given_name      String
-  family_name     String
-  email           String      @unique
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  firstname String
+  lastname  String
+  email     String  @unique
+  role      Role
+  college   College
+
+  userBorrowRequests UserBorrowRequests?
+}
+
+model Equipments {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  stock        Int
+  is_available Boolean
+}
+
+model UserBorrowRequests {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  equipments  QuantityAndID[]
+  purpose     String
+  borrow_date DateTime
+  return_date DateTime
+  user        Users           @relation(fields: [user_id], references: [id])
+  user_id     String          @unique @db.ObjectId
+}
+
+model AdminBorrowRequests {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String
+  college       College
+  role          Role
+  equipments    QuantityAndID[]
+  purpose       String
+  borrow_date   DateTime
+  return_date   DateTime
+  user_id       String
+  borrow_status BorrowStatus
+  condition     Condition
+  note          String
+  created_at    DateTime
+}
+
+model UserHistory {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  request_id    String       @unique @db.ObjectId
+  title         String
+  borrow_status BorrowStatus
+  condition     Condition
+  is_viewed     Boolean
+  created_at    DateTime
+}
+
+model UserNotifications {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  request_id    String       @unique @db.ObjectId
+  title         String
+  borrow_status BorrowStatus
+  is_viewed     Boolean
+  created_at    DateTime
+}
+
+model AdminNotifications {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  request_id    String       @unique @db.ObjectId
+  title       String
+  borrow_status BorrowStatus
+  is_viewed   Boolean
+  created_at  DateTime
 }

@@ -14,7 +14,7 @@ interface RoleCardProps {
 const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
   const colleges: Record<string, string>[] = [
     { role: "Student" },
-    { role: "Professor" },
+    { role: "Faculty" },
   ];
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -24,17 +24,9 @@ const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
 
     const target = event.target as HTMLFormElement;
     const form = new FormData(target);
-    const { name } = Object.fromEntries(form.entries()) as { name: string };
+    const { role } = Object.fromEntries(form.entries());
 
-    startTransition(async () => {
-      const res = await fetch("/api/account", {
-        method: "PUT",
-        body: JSON.stringify({ name }),
-        headers: { "Content-Type": "application/json" },
-      });
-      if (res.status === 200) alert("Successfully updated name!");
-      router.refresh();
-    });
+    console.log(role);
   };
 
   return (
@@ -46,25 +38,30 @@ const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
       }}
     >
       <AccountCardBody>
-        <Select
-          placeholder="Select your role"
-          labelPlacement="outside"
-          defaultSelectedKeys={[role]}
-        >
-          {
-            colleges.map(({ role }) => (
-              <SelectItem
-                key={role} value={role}
-                textValue={role}
-              >
-                {role}
-              </SelectItem>
-            ))
-          }
-        </Select>
+        <form onSubmit={handleSubmit} id='role-form'>
+          <Select
+            name='role'
+            placeholder="Select your role"
+            labelPlacement="outside"
+            defaultSelectedKeys={[role]}
+          >
+            {
+              colleges.map(({ role }) => (
+                <SelectItem
+                  key={role} value={role}
+                  textValue={role}
+                >
+                  {role}
+                </SelectItem>
+              ))
+            }
+          </Select>
+        </form>
       </AccountCardBody>
       <AccountCardFooter description="">
         <button
+          type='submit'
+          form='role-form'
           className={`bg-slate-900 py-2.5 px-3.5 rounded-md font-medium text-white text-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed`}
           onClick={() => toast.success('Role has been updated')}
         // disabled={true}

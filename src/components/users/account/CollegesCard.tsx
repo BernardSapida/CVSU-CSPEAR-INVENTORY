@@ -32,17 +32,9 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
 
     const target = event.target as HTMLFormElement;
     const form = new FormData(target);
-    const { name } = Object.fromEntries(form.entries()) as { name: string };
+    const { college } = Object.fromEntries(form.entries());
 
-    startTransition(async () => {
-      const res = await fetch("/api/account", {
-        method: "PUT",
-        body: JSON.stringify({ name }),
-        headers: { "Content-Type": "application/json" },
-      });
-      if (res.status === 200) alert("Successfully updated name!");
-      router.refresh();
-    });
+    console.log(college);
   };
 
   return (
@@ -54,22 +46,28 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
       }}
     >
       <AccountCardBody>
-        <Select
-          placeholder="Select your colleges"
-          labelPlacement="outside"
-          defaultSelectedKeys={[college]}
-        >
-          {
-            colleges.map(({ abbr, value }) => (
-              <SelectItem key={abbr} value={abbr} textValue={`${abbr} - ${value}`}>
-                {abbr} - {value}
-              </SelectItem>
-            ))
-          }
-        </Select>
+        <form onSubmit={handleSubmit} id='college-form'>
+          <Select
+            name='college'
+            placeholder="Select your colleges"
+            labelPlacement="outside"
+            defaultSelectedKeys={[college]}
+          >
+            {
+              colleges.map(({ abbr, value }) => (
+                <SelectItem key={abbr} value={abbr} textValue={`${abbr} - ${value}`}>
+                  {abbr} - {value}
+                </SelectItem>
+              ))
+            }
+          </Select>
+        </form>
+
       </AccountCardBody>
       <AccountCardFooter description="">
         <button
+          type='submit'
+          form='college-form'
           className={`bg-slate-900 py-2.5 px-3.5 rounded-md font-medium text-white text-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed`}
           onClick={() => toast.success('Colleges has been updated')}
         // disabled={true}
