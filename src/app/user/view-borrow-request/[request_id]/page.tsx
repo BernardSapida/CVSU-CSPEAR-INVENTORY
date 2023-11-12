@@ -1,34 +1,19 @@
 'use client'
 
+import ConditionChip from '@/components/ConditionChip';
 import CustomTable from '@/components/CustomTable';
-import IconChip from '@/components/IconChip';
+import RequestStatusChip from '@/components/RequestStatusChip';
+import { trpc } from '@/lib/trpc/client';
 import { Input, Textarea } from '@nextui-org/react';
-import { AiOutlineCheckCircle } from 'react-icons/ai';
-import { BiTimeFive, BiWalk } from 'react-icons/bi';
-import { BsBoxSeam } from 'react-icons/bs';
-import { columns, equipments, statusOptions } from "../../../../Data/ViewRequestData";
+import { columns, statusOptions } from "../../../../Data/ViewRequestData";
+import moment from 'moment';
 
 function BorrowRequest({ params }: { params: { request_id: string } }) {
     const { request_id } = params;
-    const INITIAL_VISIBLE_COLUMNS = ["id", "equipment", "quantity", "stock", "status"];
+    const INITIAL_VISIBLE_COLUMNS = ["name", "quantity"];
+    const { data: borrowRequest, isLoading } = trpc.adminBorrowRequest.getAdminBorrowRequestById.useQuery({ request_id });
 
-    const getIcon = (status: string) => {
-        switch (status.toLowerCase()) {
-            case 'pending':
-                return <BiTimeFive />;
-            case 'to pickup':
-                return <BiWalk />;
-            case 'picked up':
-                return <BsBoxSeam />;
-            case 'returned':
-                return <AiOutlineCheckCircle />;
-        }
-    }
-
-    // const handleSubmit = async (formData: FormData) => {
-    //     'use server'
-    //     console.log(formData);
-    // };
+    console.log(borrowRequest?.equipments)
 
     return (
         <>
@@ -36,14 +21,17 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
             <hr />
             <div className='my-5'>
                 <div className='w-full my-5'>
-                    <CustomTable
-                        columns={columns}
-                        records={equipments}
-                        statusOptions={statusOptions}
-                        INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
-                        role={'USER'}
-                        type={'VIEW-REQUEST'}
-                    />
+                    {
+                        !isLoading &&
+                        <CustomTable
+                            columns={columns}
+                            records={borrowRequest?.equipments}
+                            statusOptions={statusOptions}
+                            INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
+                            role={'Student'}
+                            type={'VIEW-REQUEST'}
+                        />
+                    }
                 </div>
                 <div className='flex gap-3'>
                     <div className='w-full h-max p-3 rounded-xl'>
@@ -53,8 +41,9 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                             <Input
                                 name='name'
                                 labelPlacement='inside'
+                                placeholder='Fullname'
                                 label="Name"
-                                defaultValue='Bernard Sapida'
+                                defaultValue={borrowRequest?.name}
                                 type='text'
                                 className='mb-2'
                                 disabled
@@ -62,8 +51,9 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                             <Input
                                 name='email'
                                 labelPlacement='inside'
+                                placeholder='Email address'
                                 label="Email Address"
-                                defaultValue='bernard.sapida@cvsu.edu.ph'
+                                defaultValue={borrowRequest?.email}
                                 type='email'
                                 className='mb-2'
                                 disabled
@@ -71,8 +61,9 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                             <Input
                                 name='Role'
                                 labelPlacement='inside'
+                                placeholder='Role'
                                 label="Role"
-                                defaultValue='Faculty'
+                                defaultValue={borrowRequest?.role}
                                 type='text'
                                 className='mb-2'
                                 disabled
@@ -81,7 +72,7 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                 name='borrow_date'
                                 labelPlacement='inside'
                                 label="Borrow Date"
-                                defaultValue='2023-11-21'
+                                defaultValue={moment(borrowRequest?.borrow_date).format('YYYY-MM-DD')}
                                 placeholder='#'
                                 type='date'
                                 className='mb-2'
@@ -92,7 +83,7 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                 labelPlacement='inside'
                                 label="Return Date"
                                 placeholder='#'
-                                defaultValue='2023-12-01'
+                                defaultValue={moment(borrowRequest?.return_date).format('YYYY-MM-DD')}
                                 type='date'
                                 className='mb-2'
                                 disabled
@@ -109,7 +100,7 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                     ],
                                 }}
                                 className='mb-2'
-                                defaultValue='Gagamitin sa FITT3'
+                                defaultValue={borrowRequest?.purpose}
                                 disabled
                             />
                         </div>
@@ -120,11 +111,11 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                         <div className='mt-3'>
                             <div className='flex gap-2 my-5'>
                                 <p className='font-semibold'>Borrow Status:</p>
-                                <IconChip status='Pending' />
+                                <RequestStatusChip status='Pending' />
                             </div>
                             <div className='flex gap-2 my-5'>
                                 <p className='font-semibold'>Condition Status:</p>
-                                <IconChip status='good' />
+                                <ConditionChip status={borrowRequest?.condition ?? ''} />
                             </div>
                             <Textarea
                                 name='note'

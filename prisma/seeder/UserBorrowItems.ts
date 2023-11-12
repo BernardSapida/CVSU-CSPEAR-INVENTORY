@@ -3,21 +3,30 @@ import { ObjectId } from 'mongodb';
 
 const prisma = new PrismaClient();
 
-const userBorrowRequests: UserBorrowRequest[] = [
+const userBorrowItems: UserBorrowItems[] = [
     {
         id: new ObjectId().toString(),
         equipments: [
             {
-                id: new ObjectId('654f007be2196d9155a13991').toString(),
-                quantity: 0,
+                id: new ObjectId('654f213a81157e4f72f98def').toString(),
+                name: 'Basketball',
+                quantity: 1,
+                stock: 30,
+                is_available: false,
             },
             {
-                id: new ObjectId('654f007ce2196d9155a13992').toString(),
-                quantity: 0,
+                id: new ObjectId('654f213b81157e4f72f98df0').toString(),
+                name: 'Volleyball',
+                quantity: 1,
+                stock: 25,
+                is_available: true,
             },
             {
-                id: new ObjectId('654f007ce2196d9155a13993').toString(),
-                quantity: 0,
+                id: new ObjectId('654f213b81157e4f72f98df1').toString(),
+                name: 'Shuttlecock',
+                quantity: 1,
+                stock: 40,
+                is_available: false,
             },
         ],
         purpose: 'For FITT3',
@@ -27,9 +36,9 @@ const userBorrowRequests: UserBorrowRequest[] = [
     },
 ];
 
-export const populateUserBorrowRequest = async () => {
-    for (let req of userBorrowRequests) {
-        const createdBorrowRequest = await prisma.userBorrowRequests.upsert({
+export const populateUserBorrowItems = async () => {
+    for (let req of userBorrowItems) {
+        const createdBorrowRequest = await prisma.userBorrowItems.upsert({
             where: { user_id: req.user_id },
             update: {},
             create: {

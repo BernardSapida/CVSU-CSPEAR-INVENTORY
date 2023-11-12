@@ -1,32 +1,36 @@
-import { User } from '@clerk/nextjs/server';
-
 import { FunctionComponent } from 'react';
 import EmailCard from './EmailCard';
 import NameCard from './NameCard';
+import CollegeCard from './CollegesCard';
 import RoleCard from './RoleCard';
 
 interface UserSettingsProps {
-  user: User | null;
+  user: User;
 }
 
 const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
   const {
-    firstName,
-    lastName
-  } = user!;
-  const email = user?.emailAddresses[0].emailAddress;
+    firstname,
+    lastname,
+    email,
+    college,
+    role
+  } = user;
 
   return (
     <>
       <NameCard
-        firstName={firstName ?? ''}
-        lastName={lastName ?? ''}
+        firstName={firstname ?? ''}
+        lastName={lastname ?? ''}
       />
       <EmailCard
         email={email ?? ''}
       />
+      <CollegeCard
+        college={college ?? ''}
+      />
       <RoleCard
-        role={'Admin' ?? ''}
+        role={role ?? ''}
       />
     </>
   );

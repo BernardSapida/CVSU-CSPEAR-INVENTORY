@@ -21,13 +21,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-type QuantityAndID {
-  id       String
-  quantity Int?
-}
-
 enum BorrowStatus {
-  Pending
+  Pending               
   ToPickup
   PickedUp
   Returned
@@ -55,6 +50,14 @@ enum College {
   COM
 }
 
+type BorrowEquipments {
+  id           String
+  name         String
+  quantity     Int
+  stock        Int
+  is_available Boolean
+}
+
 model Users {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   firstname String
@@ -63,7 +66,7 @@ model Users {
   role      Role
   college   College
 
-  userBorrowRequests UserBorrowRequests?
+  userBorrowItems UserBorrowItems?
 }
 
 model Equipments {
@@ -73,23 +76,23 @@ model Equipments {
   is_available Boolean
 }
 
-model UserBorrowRequests {
-  id          String          @id @default(auto()) @map("_id") @db.ObjectId
-  equipments  QuantityAndID[]
+model UserBorrowItems {
+  id          String             @id @default(auto()) @map("_id") @db.ObjectId
+  equipments  BorrowEquipments[]
   purpose     String
   borrow_date DateTime
   return_date DateTime
-  user        Users           @relation(fields: [user_id], references: [id])
-  user_id     String          @unique @db.ObjectId
+  user        Users              @relation(fields: [user_id], references: [id])
+  user_id     String             @unique @db.ObjectId
 }
 
 model AdminBorrowRequests {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   email         String
   college       College
   role          Role
-  equipments    QuantityAndID[]
+  equipments    BorrowEquipments[]
   purpose       String
   borrow_date   DateTime
   return_date   DateTime
@@ -107,6 +110,7 @@ model UserHistory {
   borrow_status BorrowStatus
   condition     Condition
   is_viewed     Boolean
+  user_id       String
   created_at    DateTime
 }
 
@@ -116,14 +120,16 @@ model UserNotifications {
   title         String
   borrow_status BorrowStatus
   is_viewed     Boolean
+  user_id       String
   created_at    DateTime
 }
 
 model AdminNotifications {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
   request_id    String       @unique @db.ObjectId
-  title       String
-  borrow_status BorrowStatus
-  is_viewed   Boolean
-  created_at  DateTime
+  title         String
+  description   String
+  is_viewed     Boolean
+  user_id       String
+  created_at    DateTime
 }

@@ -1,24 +1,29 @@
+'use client';
+
 import Card from '@/components/users/history/Card';
+import { trpc } from '@/lib/trpc/client';
+import moment from 'moment';
 
 function BorrowRequest() {
+    const { data: histories } = trpc.notification.getUserHistory.useQuery();
+
     return (
         <>
             <h1 className="text-3xl font-semibold my-6">History</h1>
             <hr />
             <div className="space-y-3 py-3">
-                <Card title='Borrow Request #13' borrow_status='Returned' equipment_condition='Damaged' time='1 week ago' />
-                <Card title='Borrow Request #12' borrow_status='Returned' equipment_condition='Misplaced' time='2 months ago' />
-                <Card title='Borrow Request #11' borrow_status='Returned' equipment_condition='Damaged' time='3 months ago' />
-                <Card title='Borrow Request #10' borrow_status='Returned' equipment_condition='Good' time='4 months ago' />
-                <Card title='Borrow Request #9' borrow_status='Returned' equipment_condition='Damaged' time='4 months ago' />
-                <Card title='Borrow Request #8' borrow_status='Returned' equipment_condition='Good' time='1 week ago' />
-                <Card title='Borrow Request #7' borrow_status='Returned' equipment_condition='Misplaced' time='1 week ago' />
-                <Card title='Borrow Request #6' borrow_status='Returned' equipment_condition='Good' time='1 week ago' />
-                <Card title='Borrow Request #5' borrow_status='Returned' equipment_condition='Good' time='1 week ago' />
-                <Card title='Borrow Request #4' borrow_status='Returned' equipment_condition='Good' time='1 week ago' />
-                <Card title='Borrow Request #3' borrow_status='Returned' equipment_condition='Misplaced' time='1 week ago' />
-                <Card title='Borrow Request #2' borrow_status='Returned' equipment_condition='Good' time='1 week ago' />
-                <Card title='Borrow Request #1' borrow_status='Returned' equipment_condition='Good' time='1 week ago' />
+                {
+                    histories?.map(({ id, request_id, title, borrow_status, condition, created_at }) => (
+                        <Card
+                            key={id}
+                            title={title.slice(0, 26)}
+                            borrow_status={borrow_status}
+                            equipment_condition={condition}
+                            time={moment(created_at).fromNow()}
+                            url={`/user/view-borrow-request/${request_id}`}
+                        />
+                    ))
+                }
             </div>
         </>
     );

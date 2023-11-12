@@ -11,6 +11,7 @@ const histories: NotificationHistory[] = [
         borrow_status: 'Pending',
         condition: 'Good',
         is_viewed: false,
+        user_id: new ObjectId('65508e58800f2899f414c3e5').toString(),
         created_at: new Date(),
     },
 ];
@@ -27,7 +28,9 @@ export const populateHistory = async () => {
                 borrow_status: history.borrow_status,
                 condition: history.condition,
                 is_viewed: history.is_viewed,
-                created_at: history.created_at
+                user_id: history.user_id,
+                created_at: history.created_at,
+
             },
         });
 

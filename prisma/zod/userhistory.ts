@@ -8,5 +8,6 @@ export const userHistorySchema = z.object({
   borrow_status: z.nativeEnum(BorrowStatus),
   condition: z.nativeEnum(Condition),
   is_viewed: z.boolean(),
+  user_id: z.string(),
   created_at: z.date(),
 })

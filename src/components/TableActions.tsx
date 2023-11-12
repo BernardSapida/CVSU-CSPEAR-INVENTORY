@@ -7,7 +7,7 @@ import { IoMdAdd } from 'react-icons/io';
 
 interface TableActionsProps {
     equipment: any;
-    role: UserRole;
+    role: Role;
     type: TableType;
     CB: ((eq?: any, action?: any) => void);
 }
@@ -20,7 +20,7 @@ const TableActions: FunctionComponent<TableActionsProps> = ({ equipment, role, t
             startContent={<IoMdAdd />}
             size='sm'
             color="primary"
-            onClick={CB}
+            onClick={() => CB(equipment)}
         >
             Add to borrow
         </Button>
@@ -71,7 +71,7 @@ const TableActions: FunctionComponent<TableActionsProps> = ({ equipment, role, t
     )
 
     const ActionElements = () => {
-        if (role === 'USER') {
+        if (role === 'Student' || role === 'Faculty') {
             switch (type) {
                 case 'CATALOG':
                     return UserCatalogActions
@@ -80,7 +80,7 @@ const TableActions: FunctionComponent<TableActionsProps> = ({ equipment, role, t
             }
         }
 
-        if (role === 'ADMIN') {
+        if (role === 'Admin') {
             switch (type) {
                 case 'CATALOG':
                     return AdminCatalogActions

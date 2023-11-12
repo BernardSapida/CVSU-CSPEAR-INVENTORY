@@ -20,8 +20,8 @@ const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
     >
       <AccountCardBody>
         <input
-          defaultValue={role ?? ""}
           name="name"
+          defaultValue={role ?? ""}
           disabled={true}
           className="block text-sm w-full px-3 py-2 rounded-md border border-slate-200 focus:outline-slate-700"
         />

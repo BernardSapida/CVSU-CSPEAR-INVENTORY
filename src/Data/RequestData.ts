@@ -1,15 +1,14 @@
 const columns = [
-    { name: "ID", uid: "id", sortable: true },
-    { name: "EQUIPMENT", uid: "equipment", sortable: true },
+    { name: "NAME", uid: "name", sortable: true },
     { name: "QUANTITY", uid: "quantity", sortable: true },
     { name: "STOCK", uid: "stock", sortable: true },
-    { name: "STATUS", uid: "status", sortable: true },
+    { name: "AVAILABILITY", uid: "is_available", sortable: true },
     { name: "ACTIONS", uid: "actions" },
 ];
 
 const statusOptions = [
     { name: "Available", uid: "available" },
-    { name: "Unavailable", uid: "unavailable" },
+    { name: "Not Available", uid: "not available" },
 ];
 
 const equipments = [

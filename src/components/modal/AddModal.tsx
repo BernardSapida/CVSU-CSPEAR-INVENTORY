@@ -1,35 +1,37 @@
 import { Dispatch, FunctionComponent, SetStateAction } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, RadioGroup, Radio, Input, Select, SelectItem } from "@nextui-org/react";
 import { toast } from 'sonner';
+import { trpc } from '@/lib/trpc/client';
 
 interface AddModalProps {
     isOpen: boolean;
     onOpenChange: () => void;
-    setData: Dispatch<SetStateAction<Record<string, any>[]>>
+    setData: Dispatch<SetStateAction<RecordType>>;
+    getTableData: any
 }
 
-const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setData }) => {
+const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setData, getTableData }) => {
+    const addEquipment = trpc.equipments.addEquipment.useMutation({
+        onSettled: async () => {
+            const { data } = await getTableData.refetch();
+            toast.success('You have successfully added new equipment.');
+            setData(data);
+        }
+    });
+
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
 
         const target = event.target as HTMLFormElement;
         const form = new FormData(target);
-        const input = Object.fromEntries(form.entries());
+        const { name, stock, is_available } = Object.fromEntries(form.entries()) as any;
+        const newEquipment = {
+            name: name,
+            is_available: is_available == 'available',
+            stock: Number(stock),
+        } as Equipment;
 
-        setData(prevState => {
-            const size = prevState.length + 1;
-
-            return [
-                ...prevState,
-                {
-                    id: size,
-                    equipment: input.name.toString(),
-                    status: input.status.toString(),
-                    stock: input.stock.toString(),
-                    quantity: 1
-                } as any
-            ]
-        })
+        addEquipment.mutate(newEquipment);
     };
 
     return (
@@ -69,7 +71,7 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setD
                                 // defaultSelectedKeys={['Available']}
                                 >
                                     {
-                                        ['available', 'unavailable'].map(status => (
+                                        ['available', 'not available'].map(status => (
                                             <SelectItem key={status} value={status} textValue={status}>
                                                 {status}
                                             </SelectItem>
@@ -85,11 +87,8 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setD
                             <Button
                                 type='submit'
                                 color="primary"
-                                onPress={() => {
-                                    toast.success('You have successfully added new equipment.')
-                                    // onClose()
-                                }}
                                 form='add-equipment'
+                                onClick={onClose}
                             >
                                 Add
                             </Button>

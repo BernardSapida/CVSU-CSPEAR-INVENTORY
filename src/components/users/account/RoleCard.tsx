@@ -6,6 +6,7 @@ import { AccountCard, AccountCardFooter, AccountCardBody } from "./AccountCard";
 import { Select, SelectItem } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { trpc } from '@/lib/trpc/client';
 
 interface RoleCardProps {
   role: string;
@@ -16,17 +17,18 @@ const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
     { role: "Student" },
     { role: "Faculty" },
   ];
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const updateUserRole = trpc.userAccount.updateUserRole.useMutation();
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     const target = event.target as HTMLFormElement;
     const form = new FormData(target);
-    const { role } = Object.fromEntries(form.entries());
+    const { role } = Object.fromEntries(form.entries()) as { role: Role };
 
-    console.log(role);
+    updateUserRole.mutate({ role });
+    toast.success('You have successfully updated your colleges.');
   };
 
   return (

@@ -1,36 +1,32 @@
 const columns = [
-    { name: "ID", uid: "id", sortable: true },
-    { name: "EQUIPMENT", uid: "equipment", sortable: true },
+    { name: "NAME", uid: "name", sortable: true },
     { name: "STOCK", uid: "stock", sortable: true },
-    { name: "STATUS", uid: "status", sortable: true },
+    { name: "AVAILABILITY", uid: "is_available", sortable: true },
     { name: "ACTIONS", uid: "actions" },
 ];
 
 const statusOptions = [
     { name: "Available", uid: "available" },
-    { name: "Unavailable", uid: "unavailable" },
+    { name: "Not Available", uid: "not available" },
 ];
 
 const equipments = [
     {
         id: 1,
         equipment: "Basketball",
-        status: "available",
-        quantity: 5,
+        is_available: "available",
         stock: 5,
     },
     {
         id: 2,
         equipment: "Soccer ball",
-        status: "available",
-        quantity: 10,
+        is_available: "available",
         stock: 10,
     },
     {
         id: 3,
         equipment: "Volleyball",
-        status: "available",
-        quantity: 15,
+        is_available: "available",
         stock: 15,
     }
 ];

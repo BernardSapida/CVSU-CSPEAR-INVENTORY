@@ -4,16 +4,14 @@ import { FunctionComponent, useTransition } from 'react';
 
 import { AccountCard, AccountCardFooter, AccountCardBody } from "./AccountCard";
 import { Select, SelectItem } from "@nextui-org/react";
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { trpc } from '@/lib/trpc/client';
 
 interface CollegeCardProps {
   college: string;
 }
 
 const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
   const colleges: Record<string, string>[] = [
     { abbr: "CAFENR", value: "College of Agriculture, Food, Environment and Natural Resources" },
     { abbr: "CAS", value: "College of Arts and Science" },
@@ -26,15 +24,17 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
     { abbr: "CVMBS", value: "College of Veterinary Medicine and Biomedical Sciences" },
     { abbr: "COM", value: "College of Medicine" },
   ];
+  const updateUserCollege = trpc.userAccount.updateUserCollege.useMutation();
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     const target = event.target as HTMLFormElement;
     const form = new FormData(target);
-    const { college } = Object.fromEntries(form.entries());
+    const { college } = Object.fromEntries(form.entries()) as { college: College };
 
-    console.log(college);
+    updateUserCollege.mutate({ college });
+    toast.success('You have successfully updated your colleges.');
   };
 
   return (
@@ -69,8 +69,6 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
           type='submit'
           form='college-form'
           className={`bg-slate-900 py-2.5 px-3.5 rounded-md font-medium text-white text-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed`}
-          onClick={() => toast.success('Colleges has been updated')}
-        // disabled={true}
         >
           Update Colleges
         </button>

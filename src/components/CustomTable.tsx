@@ -8,6 +8,7 @@ import {
     DropdownTrigger,
     Input,
     Pagination,
+    Spinner,
     Table,
     TableBody,
     TableCell,
@@ -16,29 +17,38 @@ import {
     TableRow,
     useDisclosure
 } from "@nextui-org/react";
-import { FunctionComponent, useCallback, useMemo, useState } from 'react';
+import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { AiOutlineDown } from 'react-icons/ai';
 import { toast } from 'sonner';
-import IconChip from './IconChip';
 import TableActions from './TableActions';
 import AddModal from './modal/AddModal';
 import DeleteModal from './modal/DeleteModal';
 import EditModal from './modal/EditModal';
 import moment from 'moment';
+import AvailabilityChip from './AvailabilityChip';
+import RequestStatusChip from './RequestStatusChip';
+import ConditionChip from './ConditionChip';
+import { trpc } from '@/lib/trpc/client';
 
 const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     columns,
     records,
-    statusOptions,
+    availabilityStatusOptions,
+    borrowStatusOptions,
+    conditionOptions,
     INITIAL_VISIBLE_COLUMNS,
     role,
-    type
+    type,
+    isLoading,
+    getTableData
 }) => {
-    const [data, setData] = useState<Records[]>(records ?? []);
+    const [data, setData] = useState<RecordType>([]);
     const [visibleColumns, setVisibleColumns] = useState<any>(new Set(INITIAL_VISIBLE_COLUMNS));
     const [filterValue, setFilterValue] = useState("");
-    const [statusFilter, setStatusFilter] = useState<any>("all");
-    const [page, setPage] = useState(1);
+    const [borrowStatusFilter, setBorrowStatusFilter] = useState<any>("all");
+    const [conditionStatusFilter, setConditionStatusFilter] = useState<any>("all");
+    const [availabilityStatusFilter, setAvailabilityStatusFilter] = useState<any>("all");
+    const [page, setPage] = useState<number>(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [sortDescriptor, setSortDescriptor] = useState<any>({
         column: "age",
@@ -48,8 +58,15 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     const addDisclosure = useDisclosure();
     const editDisclosure = useDisclosure();
     const deleteDisclosure = useDisclosure();
-
+    const addBorrowItem = trpc.borrowItems.addBorrowItem.useMutation();
+    const removeBorrowItem = trpc.borrowItems.removeBorrowItem.useMutation();
     const hasSearchFilter = Boolean(filterValue);
+
+    useEffect(() => {
+        if (records && !isLoading) {
+            setData(records);
+        }
+    }, [isLoading]);
 
     const headerColumns = useMemo(() => {
         if (visibleColumns.toString() === "all") return columns;
@@ -62,18 +79,30 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
 
         if (hasSearchFilter) {
             filteredItems = filteredItems.filter((obj) =>
-                obj?.equipment?.toLowerCase().includes(filterValue.toLowerCase()),
+                obj?.name?.toLowerCase().includes(filterValue.toLowerCase()),
             );
         }
 
-        if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-            filteredItems = filteredItems.filter((equipment) =>
-                Array.from(statusFilter).includes(equipment.status),
+        if (availabilityStatusFilter !== "all" && Array.from(availabilityStatusFilter).length !== availabilityStatusOptions?.length) {
+            filteredItems = filteredItems.filter((record) =>
+                Array.from(availabilityStatusFilter).includes(record.is_available ? 'available' : 'not available')
+            );
+        }
+
+        if (borrowStatusFilter !== "all" && Array.from(borrowStatusFilter).length !== borrowStatusOptions?.length) {
+            filteredItems = filteredItems.filter((record) =>
+                Array.from(borrowStatusFilter).includes(record.borrow_status.toLowerCase())
+            );
+        }
+
+        if (conditionStatusFilter !== "all" && Array.from(conditionStatusFilter).length !== conditionOptions?.length) {
+            filteredItems = filteredItems.filter((record) =>
+                Array.from(conditionStatusFilter).includes(record.condition.toLowerCase())
             );
         }
 
         return filteredItems;
-    }, [data, filterValue, statusFilter]);
+    }, [data, filterValue, availabilityStatusFilter, borrowStatusFilter, conditionStatusFilter]);
 
     const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -106,20 +135,24 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
         }
     }
 
-    const addToBorrow: () => void = () => {
+    const addToBorrow: (eq: any) => void = (eq: any) => {
+        const newEquipment: BorrowEquipment = { ...eq, quantity: 1 }
+        addBorrowItem.mutate(newEquipment);
+
         toast.success('Equipment has been added')
     }
 
-    const removeEquipment: (eq?: any) => void = (eq: any) => {
-        setData(prevState => {
-            const newList = [...prevState.filter((e) => e.id != eq.id)];
+    const removeEquipment: (eq: any) => void = (eq: any) => {
+        removeBorrowItem.mutate({ id: eq.id });
+        setData((prevState: any) => {
+            const newList = [...prevState.filter((e: any) => e.id != eq.id)];
             return newList;
         })
         toast.success('Equipment has been removed')
     }
 
     const CB = (() => {
-        if (role === 'USER') {
+        if (role === 'Student' || role === 'Faculty') {
             switch (type) {
                 case 'CATALOG':
                     return addToBorrow
@@ -128,12 +161,12 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
             }
         }
 
-        if (role === 'ADMIN') {
+        if (role === 'Admin') {
             switch (type) {
                 case 'CATALOG':
                     return updateDeleteEquipment;
                 case 'REQUEST':
-                    return removeEquipment
+                    return removeEquipment // ! Ha?
             }
         }
     })()!;
@@ -142,17 +175,17 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
         const cellValue = equipment[columnKey];
 
         switch (columnKey) {
-            case "status":
+            case "is_available":
                 return (
-                    <IconChip status={cellValue} />
+                    <AvailabilityChip is_available={cellValue} />
                 );
             case "borrow_status":
                 return (
-                    <IconChip status={cellValue} />
+                    <RequestStatusChip status={cellValue} />
                 );
             case "condition":
                 return (
-                    <IconChip status={cellValue} />
+                    <ConditionChip status={cellValue} />
                 );
             case "quantity":
                 return (
@@ -222,7 +255,6 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                         className="w-full sm:max-w-[44%]"
                         size='sm'
                         placeholder="Search by name..."
-                        name='search'
                         startContent={
                             <svg
                                 aria-hidden="true"
@@ -255,7 +287,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                     />
                     <div className="flex gap-3">
                         {
-                            role == "ADMIN" &&
+                            role == "Admin" &&
                             type == "CATALOG" &&
                             <Button
                                 aria-label='Add new equipment'
@@ -265,32 +297,90 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                                 Add equipment
                             </Button>
                         }
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button
-                                    endContent={
-                                        <AiOutlineDown />
-                                    }
-                                    variant="flat"
-                                    aria-label='Status dropdown'
+                        {
+                            availabilityStatusOptions && <Dropdown>
+                                <DropdownTrigger className="hidden sm:flex">
+                                    <Button
+                                        endContent={
+                                            <AiOutlineDown />
+                                        }
+                                        variant="flat"
+                                        aria-label='Status dropdown'
+                                    >
+                                        Availability Status
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu
+                                    disallowEmptySelection
+                                    aria-label="Table Columns"
+                                    closeOnSelect={false}
+                                    selectionMode="multiple"
+                                    onSelectionChange={setAvailabilityStatusFilter}
                                 >
-                                    Status
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectionMode="multiple"
-                                onSelectionChange={setStatusFilter}
-                            >
-                                {statusOptions.map((status: any) => (
-                                    <DropdownItem key={status.uid} className="capitalize">
-                                        <span className='capitalize'>{status.name}</span>
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
+                                    {availabilityStatusOptions.map((status: any) => (
+                                        <DropdownItem key={status.uid} className="capitalize">
+                                            {status.name}
+                                        </DropdownItem>
+                                    ))}
+                                </DropdownMenu>
+                            </Dropdown>
+                        }
+                        {
+                            borrowStatusOptions && <Dropdown>
+                                <DropdownTrigger className="hidden sm:flex">
+                                    <Button
+                                        endContent={
+                                            <AiOutlineDown />
+                                        }
+                                        variant="flat"
+                                        aria-label='Status dropdown'
+                                    >
+                                        Borrow Status
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu
+                                    disallowEmptySelection
+                                    aria-label="Table Columns"
+                                    closeOnSelect={false}
+                                    selectionMode="multiple"
+                                    onSelectionChange={setBorrowStatusFilter}
+                                >
+                                    {borrowStatusOptions.map((status: any) => (
+                                        <DropdownItem key={status.uid} className="capitalize">
+                                            {status.name}
+                                        </DropdownItem>
+                                    ))}
+                                </DropdownMenu>
+                            </Dropdown>
+                        }
+                        {
+                            conditionOptions && <Dropdown>
+                                <DropdownTrigger className="hidden sm:flex">
+                                    <Button
+                                        endContent={
+                                            <AiOutlineDown />
+                                        }
+                                        variant="flat"
+                                        aria-label='Status dropdown'
+                                    >
+                                        Condition
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu
+                                    disallowEmptySelection
+                                    aria-label="Table Columns"
+                                    closeOnSelect={false}
+                                    selectionMode="multiple"
+                                    onSelectionChange={setConditionStatusFilter}
+                                >
+                                    {conditionOptions.map((condition: any) => (
+                                        <DropdownItem key={condition.uid} className="capitalize">
+                                            {condition.name}
+                                        </DropdownItem>
+                                    ))}
+                                </DropdownMenu>
+                            </Dropdown>
+                        }
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
                                 <Button
@@ -327,7 +417,6 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                         <select
                             className="bg-transparent outline-none text-default-400 text-small"
                             onChange={onRowsPerPageChange}
-                            name='numrows'
                         >
                             <option value="5">5</option>
                             <option value="10">10</option>
@@ -339,7 +428,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
         );
     }, [
         filterValue,
-        statusFilter,
+        availabilityStatusFilter,
         visibleColumns,
         onRowsPerPageChange,
         data.length,
@@ -349,26 +438,32 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
 
     const bottomContent = useMemo(() => {
         return (
-            <div className="py-2 px-2 flex justify-between items-center">
-                <div className="hidden sm:flex w-[30%] justify-start gap-2">
-                    <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
-                        Previous
-                    </Button>
-                    <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
-                        Next
-                    </Button>
-                </div>
-                <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    color="primary"
-                    page={page}
-                    total={pages}
-                    onChange={setPage}
-                    aria-disabled
-                />
-            </div>
+            <>
+                {
+                    !isLoading && (
+                        <div className="py-2 px-2 flex justify-between items-center">
+                            <div className="hidden sm:flex w-[30%] justify-start gap-2">
+                                <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
+                                    Previous
+                                </Button>
+                                <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
+                                    Next
+                                </Button>
+                            </div>
+                            <Pagination
+                                isCompact
+                                showControls
+                                showShadow
+                                color="primary"
+                                page={page}
+                                total={pages}
+                                onChange={setPage}
+                                aria-disabled
+                            />
+                        </div>
+                    )
+                }
+            </>
         );
     }, [items.length, page, pages, hasSearchFilter]);
 
@@ -394,7 +489,12 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                         </TableColumn>
                     )}
                 </TableHeader>
-                <TableBody emptyContent={"No record found"} items={sortedItems}>
+                <TableBody
+                    emptyContent={isLoading ? ' ' : "No record found"}
+                    items={sortedItems}
+                    isLoading={isLoading}
+                    loadingContent={<div className='text-center'><Spinner size='sm' color='current' /><p className='text-tiny'>Loading...</p></div>}
+                >
                     {(item) => (
                         <TableRow key={item.id}>
                             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
@@ -406,18 +506,21 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                 isOpen={addDisclosure.isOpen}
                 onOpenChange={addDisclosure.onOpenChange}
                 setData={setData}
+                getTableData={getTableData}
             />
             <EditModal
                 isOpen={editDisclosure.isOpen}
                 onOpenChange={editDisclosure.onOpenChange}
                 equipment={activeEquipment}
                 setData={setData}
+                getTableData={getTableData}
             />
             <DeleteModal
                 isOpen={deleteDisclosure.isOpen}
                 onOpenChange={deleteDisclosure.onOpenChange}
                 equipment={activeEquipment}
                 setData={setData}
+                getTableData={getTableData}
             />
         </>
     );

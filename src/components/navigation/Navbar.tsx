@@ -7,7 +7,7 @@ import Menu from './Menu';
 
 export default async function Navbar() {
   const { session } = await getUserAuth();
-  const role = 'user';
+  const role = 'admin';
 
   if (session?.user) {
     return (

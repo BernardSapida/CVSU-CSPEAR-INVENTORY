@@ -1,8 +1,14 @@
+'use client'
+
+import { trpc } from '@/lib/trpc/client';
 import { columns, requestsList, borrowStatusOptions, conditionOptions } from "../../../Data/AdminRequestsData";
 import CustomTable from '@/components/CustomTable';
 
 function BorrowRequests({ params }: { params: { request_id: string } }) {
-    const INITIAL_VISIBLE_COLUMNS = ["id", 'name', "equipnamement", "email", "role", "borrow_status", "condition", "borrow_date", "return_date", 'actions'];
+    const INITIAL_VISIBLE_COLUMNS = ["id", "name", "email", "college", "role", "borrow_status", "condition", "borrow_date", "return_date", 'actions'];
+    const getAdminBorrowRequest = trpc.adminBorrowRequest.getAdminBorrowRequest.useQuery();
+    console.log('getAdminBorrowRequest.data')
+    console.log(getAdminBorrowRequest.data)
 
     return (
         <>
@@ -11,11 +17,14 @@ function BorrowRequests({ params }: { params: { request_id: string } }) {
             <div className='mt-5'>
                 <CustomTable
                     columns={columns}
-                    records={requestsList}
-                    statusOptions={borrowStatusOptions}
+                    records={getAdminBorrowRequest.data}
+                    borrowStatusOptions={borrowStatusOptions}
+                    conditionOptions={conditionOptions}
                     INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
-                    role={'ADMIN'}
+                    role={'Admin'}
                     type={'REQUEST'}
+                    isLoading={getAdminBorrowRequest.isLoading}
+                    getTableData={getAdminBorrowRequest}
                 />
             </div>
         </>

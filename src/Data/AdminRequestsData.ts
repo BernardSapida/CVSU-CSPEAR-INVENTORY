@@ -2,6 +2,7 @@ const columns = [
     { name: "ID", uid: "id", sortable: true },
     { name: "NAME", uid: "name", sortable: true },
     { name: "EMAIL", uid: "email", sortable: true },
+    { name: "COLLEGE", uid: "college", sortable: true },
     { name: "ROLE", uid: "role", sortable: true },
     { name: "BORROW STATUS", uid: "borrow_status", sortable: true },
     { name: "CONDITION", uid: "condition", sortable: true },

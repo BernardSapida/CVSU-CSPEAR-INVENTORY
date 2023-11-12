@@ -5,5 +5,6 @@ interface NotificationHistory {
     borrow_status: BorrowStatus,
     condition: Condition,
     is_viewed: boolean,
+    user_id: string,
     created_at: Date
 }

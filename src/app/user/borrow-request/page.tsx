@@ -1,34 +1,123 @@
+'use client';
+
 import { Button, Input, Textarea } from '@nextui-org/react';
 import { TbSend } from "react-icons/tb";
-import { columns, equipments, statusOptions } from "../../../Data/RequestData";
+import { columns, statusOptions } from "../../../Data/RequestData";
 
 import CustomTable from '@/components/CustomTable';
+import { trpc } from '@/lib/trpc/client';
+import { toast } from 'sonner';
 
 function BorrowRequest() {
-    const INITIAL_VISIBLE_COLUMNS = ["id", "equipment", "quantity", "stock", "status", "actions"];
+    const INITIAL_VISIBLE_COLUMNS = ["name", "quantity", "stock", "is_available", "actions"];
+    const { data: borrowItem, isLoading } = trpc.borrowItems.getBorrowItems.useQuery();
+    const sendBorrowRequest = trpc.borrowItems.sendBorrowRequest.useMutation();
 
-    const handleSubmit = async (formData: FormData) => {
-        'use server'
-        console.log(formData);
-        // toast.success('You have successfully sent the borrow request');
+    const handleSubmit = async (event: React.SyntheticEvent) => {
+        event.preventDefault();
+
+        const NOT_EQUIPMENTS_KEY = ['borrow_date', 'return_date', 'purpose']
+        const target = event.target as HTMLFormElement;
+        const form = new FormData(target);
+        const data: Record<string, any> = Object.fromEntries(form.entries());
+        const dataKeys = Object.keys(data);
+
+        if (!borrowItem) return;
+
+        if (dataKeys.length == 3) {
+            toast.error('The borrow request is empty, please add at least 1 equipment.');
+            return;
+        }
+
+        for (let key of dataKeys) {
+            if (!NOT_EQUIPMENTS_KEY.includes(key)) {
+                const equipmentId = key;
+                const quantity = Number(data[key]);
+
+                updateEquipmentQuantity(equipmentId, quantity);
+                continue;
+            }
+            if (
+                key === 'borrow_date' ||
+                key === 'return_date'
+            ) {
+                const emptyValue = data[key] == '';
+
+                if (emptyValue && key == 'borrow_date') {
+                    toast.error(`You need to provide the borrow date.`);
+                    return;
+                }
+
+                if (emptyValue && key == 'return_date') {
+                    toast.error(`You need to provide the return date.`);
+                    return;
+                }
+
+                borrowItem[key] = new Date(data[key]);
+                continue;
+            }
+
+            if (key === 'purpose') {
+                const emptyValue = data[key] == '';
+
+                if (emptyValue) {
+                    toast.error(`Please provide a purpose for borrowing.`);
+                    return;
+                }
+                borrowItem[key] = data[key];
+            }
+        }
+
+        sendBorrowRequest.mutate({
+            ...borrowItem,
+
+            name: 'Bernard Sapida',
+            email: 'bernard.sapida@cvsu.edu.ph',
+            college: 'CEIT',
+            role: 'Student',
+            borrow_status: 'Pending',
+            condition: 'Good',
+            note: '',
+            created_at: new Date()
+        } as any);
+
+        if (sendBorrowRequest.isError) {
+            toast.error('I apologize, we encountered an issue while sending the request.');
+        }
+
+        toast.success('You have sent the borrow request.');
     };
+
+    const updateEquipmentQuantity = (equipmentId: string, equipmentQuantity: number) => {
+        if (borrowItem?.equipments === undefined) return;
+
+        for (let equipment of borrowItem?.equipments) {
+            if (equipment.id == equipmentId) {
+                equipment.quantity = equipmentQuantity;
+                return;
+            }
+        }
+    }
 
     return (
         <>
             <h1 className="text-3xl font-semibold my-6">Borrow Request</h1>
             <hr />
             <div className='mt-5'>
-                <form action={handleSubmit}>
+                <form id='borrow-request' onSubmit={handleSubmit}>
                     <div className='flex gap-3'>
                         <div className='w-full'>
-                            <CustomTable
-                                columns={columns}
-                                records={equipments}
-                                statusOptions={statusOptions}
-                                INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
-                                role={'USER'}
-                                type={'REQUEST'}
-                            />
+                            {
+                                !isLoading &&
+                                <CustomTable
+                                    columns={columns}
+                                    records={borrowItem?.equipments}
+                                    statusOptions={statusOptions}
+                                    INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
+                                    role={'Student'}
+                                    type={'REQUEST'}
+                                />
+                            }
                         </div>
                         <div className='shadow-md border-1 max-w-xs w-full h-max p-3 rounded-xl'>
                             <h1 className='mb-4 text-xl'><strong>To borrow</strong></h1>
@@ -63,10 +152,11 @@ function BorrowRequest() {
                             />
                             <div className='flex justify-end'>
                                 <Button
+                                    type='submit'
                                     startContent={<TbSend />}
                                     color='primary'
-                                    type='submit'
                                     size='sm'
+                                    form='borrow-request'
                                 >Send request</Button>
                             </div>
                         </div>

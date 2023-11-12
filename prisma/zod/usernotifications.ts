@@ -7,5 +7,6 @@ export const userNotificationsSchema = z.object({
   title: z.string(),
   borrow_status: z.nativeEnum(BorrowStatus),
   is_viewed: z.boolean(),
+  user_id: z.string(),
   created_at: z.date(),
 })

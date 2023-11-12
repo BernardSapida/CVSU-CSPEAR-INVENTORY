@@ -265,8 +265,8 @@ const users: User[] = [
         firstname: 'Bernard',
         lastname: 'Sapida',
         email: 'bernard.sapida@cvsu.edu.ph',
-        role: 'Student',
-        college: 'CEIT',
+        role: 'Admin',
+        college: 'CSPEAR',
     },
     {
         id: new ObjectId().toString(),
@@ -289,8 +289,8 @@ const users: User[] = [
         firstname: 'Iresh Abbegail',
         lastname: 'Sumayang',
         email: 'ireshabbegail.sumayang@cvsu.edu.ph',
-        role: 'Student',
-        college: 'CEIT',
+        role: 'Admin',
+        college: 'CSPEAR',
     },
     {
         id: new ObjectId().toString(),

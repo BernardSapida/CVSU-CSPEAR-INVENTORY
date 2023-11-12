@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { populateUsers } from './seeder/users';
-import { populateUserBorrowRequest } from './seeder/UserBorrowRequests';
+import { populateUserBorrowItems } from './seeder/UserBorrowItems';
 import { populateEquipments } from './seeder/Equipments';
 import { populateAdminBorrowRequest } from './seeder/AdminBorrowRequests';
 import { populateHistory } from './seeder/UserHistory';
@@ -10,13 +10,13 @@ import { populateAdminNotification } from './seeder/AdminNotification';
 const prisma = new PrismaClient();
 
 async function main() {
-    // await populateUsers();
-    // await populateEquipments();
-    await populateUserBorrowRequest();
+    await populateUsers();
+    await populateEquipments();
+    await populateUserBorrowItems();
     await populateAdminBorrowRequest();
-    // await populateHistory();
-    // await populateUserNotification();
-    // await populateAdminNotification();
+    await populateHistory();
+    await populateUserNotification();
+    await populateAdminNotification();
 }
 
 main()

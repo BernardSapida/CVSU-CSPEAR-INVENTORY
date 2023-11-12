@@ -1,6 +1,6 @@
 export * from "./users"
 export * from "./equipments"
-export * from "./userborrowrequests"
+export * from "./userborrowitems"
 export * from "./adminborrowrequests"
 export * from "./userhistory"
 export * from "./usernotifications"

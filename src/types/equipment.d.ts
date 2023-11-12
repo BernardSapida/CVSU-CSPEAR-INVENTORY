@@ -1,17 +1,29 @@
+type RecordType = Equipment[] | BorrowEquipment[] | any;
+
 interface CustomizableTableProps {
     columns: ({
         name: string;
         uid: string;
         sortable?: boolean;
     })[],
-    records: Records[],
-    statusOptions: {
+    records?: RecordType,
+    borrowStatusOptions?: {
+        name: string;
+        uid: string;
+    }[],
+    availabilityStatusOptions?: {
+        name: string;
+        uid: string;
+    }[],
+    conditionOptions?: {
         name: string;
         uid: string;
     }[],
     INITIAL_VISIBLE_COLUMNS: string[],
-    role: UserRole,
-    type: TableType
+    role: Role,
+    type: TableType,
+    isLoading: boolean,
+    getTableData: any
 }
 
 type Records = {
@@ -37,14 +49,17 @@ type Equipment = {
     is_available: boolean;
 }
 
-interface QuantityAndID {
-    id: string;
+type BorrowEquipment = {
+    id: string,
+    name: string;
     quantity: number;
+    stock: number;
+    is_available: boolean;
 }
 
-interface UserBorrowRequest {
+interface UserBorrowItems {
     id: string,
-    equipments: QuantityAndID[],
+    equipments: BorrowEquipment[],
     purpose: string,
     borrow_date: Date,
     return_date: Date,
@@ -57,7 +72,7 @@ interface AdminBorrowRequest {
     email: string,
     college: College
     role: Role,
-    equipments: QuantityAndID[],
+    equipments: BorrowEquipment[],
     purpose: string,
     borrow_date: Date,
     return_date: Date,

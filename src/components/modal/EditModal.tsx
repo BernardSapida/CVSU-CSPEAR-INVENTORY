@@ -1,35 +1,41 @@
-import { Dispatch, FunctionComponent, SetStateAction } from 'react';
+import { Dispatch, FunctionComponent, SetStateAction, useMemo } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, RadioGroup, Radio, Input, Select, SelectItem } from "@nextui-org/react";
 import { toast } from 'sonner';
+import { capitalize } from '@/utils/text';
+import { trpc } from '@/lib/trpc/client';
 
 interface EditModalProps {
     equipment: Record<string, any>;
     isOpen: boolean;
     onOpenChange: () => void;
-    setData: Dispatch<SetStateAction<Record<string, any>[]>>
+    setData: Dispatch<SetStateAction<RecordType>>;
+    getTableData: any
 
 }
 
-const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpenChange, setData }) => {
-    const handleSubmit = async (event: React.SyntheticEvent) => {
+const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpenChange, setData, getTableData }) => {
+    const updateEquipment = trpc.equipments.updateEquipment.useMutation({
+        onSettled: async () => {
+            const { data } = await getTableData.refetch();
+            toast.success('You have successfully updated the equipment.')
+            setData(data);
+        }
+    });
+
+    const handleSubmit = (event: React.SyntheticEvent) => {
         event.preventDefault();
 
         const target = event.target as HTMLFormElement;
         const form = new FormData(target);
-        const { equipment_name, stock, status } = Object.fromEntries(form.entries()) as any;
+        const { name, stock, is_available } = Object.fromEntries(form.entries()) as any;
 
-        setData((eqs: any) => {
-            return [...eqs.map((eq: any) => {
-                if (eq.id == equipment.id) {
-                    eq.equipment = equipment_name;
-                    eq.stock = Number(stock);
-                    eq.status = status;
-                }
-
-                return { ...eq };
-            })]
-        })
-    };
+        updateEquipment.mutate({
+            id: equipment.id,
+            name,
+            stock: Number(stock),
+            is_available: is_available == 'available'
+        });
+    }
 
     return (
         <Modal
@@ -45,12 +51,13 @@ const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpe
                             <form id='edit-equipment' onSubmit={handleSubmit}>
                                 <Input
                                     className='mb-2'
-                                    name='equipment_name'
+                                    name='name'
                                     labelPlacement='inside'
                                     label="Equipment Name"
                                     type='text'
                                     size='sm'
-                                    defaultValue={equipment.equipment}
+                                    defaultValue={equipment.name}
+                                    placeholder='Equipment name'
                                 />
                                 <Input
                                     className='mb-2'
@@ -64,15 +71,15 @@ const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpe
                                 />
                                 <Select
                                     className='mb-2'
-                                    name='status'
-                                    placeholder="Select Status"
+                                    name='is_available'
+                                    placeholder="Select availability status"
                                     labelPlacement="outside"
-                                    defaultSelectedKeys={[equipment.status]}
+                                    defaultSelectedKeys={[equipment.is_available ? 'available' : 'not available']}
                                 >
                                     {
-                                        ['available', 'unavailable'].map(status => (
-                                            <SelectItem className='capitalize' key={status} value={status} textValue={status}>
-                                                <span className='capitalize'>{status}</span>
+                                        ['available', 'not available'].map(status => (
+                                            <SelectItem className='capitalize' key={status} value={status} textValue={capitalize(status)}>
+                                                {status}
                                             </SelectItem>
                                         ))
                                     }
@@ -86,10 +93,7 @@ const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpe
                             <Button
                                 type='submit'
                                 color="primary"
-                                onPress={() => {
-                                    toast.success('You have successfully updated the equipment.')
-                                    onClose()
-                                }}
+                                onPress={() => onClose()}
                                 form='edit-equipment'
                             >
                                 Update

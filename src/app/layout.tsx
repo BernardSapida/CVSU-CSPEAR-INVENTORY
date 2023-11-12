@@ -32,7 +32,7 @@ export default function RootLayout({
                 <section className='w-full px-5 h-screen overflow-y-auto'>
                   {children}
                 </section>
-                <Toaster richColors position="top-right" />
+                <Toaster richColors position="top-center" />
               </main>
             </Providers>
           </TrpcProvider>

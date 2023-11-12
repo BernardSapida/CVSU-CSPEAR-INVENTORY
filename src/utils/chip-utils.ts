@@ -1,29 +1,38 @@
-import { AvailabilityStatus, CardStatus, ConditionStatus } from '../model/ChipMode';
+import { AvailabilityStatus, CardStatus, ConditionStatus } from '../model/ChipModel';
 
-export const getColor = (status: string) => {
-    switch (status.toLowerCase()) {
-        case 'available':
-            return AvailabilityStatus.available;
-        case 'unavailable':
-            return AvailabilityStatus.unavailable;
-        case 'pending':
-            return CardStatus.pending;
-        case 'to pickup':
-            return CardStatus.to_pickup;
-        case 'picked up':
-            return CardStatus.picked_up;
-        case 'returned':
-            return CardStatus.returned;
-        case 'good':
-            return ConditionStatus.good;
-        case 'damaged':
-            return ConditionStatus.damaged;
-        case 'misplaced':
-            return ConditionStatus.misplaced;
+export const getAvailabilityColor = (is_available: boolean) => {
+    if (is_available) {
+        return AvailabilityStatus.AVAILABLE;
+    } else {
+        return AvailabilityStatus.NOT_AVAILABLE;
     }
 }
 
-export const getMessage = (status: string) => {
+export const getConditionColor = (status: string) => {
+    switch (status.toLowerCase()) {
+        case 'good':
+            return ConditionStatus.GOOD;
+        case 'damaged':
+            return ConditionStatus.DAMAGED;
+        case 'misplaced':
+            return ConditionStatus.MISPLACED;
+    }
+}
+
+export const getRequestStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+        case 'pending':
+            return CardStatus.PENDING;
+        case 'to pickup':
+            return CardStatus.TOPICKUP;
+        case 'picked up':
+            return CardStatus.PICKEDUP;
+        case 'returned':
+            return CardStatus.RETURNED;
+    }
+}
+
+export const getNotificationMessage = (status: string) => {
     switch (status.toLowerCase()) {
         case 'pending':
             return "We have received the borrow request.";

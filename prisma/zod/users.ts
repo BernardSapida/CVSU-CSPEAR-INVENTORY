@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { Role, College } from "@prisma/client"
-import { CompleteUserBorrowRequests, relatedUserBorrowRequestsSchema } from "./index"
+import { CompleteUserBorrowItems, relatedUserBorrowItemsSchema } from "./index"
 
 export const usersSchema = z.object({
   id: z.string(),
@@ -12,7 +12,7 @@ export const usersSchema = z.object({
 })
 
 export interface CompleteUsers extends z.infer<typeof usersSchema> {
-  userBorrowRequests?: CompleteUserBorrowRequests | null
+  userBorrowItems?: CompleteUserBorrowItems | null
 }
 
 /**
@@ -21,5 +21,5 @@ export interface CompleteUsers extends z.infer<typeof usersSchema> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const relatedUsersSchema: z.ZodSchema<CompleteUsers> = z.lazy(() => usersSchema.extend({
-  userBorrowRequests: relatedUserBorrowRequestsSchema.nullish(),
+  userBorrowItems: relatedUserBorrowItemsSchema.nullish(),
 }))

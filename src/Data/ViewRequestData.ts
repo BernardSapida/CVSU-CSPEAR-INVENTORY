@@ -1,14 +1,11 @@
 const columns = [
-    { name: "ID", uid: "id", sortable: true },
-    { name: "EQUIPMENT", uid: "equipment", sortable: true },
+    { name: "NAME", uid: "name", sortable: true },
     { name: "QUANTITY", uid: "quantity", sortable: true },
-    { name: "STOCK", uid: "stock", sortable: true },
-    { name: "STATUS", uid: "status", sortable: true }
 ];
 
-const statusOptions = [
+const availabilityStatusOptions = [
     { name: "Available", uid: "available" },
-    { name: "Unavailable", uid: "unavailable" },
+    { name: "Not Available", uid: "not available" },
 ];
 
 const equipments = [
@@ -35,4 +32,4 @@ const equipments = [
     }
 ];
 
-export { columns, equipments, statusOptions };
+export { columns, equipments, availabilityStatusOptions };
