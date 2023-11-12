@@ -1,23 +1,29 @@
-import { getUserAuth } from "@/lib/auth/utils";
+'use client'
+
 import Link from "next/link";
 import UserAvatar from './UserAvatar';
 
-
 import Menu from './Menu';
+import { Skeleton } from '@nextui-org/react';
+import { UserContext } from '@/store/UserContext';
+import { useContext } from 'react';
 
-export default async function Navbar() {
-  const { session } = await getUserAuth();
-  const role = 'admin';
+export default function Navbar() {
+  const { user } = useContext(UserContext);
 
-  if (session?.user) {
-    return (
-      <nav className="p-2 flex flex-col transition-all duration-300 border-r-1 h-screen">
-        <h1 className="font-semibold hover:opacity-75 transition-hover cursor-pointer">
-          <Link href="/user/equipment-catalog">GYMTORY</Link>
-        </h1>
-        <Menu role={role} />
-        <UserAvatar />
-      </nav>
-    );
-  } else return null;
+  return (
+    <nav className="p-2 flex flex-col transition-all duration-300 border-r-1 h-screen">
+      <Skeleton
+        className='rounded w-fit'
+        isLoaded={user?.role != undefined}
+        children={
+          <h1 className="font-semibold hover:opacity-75 transition-hover cursor-pointer">
+            <Link href="/user/equipment-catalog">GYMTORY</Link>
+          </h1>
+        }
+      />
+      <Menu role={user?.role} />
+      <UserAvatar />
+    </nav>
+  )
 }

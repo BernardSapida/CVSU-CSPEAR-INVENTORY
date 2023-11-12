@@ -11,14 +11,6 @@ export default authMiddleware({
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url });
     }
-
-    const response = await fetch('https://jsonplaceholder.typicode.com/todos/1');
-    const data = await response.json();
-
-    // console.log(auth)
-    // console.log("req")
-    // console.log(req)
-    console.log(data)
   },
 });
 

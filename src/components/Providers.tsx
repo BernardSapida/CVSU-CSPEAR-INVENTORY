@@ -1,6 +1,6 @@
 'use client'
 
-import { NextUIProvider } from '@nextui-org/react'
+import { NextUIProvider } from '@nextui-org/react';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 
 export function Providers({ children }: { children: React.ReactNode }) {

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, createContext } from "react";
+import { trpc } from '@/lib/trpc/client';
+import { useState, createContext, useEffect } from "react";
 
 interface UserContextProps {
     children: React.ReactNode
@@ -8,33 +9,32 @@ interface UserContextProps {
 
 export const UserContext = createContext({
     user: {
-        _id: '',
+        id: '',
         firstname: '',
         lastname: '',
         email: '',
-        image_public_id: '',
-    } as User,
-    setUser: (key: string, value: string): void => { },
+        college: '' as College,
+        role: '' as Role
+    } as User | undefined,
+    setUser: (user: User): void => { },
 });
 
 export const UserContextProvider = ({ children }: UserContextProps) => {
-    const [user, setUser] = useState<User>({
-        _id: '',
-        firstname: '',
-        lastname: '',
-        email: '',
-        image_public_id: '',
-    });
+    const { data: loggedUser, isLoading } = trpc.users.getUserById.useQuery({ userId: '655090d119e6860ab68d0e0c' });
+    const [user, setUser] = useState<User>();
+
+    useEffect(() => {
+        if (loggedUser) {
+            setUser(loggedUser);
+            console.log("LOGGED");
+            console.log(user);
+        }
+    })
 
     const context = {
         user: user,
-        setUser: (key: string, value: string): void => {
-            setUser(prevState => {
-                return {
-                    ...prevState,
-                    [key]: value
-                }
-            })
+        setUser: (user: User): void => {
+            setUser(user);
         },
     };
 

@@ -7,8 +7,6 @@ import CustomTable from '@/components/CustomTable';
 function BorrowRequests({ params }: { params: { request_id: string } }) {
     const INITIAL_VISIBLE_COLUMNS = ["id", "name", "email", "college", "role", "borrow_status", "condition", "borrow_date", "return_date", 'actions'];
     const getAdminBorrowRequest = trpc.adminBorrowRequest.getAdminBorrowRequest.useQuery();
-    console.log('getAdminBorrowRequest.data')
-    console.log(getAdminBorrowRequest.data)
 
     return (
         <>

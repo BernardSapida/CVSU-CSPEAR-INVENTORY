@@ -10,7 +10,7 @@ export const getUsers = async () => {
 export const getUserById = async (id: string) => {
     //   const { id: userId } = computerIdSchema.parse({ id });
     const user = await db.users.findFirst({ where: { id: id } });
-    return { user: user };
+    return user;
 };
 
 export const getEquipments = async () => {

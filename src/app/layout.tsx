@@ -10,6 +10,7 @@ import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 import { Toaster } from 'sonner'
+import { UserContextProvider } from '@/store/UserContext';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -27,13 +28,15 @@ export default function RootLayout({
         <ClerkProvider>
           <TrpcProvider>
             <Providers>
-              <main className="flex">
-                <Navbar />
-                <section className='w-full px-5 h-screen overflow-y-auto'>
-                  {children}
-                </section>
-                <Toaster richColors position="top-center" />
-              </main>
+              <UserContextProvider>
+                <main className="flex">
+                  <Navbar />
+                  <section className='w-full px-5 h-screen overflow-y-auto'>
+                    {children}
+                  </section>
+                  <Toaster richColors position="top-center" />
+                </main>
+              </UserContextProvider>
             </Providers>
           </TrpcProvider>
         </ClerkProvider>

@@ -1,17 +1,17 @@
 'use client'
 
+import { Skeleton } from '@nextui-org/react';
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import { FunctionComponent } from 'react';
 
 import { GrNotification, GrUserSettings } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import { AiOutlineDashboard } from 'react-icons/ai';
-import { MdPendingActions } from 'react-icons/md';
 import { LuClipboardList, LuHistory } from 'react-icons/lu';
+import { MdPendingActions } from 'react-icons/md';
 
 interface MenuProps {
-    role: string;
+    role: Role | undefined;
 }
 
 const Menu: FunctionComponent<MenuProps> = ({ role }) => {
@@ -83,17 +83,36 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
         ]
     }
 
-    return (
-        <ul>
-            {
-                (menu[role]).map((l, key) => (
-                    <li key={l.path} className={`my-2 p-2 rounded ${l.path === pathname && 'bg-default-100'}`}>
-                        <Link className={`flex flex-row items-center gap-2 text-sm w-max`} href={l.path}>{l.icon} {l.name}</Link>
-                    </li>
-                ))
-            }
-        </ul>
-    );
+    if (role) {
+        return (
+            <ul>
+                {
+                    (menu[role != 'Admin' ? 'user' : 'admin']).map((l, key) => (
+                        <li key={l.path} className={`my-2 p-2 rounded ${l.path === pathname && 'bg-default-100'}`}>
+                            <Link className={`flex flex-row items-center gap-2 text-sm w-max`} href={l.path}>{l.icon} {l.name}</Link>
+                        </li>
+                    ))
+                }
+            </ul>
+        );
+    } else {
+        return (
+            <ul>
+                {
+                    [1, 2, 3, 4, 5].map((l, key) => (
+                        <Skeleton
+                            className='my-2 p-2 w-40 rounded'
+                            children={
+                                <li key={l}>
+                                    {l}
+                                </li>
+                            }
+                        />
+                    ))
+                }
+            </ul>
+        );
+    }
 }
 
 export default Menu;
