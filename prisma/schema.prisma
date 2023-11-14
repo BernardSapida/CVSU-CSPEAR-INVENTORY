@@ -41,6 +41,9 @@ enum Role {
 }
 
 enum College {
+  CAFENR
+  CAS
+  CCJ
   CED
   CEMDS
   CEIT
@@ -48,6 +51,7 @@ enum College {
   CSPEAR
   CVMBS
   COM
+  UNKNOWN
 }
 
 type BorrowEquipments {

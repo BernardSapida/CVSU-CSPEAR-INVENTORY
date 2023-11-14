@@ -42,18 +42,29 @@ export const borrowItemsRouter = router({
         quantity: z.number().nonnegative(),
         stock: z.number().nonnegative(),
         is_available: z.boolean(),
-      })
+        user_id: z.string(),
+      }),
     )
     .mutation(async ({ input }) => {
-      await addEquipmentToBorrow(input);
+      const user_id = input.user_id;
+      const equipment = {
+        id: input.id,
+        name: input.name,
+        quantity: input.quantity,
+        stock: input.stock,
+        is_available: input.is_available,
+      };
+
+      await addEquipmentToBorrow(equipment, user_id);
     }),
   removeBorrowItem: publicProcedure
     .input(
       z.object({
         id: z.string(),
+        user_id: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      await removeEquipmentToBorrow(input.id);
+      await removeEquipmentToBorrow(input.user_id, input.id);
     }),
 });

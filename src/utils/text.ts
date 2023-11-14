@@ -1,5 +1,5 @@
 export const capitalize = (word: string) => {
-    return word.replace(/\b\w/g, function (char) {
+    return word.toLowerCase().replace(/\b\w/g, function (char) {
         return char.toUpperCase();
     });
 }

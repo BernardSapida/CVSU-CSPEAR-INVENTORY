@@ -1,19 +1,11 @@
-'use client'
+import { currentUser } from '@clerk/nextjs';
 
-import { trpc } from '@/lib/trpc/client';
-import { UserContext } from '@/store/UserContext';
-import { useRouter } from 'next-nprogress-bar';
-import Link from "next/link";
-import { useContext, useEffect } from 'react';
-
-export default function Home() {
-  const userContext = useContext(UserContext);
-  const router = useRouter();
-
-  console.log(userContext);
+export default async function Home() {
+  const user = await currentUser();
 
   return (
     <main className="space-y-6">
+      <h1>Hello</h1>
       {/* <Link href="/account">
         <button className="text-center hover:bg-slate-100 border border-slate-200 px-3.5 py-2.5 font-medium text-sm rounded-md">Account and Billing</button>
       </Link>

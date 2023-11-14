@@ -4,20 +4,20 @@ import { FunctionComponent, useTransition } from 'react';
 
 import { AccountCard, AccountCardFooter, AccountCardBody } from "./AccountCard";
 import { Select, SelectItem } from "@nextui-org/react";
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { trpc } from '@/lib/trpc/client';
 
 interface RoleCardProps {
+  user_id: string;
   role: string;
 }
 
-const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
-  const colleges: Record<string, string>[] = [
+const RoleCard: FunctionComponent<RoleCardProps> = ({ user_id, role }) => {
+  const Role: Record<string, string>[] = [
+    { role: "Unknown" },
     { role: "Student" },
     { role: "Faculty" },
   ];
-  const router = useRouter();
   const updateUserRole = trpc.userAccount.updateUserRole.useMutation();
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -27,9 +27,11 @@ const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
     const form = new FormData(target);
     const { role } = Object.fromEntries(form.entries()) as { role: Role };
 
-    updateUserRole.mutate({ role });
-    toast.success('You have successfully updated your colleges.');
+    updateUserRole.mutate({ user_id, role });
+    toast.success('You have successfully updated your Role.');
   };
+
+  if (!role) return;
 
   return (
     <AccountCard
@@ -48,13 +50,20 @@ const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
             defaultSelectedKeys={[role]}
           >
             {
-              colleges.map(({ role }) => (
-                <SelectItem
-                  key={role} value={role}
-                  textValue={role}
-                >
-                  {role}
-                </SelectItem>
+              Role.map(({ role }) => (
+                role === 'Unknown' ?
+                  <SelectItem
+                    key={role} value={''}
+                    textValue={'Choose your role'}
+                  >
+                    {'Choose your role'}
+                  </SelectItem> :
+                  <SelectItem
+                    key={role} value={role}
+                    textValue={role}
+                  >
+                    {role}
+                  </SelectItem>
               ))
             }
           </Select>

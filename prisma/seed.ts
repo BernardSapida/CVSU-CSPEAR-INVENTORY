@@ -10,13 +10,13 @@ import { populateAdminNotification } from './seeder/AdminNotification';
 const prisma = new PrismaClient();
 
 async function main() {
-    await populateUsers();
-    await populateEquipments();
+    // await populateUsers();
+    // await populateEquipments();
     await populateUserBorrowItems();
-    await populateAdminBorrowRequest();
-    await populateHistory();
-    await populateUserNotification();
-    await populateAdminNotification();
+    // await populateAdminBorrowRequest();
+    // await populateHistory();
+    // await populateUserNotification();
+    // await populateAdminNotification();
 }
 
 main()

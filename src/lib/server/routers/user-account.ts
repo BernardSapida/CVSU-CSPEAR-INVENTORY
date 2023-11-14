@@ -9,14 +9,16 @@ export const userAccountRouter = router({
     }),
   updateUserRole:
     publicProcedure.input(z.object({
+      user_id: z.string(),
       role: z.string()
-    })).mutation(async ({ input: { role } }) => {
-      return updateUserRole(role as Role);
+    })).mutation(async ({ input: { user_id, role } }) => {
+      return updateUserRole(user_id, role as Role);
     }),
   updateUserCollege:
     publicProcedure.input(z.object({
+      user_id: z.string(),
       college: z.string()
-    })).mutation(async ({ input: { college } }) => {
-      return updateUserCollege(college as College);
+    })).mutation(async ({ input: { user_id, college } }) => {
+      return updateUserCollege(user_id, college as College);
     })
 });

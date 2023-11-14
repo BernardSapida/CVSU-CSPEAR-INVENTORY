@@ -1,18 +1,18 @@
 import { publicProcedure, router } from "@/lib/server/trpc";
-import { getUsers, getUserById } from "@/lib/api/computers/queries"
+import { getUsers, getUserByEmail } from "@/lib/api/computers/queries"
 import { z } from 'zod';
 
 export const usersRouter = router({
   getUsers: publicProcedure.query(async () => {
     return getUsers();
   }),
-  getUserById: publicProcedure
+  getUserByEmail: publicProcedure
     .input(
       z.object({
-        userId: z.string(),
+        email: z.string(),
       })
     )
     .query(async ({ input }) => {
-      return getUserById(input.userId);
+      return getUserByEmail(input.email);
     }),
 });

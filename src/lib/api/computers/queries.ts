@@ -1,4 +1,3 @@
-import { ComputerId, computerIdSchema } from "@/lib/db/schema/computers";
 import { db } from "@/lib/db/index";
 import { ObjectId } from 'mongodb';
 
@@ -7,9 +6,36 @@ export const getUsers = async () => {
     return { users: users };
 };
 
-export const getUserById = async (id: string) => {
-    //   const { id: userId } = computerIdSchema.parse({ id });
-    const user = await db.users.findFirst({ where: { id: id } });
+export const registerUser = async (firstname: string, lastname: string, email: string) => {
+    const user = await db.users.upsert({
+        where: { email: email },
+        update: {},
+        create: {
+            id: new ObjectId().toString(),
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+            role: 'Student',
+            college: 'UNKNOWN',
+        },
+    });
+
+    const userBorrowItems = await db.userBorrowItems.create({
+        data: {
+            id: new ObjectId().toString(),
+            equipments: [],
+            purpose: '',
+            borrow_date: new Date(),
+            return_date: new Date(),
+            user_id: new ObjectId(user.id).toString()
+        },
+    });
+
+    return user;
+};
+
+export const getUserByEmail = async (email: string) => {
+    const user = await db.users.findFirst({ where: { email: email } });
     return user;
 };
 
@@ -45,26 +71,25 @@ export const updateEquipment = async (equipment: Equipment) => {
 }
 
 export const deleteEquipment = async (id: string) => {
-    console.log(`deleteEquipment`);
     const equipment = await db.equipments.delete({
         where: { id: new ObjectId(id).toString() },
     });
     return equipment;
 }
 
-export const getBorrowItems = async () => {
+export const getBorrowItems = async (user_id: string) => {
     const borrowItems = await db.userBorrowItems.findFirst({
         where: {
-            user_id: '654edcfa26c9a4e1b58f1e54'
+            user_id: user_id
         }
     });
     return borrowItems;
 }
 
-export const addEquipmentToBorrow = async (equipment: BorrowEquipment) => {
+export const addEquipmentToBorrow = async (equipment: BorrowEquipment, user_id: string) => {
     const borrowItems = await db.userBorrowItems.update({
         where: {
-            user_id: '654edcfa26c9a4e1b58f1e54',
+            user_id: user_id,
             equipments: {
                 none: equipment
             }
@@ -75,13 +100,14 @@ export const addEquipmentToBorrow = async (equipment: BorrowEquipment) => {
             }
         }
     });
+
     return borrowItems;
 }
 
-export const removeEquipmentToBorrow = async (equipmentId: string) => {
+export const removeEquipmentToBorrow = async (user_id: string, equipmentId: string) => {
     const borrowItems = await db.userBorrowItems.update({
         where: {
-            user_id: '654edcfa26c9a4e1b58f1e54'
+            user_id: user_id
         },
         data: {
             equipments: {
@@ -104,7 +130,7 @@ export const sendBorrowRequest = async (borrowRequest: AdminBorrowRequest) => {
 
     const deletedBorrowItems = await db.userBorrowItems.delete({
         where: {
-            user_id: '654edcfa26c9a4e1b58f1e54'
+            user_id: borrowRequest.user_id
         }
     });
 
@@ -115,7 +141,7 @@ export const sendBorrowRequest = async (borrowRequest: AdminBorrowRequest) => {
             borrow_date: new Date(),
             return_date: new Date(),
             purpose: '',
-            user_id: '654edcfa26c9a4e1b58f1e54',
+            user_id: borrowRequest.user_id,
         }
     });
 
@@ -126,7 +152,7 @@ export const sendBorrowRequest = async (borrowRequest: AdminBorrowRequest) => {
             title: `Borrow Request #${borrowRequest.id}`,
             borrow_status: 'Pending',
             is_viewed: false,
-            user_id: '654edcfa26c9a4e1b58f1e54',
+            user_id: borrowRequest.user_id,
             created_at: new Date(),
         }
     });
@@ -138,7 +164,7 @@ export const sendBorrowRequest = async (borrowRequest: AdminBorrowRequest) => {
             title: `Borrow Request #${borrowRequest.id}`,
             description: `${borrowRequest.name} has sent a borrow request.`,
             is_viewed: false,
-            user_id: '654edcfa26c9a4e1b58f1e54',
+            user_id: borrowRequest.user_id,
             created_at: new Date(),
         }
     });
@@ -151,7 +177,7 @@ export const sendBorrowRequest = async (borrowRequest: AdminBorrowRequest) => {
             borrow_status: 'Pending',
             condition: 'Good',
             is_viewed: false,
-            user_id: '654edcfa26c9a4e1b58f1e54',
+            user_id: borrowRequest.user_id,
             created_at: new Date(),
         }
     });
@@ -159,10 +185,10 @@ export const sendBorrowRequest = async (borrowRequest: AdminBorrowRequest) => {
     return borrowItems;
 }
 
-export const getUserNotification = async () => {
+export const getUserNotification = async (user_id: string) => {
     const notification = await db.userNotifications.findMany({
         where: {
-            user_id: '654edcfa26c9a4e1b58f1e54'
+            user_id: user_id
         },
         orderBy: {
             created_at: 'desc'
@@ -188,10 +214,10 @@ export const viewAdminNotification = async (request_id: string) => {
     return notification;
 }
 
-export const getUserHistory = async () => {
+export const getUserHistory = async (user_id: string) => {
     const notification = await db.userHistory.findMany({
         where: {
-            user_id: '654edcfa26c9a4e1b58f1e54'
+            user_id: user_id
         },
         orderBy: {
             created_at: 'desc'
@@ -222,10 +248,10 @@ export const updateAdminBorrowRequestById = async (input: AdminBorrowRequest) =>
     return borrowRequest;
 };
 
-export const updateUserCollege = async (college: College) => {
+export const updateUserCollege = async (user_id: string, college: College) => {
     const userAccount = await db.users.update({
         where: {
-            id: new ObjectId('654f213981157e4f72f98de9').toString(),
+            id: user_id,
         },
         data: {
             college: college
@@ -234,10 +260,10 @@ export const updateUserCollege = async (college: College) => {
     return userAccount;
 }
 
-export const updateUserRole = async (role: Role) => {
+export const updateUserRole = async (user_id: string, role: Role) => {
     const userAccount = await db.users.update({
         where: {
-            id: new ObjectId('654f213981157e4f72f98de9').toString(),
+            id: user_id,
         },
         data: {
             role: role

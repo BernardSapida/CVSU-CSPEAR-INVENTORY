@@ -2,16 +2,20 @@
 
 import { Button, Input, Textarea } from '@nextui-org/react';
 import { TbSend } from "react-icons/tb";
-import { columns, statusOptions } from "../../../Data/RequestData";
+import { columns, borrowStatusOptions } from "../../../Data/RequestData";
 
 import CustomTable from '@/components/CustomTable';
 import { trpc } from '@/lib/trpc/client';
+import { UserContext } from '@/store/UserContext';
+import { useContext } from 'react';
 import { toast } from 'sonner';
 
 function BorrowRequest() {
     const INITIAL_VISIBLE_COLUMNS = ["name", "quantity", "stock", "is_available", "actions"];
-    const { data: borrowItem, isLoading } = trpc.borrowItems.getBorrowItems.useQuery();
+    const { user } = useContext(UserContext);
+    const getBorrowItems = trpc.borrowItems.getBorrowItems.useQuery();
     const sendBorrowRequest = trpc.borrowItems.sendBorrowRequest.useMutation();
+    const equipments = getBorrowItems.data?.equipments;
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
@@ -21,6 +25,7 @@ function BorrowRequest() {
         const form = new FormData(target);
         const data: Record<string, any> = Object.fromEntries(form.entries());
         const dataKeys = Object.keys(data);
+        const borrowItem = getBorrowItems.data;
 
         if (!borrowItem) return;
 
@@ -70,7 +75,6 @@ function BorrowRequest() {
 
         sendBorrowRequest.mutate({
             ...borrowItem,
-
             name: 'Bernard Sapida',
             email: 'bernard.sapida@cvsu.edu.ph',
             college: 'CEIT',
@@ -89,9 +93,9 @@ function BorrowRequest() {
     };
 
     const updateEquipmentQuantity = (equipmentId: string, equipmentQuantity: number) => {
-        if (borrowItem?.equipments === undefined) return;
+        if (equipments === undefined) return;
 
-        for (let equipment of borrowItem?.equipments) {
+        for (let equipment of equipments) {
             if (equipment.id == equipmentId) {
                 equipment.quantity = equipmentQuantity;
                 return;
@@ -107,17 +111,16 @@ function BorrowRequest() {
                 <form id='borrow-request' onSubmit={handleSubmit}>
                     <div className='flex gap-3'>
                         <div className='w-full'>
-                            {
-                                !isLoading &&
-                                <CustomTable
-                                    columns={columns}
-                                    records={borrowItem?.equipments}
-                                    statusOptions={statusOptions}
-                                    INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
-                                    role={'Student'}
-                                    type={'REQUEST'}
-                                />
-                            }
+                            <CustomTable
+                                columns={columns}
+                                records={equipments}
+                                borrowStatusOptions={borrowStatusOptions}
+                                INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
+                                user={user}
+                                type={'REQUEST'}
+                                isLoading={getBorrowItems.isLoading}
+                                getTableData={getBorrowItems}
+                            />
                         </div>
                         <div className='shadow-md border-1 max-w-xs w-full h-max p-3 rounded-xl'>
                             <h1 className='mb-4 text-xl'><strong>To borrow</strong></h1>

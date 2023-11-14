@@ -20,7 +20,7 @@ interface CustomizableTableProps {
         uid: string;
     }[],
     INITIAL_VISIBLE_COLUMNS: string[],
-    role: Role,
+    user?: User,
     type: TableType,
     isLoading: boolean,
     getTableData: any

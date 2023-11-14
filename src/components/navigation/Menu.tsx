@@ -101,6 +101,7 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
                 {
                     [1, 2, 3, 4, 5].map((l, key) => (
                         <Skeleton
+                            key={l}
                             className='my-2 p-2 w-40 rounded'
                             children={
                                 <li key={l}>

@@ -1,19 +1,28 @@
-'use client'
-
+import { UserContext } from '@/store/UserContext';
 import { UserButton } from '@clerk/nextjs';
-import { FunctionComponent } from 'react';
+import { Skeleton } from '@nextui-org/react';
+import { FunctionComponent, useContext } from 'react';
 
 interface UserAvatarProps { }
 
 const UserAvatar: FunctionComponent<UserAvatarProps> = () => {
+    const { user } = useContext(UserContext);
+
     return (
-        <div className='flex items-center gap-2 mt-auto border-t-1 pt-2'>
-            <UserButton afterSignOutUrl="/" />
-            <div>
-                <p className='text-sm'>Bernard Sapida</p>
-                <p className='text-tiny text-default-600'>Student</p>
-            </div>
-        </div>
+        <Skeleton
+            className='mt-auto rounded-lg'
+            isLoaded={!!user}
+            children={
+                <div className='pt-2 flex items-center gap-2 border-t-1'>
+                    <UserButton afterSignOutUrl="/" />
+                    <div>
+                        <p className='text-sm'>Bernard Sapida</p>
+                        <p className='text-tiny text-default-600'>{user?.role}</p>
+                    </div>
+                </div>
+            }
+        />
+
     );
 }
 

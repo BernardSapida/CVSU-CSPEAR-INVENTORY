@@ -1,5 +1,5 @@
 type Role = 'Student' | 'Faculty' | 'Admin';
-type College = 'CED' | 'CEMDS' | 'CEIT' | 'CON' | 'CSPEAR' | 'CVMBS' | 'COM';
+type College = 'CAFENR' | 'CAS' | 'CCJ' | 'CED' | 'CEMDS' | 'CEIT' | 'CON' | 'CSPEAR' | 'CVMBS' | 'COM' | 'UNKNOWN';
 type TableType = 'CRUD' | 'CATALOG' | 'REQUEST' | 'VIEW-REQUEST';
 type Condition = "Good" | "Misplaced" | "Damaged";
 type BorrowStatus = "Pending" | "ToPickup" | "PickedUp" | "Returned";

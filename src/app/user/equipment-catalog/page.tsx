@@ -2,11 +2,15 @@
 
 import CustomTable from '@/components/CustomTable';
 import { trpc } from '@/lib/trpc/client';
-import { columns, statusOptions } from "../../../Data/CatalogData";
+import { columns, borrowStatusOptions } from "../../../Data/CatalogData";
+import { useContext } from 'react';
+import { UserContext } from '@/store/UserContext';
 
 function EquipmentCatalog() {
-    const INITIAL_VISIBLE_COLUMNS = ["name", "stock", "is_available", "actions"];
+    const { user } = useContext(UserContext);
     const getEquipments = trpc.equipments.getEquipments.useQuery();
+    const INITIAL_VISIBLE_COLUMNS = ["name", "stock", "is_available", "actions"];
+    const equipments = getEquipments.data;
 
     return (
         <>
@@ -15,10 +19,10 @@ function EquipmentCatalog() {
             <div className='mt-5'>
                 <CustomTable
                     columns={columns}
-                    records={getEquipments.data}
-                    statusOptions={statusOptions}
+                    records={equipments}
+                    borrowStatusOptions={borrowStatusOptions}
                     INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
-                    role={'Student'}
+                    user={user}
                     type={'CATALOG'}
                     isLoading={getEquipments.isLoading}
                     getTableData={getEquipments}

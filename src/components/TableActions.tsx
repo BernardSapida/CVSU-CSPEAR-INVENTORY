@@ -7,7 +7,7 @@ import { IoMdAdd } from 'react-icons/io';
 
 interface TableActionsProps {
     equipment: any;
-    role: Role;
+    role?: Role;
     type: TableType;
     CB: ((eq?: any, action?: any) => void);
 }

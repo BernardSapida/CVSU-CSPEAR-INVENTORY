@@ -25,10 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ClerkProvider>
-          <TrpcProvider>
-            <Providers>
-              <UserContextProvider>
+        <UserContextProvider>
+          <ClerkProvider>
+            <TrpcProvider>
+              <Providers>
                 <main className="flex">
                   <Navbar />
                   <section className='w-full px-5 h-screen overflow-y-auto'>
@@ -36,10 +36,10 @@ export default function RootLayout({
                   </section>
                   <Toaster richColors position="top-center" />
                 </main>
-              </UserContextProvider>
-            </Providers>
-          </TrpcProvider>
-        </ClerkProvider>
+              </Providers>
+            </TrpcProvider>
+          </ClerkProvider>
+        </UserContextProvider>
       </body>
     </html>
   )

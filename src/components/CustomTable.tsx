@@ -8,6 +8,7 @@ import {
     DropdownTrigger,
     Input,
     Pagination,
+    Skeleton,
     Spinner,
     Table,
     TableBody,
@@ -17,7 +18,7 @@ import {
     TableRow,
     useDisclosure
 } from "@nextui-org/react";
-import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { FunctionComponent, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { AiOutlineDown } from 'react-icons/ai';
 import { toast } from 'sonner';
 import TableActions from './TableActions';
@@ -29,6 +30,7 @@ import AvailabilityChip from './AvailabilityChip';
 import RequestStatusChip from './RequestStatusChip';
 import ConditionChip from './ConditionChip';
 import { trpc } from '@/lib/trpc/client';
+import { UserContext } from '@/store/UserContext';
 
 const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     columns,
@@ -37,11 +39,11 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     borrowStatusOptions,
     conditionOptions,
     INITIAL_VISIBLE_COLUMNS,
-    role,
     type,
     isLoading,
     getTableData
 }) => {
+    const { user } = useContext(UserContext);
     const [data, setData] = useState<RecordType>([]);
     const [visibleColumns, setVisibleColumns] = useState<any>(new Set(INITIAL_VISIBLE_COLUMNS));
     const [filterValue, setFilterValue] = useState("");
@@ -136,23 +138,26 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     }
 
     const addToBorrow: (eq: any) => void = (eq: any) => {
-        const newEquipment: BorrowEquipment = { ...eq, quantity: 1 }
-        addBorrowItem.mutate(newEquipment);
+        if (!user) return;
 
-        toast.success('Equipment has been added')
+        const newEquipment: BorrowEquipment = { ...eq, quantity: 1 };
+        addBorrowItem.mutate({ ...newEquipment, user_id: user.id });
+        toast.success('Equipment has been added');
     }
 
     const removeEquipment: (eq: any) => void = (eq: any) => {
-        removeBorrowItem.mutate({ id: eq.id });
+        if (!user) return;
+
+        removeBorrowItem.mutate({ id: eq.id, user_id: user.id });
         setData((prevState: any) => {
             const newList = [...prevState.filter((e: any) => e.id != eq.id)];
             return newList;
         })
-        toast.success('Equipment has been removed')
+        toast.success('Equipment has been removed');
     }
 
     const CB = (() => {
-        if (role === 'Student' || role === 'Faculty') {
+        if (user?.role === 'Student' || user?.role === 'Faculty') {
             switch (type) {
                 case 'CATALOG':
                     return addToBorrow
@@ -161,7 +166,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
             }
         }
 
-        if (role === 'Admin') {
+        if (user?.role === 'Admin') {
             switch (type) {
                 case 'CATALOG':
                     return updateDeleteEquipment;
@@ -203,7 +208,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                         />
                 );
             case "actions":
-                return <TableActions role={role} type={type} CB={CB} equipment={equipment} />;
+                return <TableActions role={user?.role} type={type} CB={CB} equipment={equipment} />;
             case "stock":
                 return `${cellValue}pcs`
             case "borrow_date":
@@ -213,7 +218,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
             default:
                 return cellValue;
         }
-    }, []);
+    }, [user]);
 
     const onNextPage = useCallback(() => {
         if (page < pages) {
@@ -248,181 +253,233 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
 
     const topContent = useMemo(() => {
         return (
-            <div className="flex flex-col gap-4">
+            <div className="flex justify-center flex-col gap-4">
                 <div className="flex justify-between gap-3 items-end">
-                    <Input
-                        isClearable
-                        className="w-full sm:max-w-[44%]"
-                        size='sm'
-                        placeholder="Search by name..."
-                        startContent={
-                            <svg
-                                aria-hidden="true"
-                                fill="none"
-                                focusable="false"
-                                height="1em"
-                                role="presentation"
-                                viewBox="0 0 24 24"
-                                width="1em"
-                            >
-                                <path
-                                    d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                />
-                                <path
-                                    d="M22 22L20 20"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                />
-                            </svg>
+                    <Skeleton
+                        className='rounded-lg w-full sm:max-w-[44%]'
+                        isLoaded={!isLoading}
+                        children={
+                            <Input
+                                isClearable
+                                size='sm'
+                                placeholder="Search by name..."
+                                startContent={
+                                    <svg
+                                        aria-hidden="true"
+                                        fill="none"
+                                        focusable="false"
+                                        height="1em"
+                                        role="presentation"
+                                        viewBox="0 0 24 24"
+                                        width="1em"
+                                    >
+                                        <path
+                                            d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                        />
+                                        <path
+                                            d="M22 22L20 20"
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                        />
+                                    </svg>
+                                }
+                                value={filterValue}
+                                onClear={() => onClear()}
+                                onValueChange={onSearchChange}
+                            />
                         }
-                        value={filterValue}
-                        onClear={() => onClear()}
-                        onValueChange={onSearchChange}
                     />
-                    <div className="flex gap-3">
+                    <div className="flex items-center gap-3">
                         {
-                            role == "Admin" &&
+                            user?.role == "Admin" &&
                             type == "CATALOG" &&
-                            <Button
-                                aria-label='Add new equipment'
-                                color='primary'
-                                onClick={addDisclosure.onOpen}
-                            >
-                                Add equipment
-                            </Button>
+                            <Skeleton
+                                className='rounded-lg'
+                                isLoaded={!isLoading}
+                                children={
+                                    <Button
+                                        aria-label='Add new equipment'
+                                        color='primary'
+                                        onClick={addDisclosure.onOpen}
+                                    >
+                                        Add equipment
+                                    </Button>
+                                }
+                            />
                         }
                         {
-                            availabilityStatusOptions && <Dropdown>
-                                <DropdownTrigger className="hidden sm:flex">
-                                    <Button
-                                        endContent={
-                                            <AiOutlineDown />
-                                        }
-                                        variant="flat"
-                                        aria-label='Status dropdown'
-                                    >
-                                        Availability Status
-                                    </Button>
-                                </DropdownTrigger>
-                                <DropdownMenu
-                                    disallowEmptySelection
-                                    aria-label="Table Columns"
-                                    closeOnSelect={false}
-                                    selectionMode="multiple"
-                                    onSelectionChange={setAvailabilityStatusFilter}
-                                >
-                                    {availabilityStatusOptions.map((status: any) => (
-                                        <DropdownItem key={status.uid} className="capitalize">
-                                            {status.name}
-                                        </DropdownItem>
-                                    ))}
-                                </DropdownMenu>
-                            </Dropdown>
+                            availabilityStatusOptions &&
+                            <Skeleton
+                                className='rounded-lg'
+                                isLoaded={!isLoading}
+                                children={
+                                    <Dropdown>
+                                        <DropdownTrigger className="hidden sm:flex">
+                                            <Button
+                                                endContent={
+                                                    <AiOutlineDown />
+                                                }
+                                                variant="flat"
+                                                aria-label='Status dropdown'
+                                            >
+                                                Availability Status
+                                            </Button>
+                                        </DropdownTrigger>
+                                        <DropdownMenu
+                                            disallowEmptySelection
+                                            aria-label="Table Columns"
+                                            closeOnSelect={false}
+                                            selectionMode="multiple"
+                                            onSelectionChange={setAvailabilityStatusFilter}
+                                        >
+                                            {availabilityStatusOptions.map((status: any) => (
+                                                <DropdownItem key={status.uid} className="capitalize">
+                                                    {status.name}
+                                                </DropdownItem>
+                                            ))}
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                }
+                            />
                         }
                         {
-                            borrowStatusOptions && <Dropdown>
-                                <DropdownTrigger className="hidden sm:flex">
-                                    <Button
-                                        endContent={
-                                            <AiOutlineDown />
-                                        }
-                                        variant="flat"
-                                        aria-label='Status dropdown'
-                                    >
-                                        Borrow Status
-                                    </Button>
-                                </DropdownTrigger>
-                                <DropdownMenu
-                                    disallowEmptySelection
-                                    aria-label="Table Columns"
-                                    closeOnSelect={false}
-                                    selectionMode="multiple"
-                                    onSelectionChange={setBorrowStatusFilter}
-                                >
-                                    {borrowStatusOptions.map((status: any) => (
-                                        <DropdownItem key={status.uid} className="capitalize">
-                                            {status.name}
-                                        </DropdownItem>
-                                    ))}
-                                </DropdownMenu>
-                            </Dropdown>
+                            borrowStatusOptions &&
+                            <Skeleton
+                                className='rounded-lg'
+                                isLoaded={!isLoading}
+                                children={
+                                    <Dropdown>
+                                        <DropdownTrigger className="hidden sm:flex">
+                                            <Button
+                                                endContent={
+                                                    <AiOutlineDown />
+                                                }
+                                                variant="flat"
+                                                aria-label='Status dropdown'
+                                            >
+                                                Borrow Status
+                                            </Button>
+                                        </DropdownTrigger>
+                                        <DropdownMenu
+                                            disallowEmptySelection
+                                            aria-label="Table Columns"
+                                            closeOnSelect={false}
+                                            selectionMode="multiple"
+                                            onSelectionChange={setBorrowStatusFilter}
+                                        >
+                                            {borrowStatusOptions.map((status: any) => (
+                                                <DropdownItem key={status.uid} className="capitalize">
+                                                    {status.name}
+                                                </DropdownItem>
+                                            ))}
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                }
+                            />
+
                         }
                         {
-                            conditionOptions && <Dropdown>
-                                <DropdownTrigger className="hidden sm:flex">
-                                    <Button
-                                        endContent={
-                                            <AiOutlineDown />
-                                        }
-                                        variant="flat"
-                                        aria-label='Status dropdown'
-                                    >
-                                        Condition
-                                    </Button>
-                                </DropdownTrigger>
-                                <DropdownMenu
-                                    disallowEmptySelection
-                                    aria-label="Table Columns"
-                                    closeOnSelect={false}
-                                    selectionMode="multiple"
-                                    onSelectionChange={setConditionStatusFilter}
-                                >
-                                    {conditionOptions.map((condition: any) => (
-                                        <DropdownItem key={condition.uid} className="capitalize">
-                                            {condition.name}
-                                        </DropdownItem>
-                                    ))}
-                                </DropdownMenu>
-                            </Dropdown>
+                            conditionOptions &&
+                            <Skeleton
+                                className='rounded-lg'
+                                isLoaded={!isLoading}
+                                children={
+                                    <Dropdown>
+                                        <DropdownTrigger className="hidden sm:flex">
+                                            <Button
+                                                endContent={
+                                                    <AiOutlineDown />
+                                                }
+                                                variant="flat"
+                                                aria-label='Status dropdown'
+                                            >
+                                                Condition
+                                            </Button>
+                                        </DropdownTrigger>
+                                        <DropdownMenu
+                                            disallowEmptySelection
+                                            aria-label="Table Columns"
+                                            closeOnSelect={false}
+                                            selectionMode="multiple"
+                                            onSelectionChange={setConditionStatusFilter}
+                                        >
+                                            {conditionOptions.map((condition: any) => (
+                                                <DropdownItem key={condition.uid} className="capitalize">
+                                                    {condition.name}
+                                                </DropdownItem>
+                                            ))}
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                }
+                            />
+
                         }
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button
-                                    endContent={
-                                        <AiOutlineDown />
-                                    }
-                                    variant="flat"
-                                    aria-label='Column dropdown'
-                                >
-                                    Columns
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectedKeys={visibleColumns}
-                                selectionMode="multiple"
-                                onSelectionChange={setVisibleColumns}
-                            >
-                                {columns.map((column: any) => (
-                                    <DropdownItem key={column.uid} className="capitalize">
-                                        <span className='capitalize'>{column.name}</span>
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
+                        <Skeleton
+                            className='rounded-lg'
+                            isLoaded={!isLoading}
+                            children={
+                                <Dropdown>
+                                    <DropdownTrigger className="hidden sm:flex">
+                                        <Button
+                                            endContent={
+                                                <AiOutlineDown />
+                                            }
+                                            variant="flat"
+                                            aria-label='Column dropdown'
+                                        >
+                                            Columns
+                                        </Button>
+                                    </DropdownTrigger>
+                                    <DropdownMenu
+                                        disallowEmptySelection
+                                        aria-label="Table Columns"
+                                        closeOnSelect={false}
+                                        selectedKeys={visibleColumns}
+                                        selectionMode="multiple"
+                                        onSelectionChange={setVisibleColumns}
+                                    >
+                                        {columns.map((column: any) => (
+                                            <DropdownItem key={column.uid} className="capitalize">
+                                                <span className='capitalize'>{column.name}</span>
+                                            </DropdownItem>
+                                        ))}
+                                    </DropdownMenu>
+                                </Dropdown>
+                            }
+                        />
                     </div>
                 </div>
                 <div className="flex justify-between items-center">
-                    <span className="text-default-400 text-small">Total {data.length} records</span>
-                    <label className="flex items-center text-default-400 text-small">
-                        Rows per page:
-                        <select
-                            className="bg-transparent outline-none text-default-400 text-small"
-                            onChange={onRowsPerPageChange}
-                        >
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                        </select>
-                    </label>
+                    <Skeleton
+                        className='rounded-lg'
+                        isLoaded={!isLoading}
+                        children={
+                            <span className="text-default-400 text-small">Total {data.length} records</span>
+                        }
+                    />
+                    <Skeleton
+                        className='rounded-lg'
+                        isLoaded={!isLoading}
+                        children={
+                            <label className="flex items-center text-default-400 text-small">
+                                Rows per page:
+                                <select
+                                    className="bg-transparent outline-none text-default-400 text-small"
+                                    onChange={onRowsPerPageChange}
+                                >
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                </select>
+                            </label>
+                        }
+                    />
                 </div>
             </div >
         );
@@ -440,28 +497,44 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
         return (
             <>
                 {
-                    !isLoading && (
-                        <div className="py-2 px-2 flex justify-between items-center">
-                            <div className="hidden sm:flex w-[30%] justify-start gap-2">
-                                <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
-                                    Previous
-                                </Button>
-                                <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
-                                    Next
-                                </Button>
-                            </div>
-                            <Pagination
-                                isCompact
-                                showControls
-                                showShadow
-                                color="primary"
-                                page={page}
-                                total={pages}
-                                onChange={setPage}
-                                aria-disabled
+                    <div className="py-2 px-2 flex justify-between items-center">
+                        <div className="hidden sm:flex w-[30%] justify-start gap-2">
+                            <Skeleton
+                                className='rounded-lg'
+                                isLoaded={!isLoading}
+                                children={
+                                    <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
+                                        Previous
+                                    </Button>
+                                }
+                            />
+                            <Skeleton
+                                className='rounded-lg'
+                                isLoaded={!isLoading}
+                                children={
+                                    <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
+                                        Next
+                                    </Button>
+                                }
                             />
                         </div>
-                    )
+                        <Skeleton
+                            className='rounded-lg'
+                            isLoaded={!isLoading}
+                            children={
+                                !isLoading && <Pagination
+                                    isCompact
+                                    showControls
+                                    showShadow
+                                    color="primary"
+                                    page={page}
+                                    total={pages}
+                                    onChange={setPage}
+                                    aria-disabled
+                                />
+                            }
+                        />
+                    </div>
                 }
             </>
         );

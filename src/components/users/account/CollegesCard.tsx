@@ -8,11 +8,13 @@ import { toast } from 'sonner';
 import { trpc } from '@/lib/trpc/client';
 
 interface CollegeCardProps {
+  user_id: string;
   college: string;
 }
 
-const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
+const CollegeCard: FunctionComponent<CollegeCardProps> = ({ user_id, college }) => {
   const colleges: Record<string, string>[] = [
+    { abbr: "UNKNOWN", value: "Choose your colleges" },
     { abbr: "CAFENR", value: "College of Agriculture, Food, Environment and Natural Resources" },
     { abbr: "CAS", value: "College of Arts and Science" },
     { abbr: "CCJ", value: "College of Criminal Justice" },
@@ -33,9 +35,11 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
     const form = new FormData(target);
     const { college } = Object.fromEntries(form.entries()) as { college: College };
 
-    updateUserCollege.mutate({ college });
+    updateUserCollege.mutate({ user_id, college });
     toast.success('You have successfully updated your colleges.');
   };
+
+  if (!college) return;
 
   return (
     <AccountCard
@@ -55,9 +59,13 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
           >
             {
               colleges.map(({ abbr, value }) => (
-                <SelectItem key={abbr} value={abbr} textValue={`${abbr} - ${value}`}>
-                  {abbr} - {value}
-                </SelectItem>
+                abbr === 'UNKNOWN' ?
+                  <SelectItem key={abbr} value={abbr} textValue={`${value}`}>
+                    {value}
+                  </SelectItem> :
+                  <SelectItem key={abbr} value={abbr} textValue={`${abbr} - ${value}`}>
+                    {abbr} - {value}
+                  </SelectItem>
               ))
             }
           </Select>

@@ -1,4 +1,5 @@
 import { adminBorrowRequestRouter } from './admin-borrow-requests';
+import { authCallbackRouter } from './auth-callback';
 import { equipmentsRouter } from './equipments';
 import { notificationRouter } from './notification';
 import { userAccountRouter } from './user-account';
@@ -12,7 +13,8 @@ export const appRouter = router({
   borrowItems: borrowItemsRouter,
   notification: notificationRouter,
   adminBorrowRequest: adminBorrowRequestRouter,
-  userAccount: userAccountRouter
+  userAccount: userAccountRouter,
+  authCallback: authCallbackRouter
 });
 
 export type AppRouter = typeof appRouter;
