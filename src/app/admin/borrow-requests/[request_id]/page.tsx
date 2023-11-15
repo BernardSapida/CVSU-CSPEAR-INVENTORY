@@ -4,11 +4,11 @@ import CustomTable from '@/components/CustomTable';
 import { trpc } from '@/lib/trpc/client';
 import { formatUnderscoreStatus, getFormattedBorrowStatus } from '@/utils/text';
 import { Button, Input, Select, SelectItem, Skeleton, Textarea } from '@nextui-org/react';
-import moment from 'moment';
+import * as moment from 'moment';
+import { useEffect } from 'react';
 import { TbSend } from 'react-icons/tb';
 import { toast } from 'sonner';
 import { columns } from "../../../../Data/ViewRequestData";
-import { useEffect } from 'react';
 
 function BorrowRequest({ params }: { params: { request_id: string } }) {
     const { request_id } = params;
@@ -27,7 +27,7 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
 
     useEffect(() => {
         viewAdminNotification.mutate({ request_id });
-    }, []);
+    }, [viewAdminNotification, request_id]);
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
@@ -54,7 +54,6 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                         columns={columns}
                         records={data?.equipments}
                         INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
-                        role={'Admin'}
                         type={'VIEW-REQUEST'}
                         isLoading={isLoading}
                         getTableData={getAdminBorrowRequestById}
@@ -69,101 +68,95 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                 <Skeleton
                                     className='rounded-lg mb-2'
                                     isLoaded={!isLoading}
-                                    children={
-                                        <Input
-                                            name='name'
-                                            labelPlacement='inside'
-                                            label="Name"
-                                            placeholder='Fullname'
-                                            defaultValue={data?.name}
-                                            type='text'
-                                            className='mb-2'
-                                            disabled
-                                        />
-                                    }
-                                />
+                                >
+                                    <Input
+                                        name='name'
+                                        labelPlacement='inside'
+                                        label="Name"
+                                        placeholder='Fullname'
+                                        defaultValue={data?.name}
+                                        type='text'
+                                        className='mb-2'
+                                        disabled
+                                    />
+                                </Skeleton>
                                 <Skeleton
                                     className='rounded-lg mb-2'
                                     isLoaded={!isLoading}
-                                    children={
-                                        <Input
-                                            name='email'
-                                            labelPlacement='inside'
-                                            label="Email Address"
-                                            placeholder='Email address'
-                                            defaultValue={data?.email}
-                                            type='email'
-                                            className='mb-2'
-                                            disabled
-                                        />
-                                    }
-                                />
+                                >
+                                    <Input
+                                        name='email'
+                                        labelPlacement='inside'
+                                        label="Email Address"
+                                        placeholder='Email address'
+                                        defaultValue={data?.email}
+                                        type='email'
+                                        className='mb-2'
+                                        disabled
+                                    />
+                                </Skeleton>
                                 <Skeleton
                                     className='rounded-lg mb-2'
                                     isLoaded={!isLoading}
-                                    children={
-                                        <Input
-                                            name='Role'
-                                            labelPlacement='inside'
-                                            label="Role"
-                                            placeholder='Role'
-                                            defaultValue={data?.role}
-                                            type='text'
-                                            className='mb-2'
-                                            disabled
-                                        />
-                                    }
-                                />
+                                >
+                                    <Input
+                                        name='Role'
+                                        labelPlacement='inside'
+                                        label="Role"
+                                        placeholder='Role'
+                                        defaultValue={data?.role}
+                                        type='text'
+                                        className='mb-2'
+                                        disabled
+                                    />
+                                </Skeleton>
                                 <Skeleton
                                     className='rounded-lg mb-2'
                                     isLoaded={!isLoading}
-                                    children={
-                                        <Input
-                                            name='borrow_date'
-                                            labelPlacement='inside'
-                                            label="Borrow Date"
-                                            defaultValue={moment(data?.borrow_date).format('YYYY-MM-DD')}
-                                            placeholder='#'
-                                            type='date'
-                                            disabled
-                                        />
-                                    }
-                                />
+                                >
+                                    <Input
+                                        name='borrow_date'
+                                        labelPlacement='inside'
+                                        label="Borrow Date"
+                                        defaultValue={moment(data?.borrow_date).format('YYYY-MM-DD')}
+                                        placeholder='#'
+                                        type='date'
+                                        disabled
+                                    />
+                                </Skeleton>
                                 <Skeleton
                                     className='rounded-lg mb-2'
                                     isLoaded={!isLoading}
-                                    children={
-                                        <Input
-                                            name='return_date'
-                                            labelPlacement='inside'
-                                            label="Return Date"
-                                            placeholder='#'
-                                            defaultValue={moment(data?.return_date).format('YYYY-MM-DD')}
-                                            type='date'
-                                            disabled
-                                        />
-                                    }
-                                />
+                                >
+                                    <Input
+                                        name='return_date'
+                                        labelPlacement='inside'
+                                        label="Return Date"
+                                        placeholder='#'
+                                        defaultValue={moment(data?.return_date).format('YYYY-MM-DD')}
+                                        type='date'
+                                        disabled
+                                    />
+                                </Skeleton>
                                 <Skeleton
                                     className='rounded-lg mb-2'
                                     isLoaded={!isLoading}
-                                    children={
-                                        <Textarea
-                                            name='purpose'
-                                            label="Purpose"
-                                            placeholder='What is the purpose of request'
-                                            minRows={1}
-                                            maxRows={8}
-                                            classNames={{
-                                                inputWrapper: [
-                                                    "h-max",
-                                                ],
-                                            }}
-                                            defaultValue={data?.purpose}
-                                            disabled
-                                        />
-                                    }
-                                />
+                                >
+                                    <Textarea
+                                        name='purpose'
+                                        label="Purpose"
+                                        placeholder='What is the purpose of request'
+                                        minRows={1}
+                                        maxRows={8}
+                                        classNames={{
+                                            inputWrapper: [
+                                                "h-max",
+                                            ],
+                                        }}
+                                        defaultValue={data?.purpose}
+                                        disabled
+                                    />
+                                </Skeleton>
                             </div>
                         </div>
                         <div className='w-full h-max p-3 rounded-xl'>
@@ -173,7 +166,8 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                 <Skeleton
                                     className='rounded-lg mb-2'
                                     isLoaded={!isLoading}
-                                    children={
+                                >
+                                    {
                                         !isLoading &&
                                         <Select
                                             name='borrow_status'
@@ -196,11 +190,12 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                             }
                                         </Select>
                                     }
-                                />
+                                </Skeleton>
                                 <Skeleton
                                     className='rounded-lg mb-2'
                                     isLoaded={!isLoading}
-                                    children={
+                                >
+                                    {
                                         !isLoading &&
                                         <Select
                                             name='condition'
@@ -224,41 +219,39 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                             }
                                         </Select>
                                     }
-                                />
+                                </Skeleton>
                                 <Skeleton
                                     className='rounded-lg mb-2'
                                     isLoaded={!isLoading}
-                                    children={
-                                        <Textarea
-                                            name='note'
-                                            label="Note"
-                                            placeholder='Some reason about the equipment condition'
-                                            minRows={1}
-                                            maxRows={10}
-                                            classNames={{
-                                                inputWrapper: [
-                                                    "h-max",
-                                                ],
-                                            }}
-                                            className='mb-2'
-                                            defaultValue={data?.note}
-                                        />
-                                    }
-                                />
+                                >
+                                    <Textarea
+                                        name='note'
+                                        label="Note"
+                                        placeholder='Some reason about the equipment condition'
+                                        minRows={1}
+                                        maxRows={10}
+                                        classNames={{
+                                            inputWrapper: [
+                                                "h-max",
+                                            ],
+                                        }}
+                                        className='mb-2'
+                                        defaultValue={data?.note}
+                                    />
+                                </Skeleton>
                                 <div className='flex justify-end'>
                                     <Skeleton
                                         className='rounded-lg mb-2'
                                         isLoaded={!isLoading}
-                                        children={
-                                            <Button
-                                                startContent={<TbSend />}
-                                                color='primary'
-                                                type='submit'
-                                                size='sm'
-                                                form='borrow-request'
-                                            >Update status</Button>
-                                        }
-                                    />
+                                    >
+                                        <Button
+                                            startContent={<TbSend />}
+                                            color='primary'
+                                            type='submit'
+                                            size='sm'
+                                            form='borrow-request'
+                                        >Update status</Button>
+                                    </Skeleton>
                                 </div>
                             </div>
                         </div>

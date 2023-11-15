@@ -103,12 +103,11 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
                         <Skeleton
                             key={l}
                             className='my-2 p-2 w-40 rounded'
-                            children={
-                                <li key={l}>
-                                    {l}
-                                </li>
-                            }
-                        />
+                        >
+                            <li key={l}>
+                                {l}
+                            </li>
+                        </Skeleton >
                     ))
                 }
             </ul>

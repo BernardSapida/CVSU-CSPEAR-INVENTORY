@@ -11,6 +11,8 @@ export const authCallbackRouter = router({
 
     const user = await getUserByEmail(email);
 
+    console.log(user);
+
     if (!user) {
       const firstname = capitalize(clerkUser?.firstName!);
       const lastname = capitalize(clerkUser?.lastName!);

@@ -12,7 +12,7 @@ const Page: FunctionComponent<PageProps> = () => {
     const userContext = useContext(UserContext);
     const router = useRouter();
     const registerUser = trpc.authCallback.handleAuth.useMutation({
-        onSettled(data, error, variables, context) {
+        onSettled(data) {
             if (data) {
                 userContext.setUser(data);
 
@@ -29,7 +29,7 @@ const Page: FunctionComponent<PageProps> = () => {
 
     useEffect(() => {
         registerUser.mutate();
-    }, [])
+    }, [registerUser])
 
     return (
         <div className='w-full mt-24 flex justify-center'>

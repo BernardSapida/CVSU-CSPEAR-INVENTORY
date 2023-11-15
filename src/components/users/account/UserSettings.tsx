@@ -15,42 +15,38 @@ const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
       <Skeleton
         className='rounded-lg'
         isLoaded={!!user}
-        children={
-          <NameCard
-            firstName={user?.firstname ?? ''}
-            lastName={user?.lastname ?? ''}
-          />
-        }
-      />
+      >
+        <NameCard
+          firstName={user?.firstname ?? ''}
+          lastName={user?.lastname ?? ''}
+        />
+      </Skeleton >
       <Skeleton
         className='rounded-lg'
         isLoaded={!!user}
-        children={
-          <EmailCard
-            email={user?.email ?? ''}
-          />
-        }
-      />
+      >
+        <EmailCard
+          email={user?.email ?? ''}
+        />
+      </Skeleton >
       <Skeleton
         className='rounded-lg'
         isLoaded={!!user}
-        children={
-          <CollegeCard
-            user_id={user?.id ?? ''}
-            college={user?.college ?? ''}
-          />
-        }
-      />
+      >
+        <CollegeCard
+          user_id={user?.id ?? ''}
+          college={user?.college ?? ''}
+        />
+      </Skeleton >
       <Skeleton
         className='rounded-lg'
         isLoaded={!!user}
-        children={
-          <RoleCard
-            user_id={user?.id ?? ''}
-            role={user?.role ?? ''}
-          />
-        }
-      />
+      >
+        <RoleCard
+          user_id={user?.id ?? ''}
+          role={user?.role ?? ''}
+        />
+      </Skeleton >
     </>
   );
 }

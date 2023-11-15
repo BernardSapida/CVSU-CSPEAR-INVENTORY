@@ -2,7 +2,7 @@
 
 import Card from '@/components/admin/notification/Card';
 import { trpc } from '@/lib/trpc/client';
-import moment from 'moment';
+import * as moment from 'moment';
 
 function Notification() {
     const { data: notifications } = trpc.notification.getAdminNotification.useQuery();

@@ -12,9 +12,15 @@ import { usePathname } from 'next/navigation';
 export default function Navbar() {
   const { user } = useContext(UserContext);
   const path = usePathname();
+  const authPage = path === '/sign-in' || path === '/sign-up';
 
-  if (path === '/sign-in' || path === '/sign-up') {
-    localStorage.removeItem('user');
+  useEffect(() => {
+    if (authPage) {
+      window.localStorage.removeItem('user');
+    }
+  }, [authPage])
+
+  if (authPage) {
     return <></>;
   }
 
@@ -23,12 +29,11 @@ export default function Navbar() {
       <Skeleton
         className='rounded w-fit'
         isLoaded={user?.role != undefined}
-        children={
-          <h1 className="font-semibold hover:opacity-75 transition-hover cursor-pointer">
-            <Link href="/user/equipment-catalog">GYMTORY</Link>
-          </h1>
-        }
-      />
+      >
+        <h1 className="font-semibold hover:opacity-75 transition-hover cursor-pointer">
+          <Link href="/user/equipment-catalog">GYMTORY</Link>
+        </h1>
+      </Skeleton >
       <Menu role={user?.role} />
       <UserAvatar />
     </nav>
