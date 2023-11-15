@@ -1,8 +1,15 @@
 import * as z from "zod"
-import { CompleteBorrowEquipments, relatedBorrowEquipmentsSchema, CompleteUsers, relatedUsersSchema } from "./index"
+import { CompleteUsers, relatedUsersSchema } from "./index"
+
+// Helper schema for JSON fields
+type Literal = boolean | number | string
+type Json = Literal | { [key: string]: Json } | Json[]
+const literalSchema = z.union([z.string(), z.number(), z.boolean()])
+const jsonSchema: z.ZodSchema<Json> = z.lazy(() => z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)]))
 
 export const userBorrowItemsSchema = z.object({
   id: z.string(),
+  equipments: jsonSchema.array(),
   purpose: z.string(),
   borrow_date: z.date(),
   return_date: z.date(),
@@ -10,7 +17,6 @@ export const userBorrowItemsSchema = z.object({
 })
 
 export interface CompleteUserBorrowItems extends z.infer<typeof userBorrowItemsSchema> {
-  equipments: CompleteBorrowEquipments[]
   user: CompleteUsers
 }
 
@@ -20,6 +26,5 @@ export interface CompleteUserBorrowItems extends z.infer<typeof userBorrowItemsS
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const relatedUserBorrowItemsSchema: z.ZodSchema<CompleteUserBorrowItems> = z.lazy(() => userBorrowItemsSchema.extend({
-  equipments: relatedBorrowEquipmentsSchema.array(),
   user: relatedUsersSchema,
 }))

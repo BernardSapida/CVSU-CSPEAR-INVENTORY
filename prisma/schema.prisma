@@ -82,7 +82,7 @@ model Equipments {
 
 model UserBorrowItems {
   id          String             @id @default(auto()) @map("_id") @db.ObjectId
-  equipments  BorrowEquipments[]
+  equipments  Json[]
   purpose     String
   borrow_date DateTime
   return_date DateTime
@@ -96,7 +96,7 @@ model AdminBorrowRequests {
   email         String
   college       College
   role          Role
-  equipments    BorrowEquipments[]
+  equipments    Json[]
   purpose       String
   borrow_date   DateTime
   return_date   DateTime
