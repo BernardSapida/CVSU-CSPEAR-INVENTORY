@@ -25,7 +25,7 @@ import TableActions from './TableActions';
 import AddModal from './modal/AddModal';
 import DeleteModal from './modal/DeleteModal';
 import EditModal from './modal/EditModal';
-import * as moment from 'moment';
+import moment from 'moment';
 import AvailabilityChip from './AvailabilityChip';
 import RequestStatusChip from './RequestStatusChip';
 import ConditionChip from './ConditionChip';

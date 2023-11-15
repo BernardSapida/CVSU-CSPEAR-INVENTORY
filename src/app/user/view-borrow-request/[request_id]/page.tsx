@@ -6,7 +6,7 @@ import RequestStatusChip from '@/components/RequestStatusChip';
 import { trpc } from '@/lib/trpc/client';
 import { UserContext } from '@/store/UserContext';
 import { Input, Skeleton, Textarea } from '@nextui-org/react';
-import * as moment from 'moment';
+import moment from 'moment';
 import { useContext } from 'react';
 import { availabilityStatusOptions, columns } from "../../../../Data/ViewRequestData";
 

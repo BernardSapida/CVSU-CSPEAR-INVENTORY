@@ -3,7 +3,7 @@
 import Card from '@/components/users/notification/Card';
 import { trpc } from '@/lib/trpc/client';
 import { Skeleton } from '@nextui-org/react';
-import * as moment from 'moment';
+import moment from 'moment';
 
 function Notification() {
     const { data: notifications, isLoading } = trpc.notification.getUserNotification.useQuery();

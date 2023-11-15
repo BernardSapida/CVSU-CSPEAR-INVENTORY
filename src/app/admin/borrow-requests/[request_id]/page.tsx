@@ -4,7 +4,7 @@ import CustomTable from '@/components/CustomTable';
 import { trpc } from '@/lib/trpc/client';
 import { formatUnderscoreStatus, getFormattedBorrowStatus } from '@/utils/text';
 import { Button, Input, Select, SelectItem, Skeleton, Textarea } from '@nextui-org/react';
-import * as moment from 'moment';
+import moment from 'moment';
 import { useEffect } from 'react';
 import { TbSend } from 'react-icons/tb';
 import { toast } from 'sonner';
