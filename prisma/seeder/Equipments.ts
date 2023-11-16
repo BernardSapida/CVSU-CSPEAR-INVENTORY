@@ -56,15 +56,15 @@ const equipments: Equipment[] = [
 ];
 
 export const populateEquipments = async () => {
+    await prisma.equipments.deleteMany();
+
     for (let equipment of equipments) {
-        const createdEquipment = await prisma.equipments.upsert({
-            where: { id: equipment.id },
-            update: {},
-            create: {
+        const createdEquipment = await prisma.equipments.create({
+            data: {
                 id: new ObjectId().toString(),
                 name: equipment.name,
                 stock: equipment.stock,
-                is_available: equipment.is_available,
+                isAvailable: equipment.is_available,
             },
         });
 

@@ -1,11 +1,12 @@
 'use client';
 
-import { FunctionComponent, useTransition } from 'react';
+import { FunctionComponent, useContext } from 'react';
 
-import { AccountCard, AccountCardFooter, AccountCardBody } from "./AccountCard";
+import { trpc } from '@/lib/trpc/client';
 import { Select, SelectItem } from "@nextui-org/react";
 import { toast } from 'sonner';
-import { trpc } from '@/lib/trpc/client';
+import { AccountCard, AccountCardBody, AccountCardFooter } from "./AccountCard";
+import { UserContext } from '@/store/UserContext';
 
 interface CollegeCardProps {
   user_id: string;
@@ -13,6 +14,7 @@ interface CollegeCardProps {
 }
 
 const CollegeCard: FunctionComponent<CollegeCardProps> = ({ user_id, college }) => {
+  const { user, setUser } = useContext(UserContext);
   const colleges: Record<string, string>[] = [
     { abbr: "UNKNOWN", value: "Choose your colleges" },
     { abbr: "CAFENR", value: "College of Agriculture, Food, Environment and Natural Resources" },
@@ -37,6 +39,7 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ user_id, college }) 
 
     updateUserCollege.mutate({ user_id, college });
     toast.success('You have successfully updated your colleges.');
+    setUser({ ...user!, college });
   };
 
   if (!college) return;

@@ -6,28 +6,20 @@ const prisma = new PrismaClient();
 const notifications: UserNotification[] = [
     {
         id: new ObjectId().toString(),
-        request_id: new ObjectId('654f1963a49bdbe05b2f576b').toString(),
-        title: 'Borrow Request #654f1963a49bdbe05b2f576b',
-        borrow_status: 'Pending',
-        is_viewed: false,
-        user_id: new ObjectId('65508e58800f2899f414c3e5').toString(),
-        created_at: new Date(),
+        isViewed: false,
+        createdAt: new Date(),
+        borrowRequestId: new ObjectId('6555b766ad3f904a4d844ce0').toString(),
     },
 ];
 
 export const populateUserNotification = async () => {
     for (let notification of notifications) {
-        const createdHistory = await prisma.userNotifications.upsert({
-            where: { id: notification.id },
-            update: {},
-            create: {
+        const createdHistory = await prisma.userNotifications.create({
+            data: {
                 id: notification.id,
-                request_id: notification.request_id,
-                title: notification.title,
-                borrow_status: notification.borrow_status,
-                is_viewed: notification.is_viewed,
-                user_id: notification.user_id,
-                created_at: notification.created_at
+                isViewed: notification.isViewed,
+                createdAt: notification.createdAt,
+                borrowRequestId: notification.borrowRequestId,
             },
         });
 

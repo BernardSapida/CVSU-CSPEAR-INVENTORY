@@ -3,35 +3,49 @@ import EmailCard from './EmailCard';
 import NameCard from './NameCard';
 import CollegeCard from './CollegesCard';
 import RoleCard from './RoleCard';
+import { Skeleton } from '@nextui-org/react';
 
 interface UserSettingsProps {
-  user: User;
+  user?: User;
 }
 
 const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
-  const {
-    firstname,
-    lastname,
-    email,
-    college,
-    role
-  } = user;
-
   return (
     <>
-      <NameCard
-        firstName={firstname ?? ''}
-        lastName={lastname ?? ''}
-      />
-      <EmailCard
-        email={email ?? ''}
-      />
-      <CollegeCard
-        college={college ?? ''}
-      />
-      <RoleCard
-        role={role ?? ''}
-      />
+      <Skeleton
+        className='rounded-lg'
+        isLoaded={!!user}
+      >
+        <NameCard
+          firstName={user?.firstname ?? ''}
+          lastName={user?.lastname ?? ''}
+        />
+      </Skeleton>
+      <Skeleton
+        className='rounded-lg'
+        isLoaded={!!user}
+      >
+        <EmailCard
+          email={user?.email ?? ''}
+        />
+      </Skeleton >
+      <Skeleton
+        className='rounded-lg'
+        isLoaded={!!user}
+      >
+        <CollegeCard
+          user_id={user?.id ?? ''}
+          college={user?.college ?? ''}
+        />
+      </Skeleton>
+      <Skeleton
+        className='rounded-lg'
+        isLoaded={!!user}
+      >
+        <RoleCard
+          role={user?.role ?? ''}
+        />
+      </Skeleton>
     </>
   );
 }

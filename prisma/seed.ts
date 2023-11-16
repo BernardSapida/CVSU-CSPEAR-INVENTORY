@@ -1,22 +1,25 @@
 import { PrismaClient } from '@prisma/client'
 import { populateUsers } from './seeder/users';
-import { populateUserBorrowItems } from './seeder/UserBorrowItems';
+import { populateCart } from './seeder/Cart';
 import { populateEquipments } from './seeder/Equipments';
-import { populateAdminBorrowRequest } from './seeder/AdminBorrowRequests';
-import { populateHistory } from './seeder/UserHistory';
+import { populateBorrowRequests } from './seeder/BorrowRequests';
 import { populateUserNotification } from './seeder/UserNotification';
 import { populateAdminNotification } from './seeder/AdminNotification';
 
 const prisma = new PrismaClient();
 
 async function main() {
+    // await prisma.borrowRequests.deleteMany();
+    // await prisma.cartItems.deleteMany();
+    // await prisma.cart.deleteMany();
+    // await prisma.userNotifications.deleteMany();
+
     // await populateUsers();
     // await populateEquipments();
-    await populateUserBorrowItems();
-    // await populateAdminBorrowRequest();
-    // await populateHistory();
+    // await populateCart();
+    // await populateBorrowRequests();
     // await populateUserNotification();
-    // await populateAdminNotification();
+    await populateAdminNotification();
 }
 
 main()

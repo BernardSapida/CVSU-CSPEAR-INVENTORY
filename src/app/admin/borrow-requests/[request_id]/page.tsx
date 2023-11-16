@@ -17,7 +17,7 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
     const { data, isLoading } = getAdminBorrowRequestById;
     const viewAdminNotification = trpc.notification.viewAdminNotification.useMutation();
     const updateAdminBorrowRequestById = trpc.adminBorrowRequest.updateAdminBorrowRequestById.useMutation({
-        onSettled: () => {
+        onSuccess: () => {
             toast.success('You have successfully updated the borrow request.');
         },
         onError: ({ message }) => {
@@ -27,7 +27,7 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
 
     useEffect(() => {
         viewAdminNotification.mutate({ request_id });
-    }, [viewAdminNotification, request_id]);
+    }, [request_id]);
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();

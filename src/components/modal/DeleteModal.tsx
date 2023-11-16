@@ -13,7 +13,7 @@ interface DeleteModalProps {
 
 const DeleteModal: FunctionComponent<DeleteModalProps> = ({ equipment, isOpen, onOpenChange, setData, getTableData }) => {
     const deleteEquipment = trpc.equipments.deleteEquipment.useMutation({
-        onSettled: async () => {
+        onSuccess: async () => {
             const { data } = await getTableData.refetch();
             toast.success('You have successfully deleted the equipment.')
             setData(data);

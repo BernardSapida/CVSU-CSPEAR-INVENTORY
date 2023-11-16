@@ -17,12 +17,11 @@ generator zod {
 
 datasource db {
   provider = "mongodb"
-  // relationMode = "prisma"
   url      = env("DATABASE_URL")
 }
 
 enum BorrowStatus {
-  Pending               
+  Pending
   ToPickup
   PickedUp
   Returned
@@ -54,86 +53,76 @@ enum College {
   UNKNOWN
 }
 
-type BorrowEquipments {
-  id           String
-  name         String
-  quantity     Int
-  stock        Int
-  is_available Boolean
-}
-
 model Users {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  firstname String
-  lastname  String
-  email     String  @unique
-  role      Role
-  college   College
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  clerkUserId String  @unique
+  firstname   String
+  lastname    String
+  email       String  @unique
+  role        Role
+  college     College
 
-  userBorrowItems UserBorrowItems?
+  cart Cart?
 }
 
 model Equipments {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  stock        Int
-  is_available Boolean
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  stock       Int
+  isAvailable Boolean
 }
 
-model UserBorrowItems {
-  id          String             @id @default(auto()) @map("_id") @db.ObjectId
-  equipments  Json[]
-  purpose     String
-  borrow_date DateTime
-  return_date DateTime
-  user        Users              @relation(fields: [user_id], references: [id])
-  user_id     String             @unique @db.ObjectId
+model Cart {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  cartItems      CartItems[]
+  user           Users           @relation(fields: [userId], references: [id])
+  userId         String          @unique @db.ObjectId
+  BorrowRequests BorrowRequests?
 }
 
-model AdminBorrowRequests {
-  id            String             @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  email         String
-  college       College
-  role          Role
-  equipments    Json[]
-  purpose       String
-  borrow_date   DateTime
-  return_date   DateTime
-  user_id       String
-  borrow_status BorrowStatus
-  condition     Condition
-  note          String
-  created_at    DateTime
+model CartItems {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  quantity    Int
+  stock       Int
+  isAvailable Boolean
+  cart        Cart    @relation(fields: [cartId], references: [id])
+  cartId      String  @db.ObjectId
 }
 
-model UserHistory {
-  id            String       @id @default(auto()) @map("_id") @db.ObjectId
-  request_id    String       @unique @db.ObjectId
-  title         String
-  borrow_status BorrowStatus
-  condition     Condition
-  is_viewed     Boolean
-  user_id       String
-  created_at    DateTime
+model BorrowRequests {
+  id                 String              @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  email              String
+  college            College
+  role               Role
+  title              String
+  purpose            String
+  borrowDate         DateTime
+  returnDate         DateTime
+  borrowStatus       BorrowStatus
+  condition          Condition
+  note               String
+  userId             String
+  createdAt          DateTime            @default(now())
+  cart               Cart                @relation(fields: [cartId], references: [id])
+  cartId             String              @unique @db.ObjectId
+  UserNotifications  UserNotifications[]
+  AdminNotifications AdminNotifications?
 }
 
 model UserNotifications {
-  id            String       @id @default(auto()) @map("_id") @db.ObjectId
-  request_id    String       @unique @db.ObjectId
-  title         String
-  borrow_status BorrowStatus
-  is_viewed     Boolean
-  user_id       String
-  created_at    DateTime
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  isViewed         Boolean
+  createdAt        DateTime       @default(now())
+  borrowRequest    BorrowRequests @relation(fields: [borrowRequestId], references: [id])
+  borrowRequestId String         @db.ObjectId
 }
 
 model AdminNotifications {
-  id            String       @id @default(auto()) @map("_id") @db.ObjectId
-  request_id    String       @unique @db.ObjectId
-  title         String
-  description   String
-  is_viewed     Boolean
-  user_id       String
-  created_at    DateTime
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  isViewed         Boolean
+  createdAt        DateTime       @default(now())
+  borrowRequest    BorrowRequests @relation(fields: [borrowRequestId], references: [id])
+  borrowRequestId String         @unique @db.ObjectId
 }

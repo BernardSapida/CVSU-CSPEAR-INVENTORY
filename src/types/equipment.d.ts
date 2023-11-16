@@ -1,4 +1,4 @@
-type RecordType = Equipment[] | BorrowEquipment[] | any;
+type RecordType = Equipment[] | CartItems[] | any;
 
 interface CustomizableTableProps {
     columns: ({
@@ -38,8 +38,8 @@ type Records = {
     role?: string;
     borrow_status?: string;
     condition?: string;
-    borrow_date?: string;
-    return_date?: string;
+    borrowDate?: string;
+    returnDate?: string;
 }
 
 type Equipment = {
@@ -49,36 +49,18 @@ type Equipment = {
     is_available: boolean;
 }
 
-type BorrowEquipment = {
+type CartItems = {
     id: string,
     name: string;
     quantity: number;
     stock: number;
-    is_available: boolean;
+    isAvailable: boolean;
+    cartId?: string;
+    cart?: Cart;
 }
 
-interface UserBorrowItems {
+interface Cart {
     id: string,
-    equipments: BorrowEquipment[],
-    purpose: string,
-    borrow_date: Date,
-    return_date: Date,
-    user_id: string,
-}
-
-interface AdminBorrowRequest {
-    id: string,
-    name: string,
-    email: string,
-    college: College
-    role: Role,
-    equipments: BorrowEquipment[],
-    purpose: string,
-    borrow_date: Date,
-    return_date: Date,
-    user_id: string,
-    borrow_status: BorrowStatus,
-    condition: Condition,
-    note: string,
-    created_at: Date
+    cartItems: CartItems[],
+    userId: string,
 }

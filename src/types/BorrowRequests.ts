@@ -1,0 +1,17 @@
+interface BorrowRequests {
+    id: string,
+    name: string,
+    email: string,
+    college: College,
+    role: Role,
+    title: string,
+    purpose: string,
+    borrowDate: Date,
+    returnDate: Date,
+    borrowStatus: BorrowStatus,
+    condition: Condition,
+    note: string,
+    userId: string,
+    createdAt: Date,
+    cartId: string,
+}

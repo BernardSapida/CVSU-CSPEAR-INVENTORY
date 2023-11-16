@@ -20,7 +20,7 @@ const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
           firstName={user?.firstname ?? ''}
           lastName={user?.lastname ?? ''}
         />
-      </Skeleton >
+      </Skeleton>
       <Skeleton
         className='rounded-lg'
         isLoaded={!!user}
@@ -28,7 +28,7 @@ const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
         <EmailCard
           email={user?.email ?? ''}
         />
-      </Skeleton >
+      </Skeleton>
       <Skeleton
         className='rounded-lg'
         isLoaded={!!user}
@@ -37,7 +37,7 @@ const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
           user_id={user?.id ?? ''}
           college={user?.college ?? ''}
         />
-      </Skeleton >
+      </Skeleton>
       <Skeleton
         className='rounded-lg'
         isLoaded={!!user}
@@ -46,7 +46,7 @@ const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
           user_id={user?.id ?? ''}
           role={user?.role ?? ''}
         />
-      </Skeleton >
+      </Skeleton>
     </>
   );
 }

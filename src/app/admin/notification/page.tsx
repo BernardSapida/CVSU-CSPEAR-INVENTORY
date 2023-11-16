@@ -2,14 +2,20 @@
 
 import Card from '@/components/admin/notification/Card';
 import { trpc } from '@/lib/trpc/client';
+import { Skeleton } from '@nextui-org/react';
 import moment from 'moment';
 
 function Notification() {
-    const { data: notifications } = trpc.notification.getAdminNotification.useQuery();
+    const { data: notifications, isLoading } = trpc.notification.getAdminNotification.useQuery();
 
     return (
         <>
-            <h1 className="text-3xl font-semibold my-6">Notifications</h1>
+            <Skeleton
+                className='rounded-lg w-max my-6'
+                isLoaded={!isLoading}
+            >
+                <h1 className="text-3xl font-semibold">Notifications</h1>
+            </Skeleton>
             <hr />
             <div className="space-y-3 py-3">
                 {

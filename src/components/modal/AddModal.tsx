@@ -1,22 +1,25 @@
-import { Dispatch, FunctionComponent, SetStateAction } from 'react';
+import { Dispatch, FunctionComponent, SetStateAction, useRef, useState } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, RadioGroup, Radio, Input, Select, SelectItem } from "@nextui-org/react";
 import { toast } from 'sonner';
 import { trpc } from '@/lib/trpc/client';
+import { capitalize } from '@/utils/text';
 
 interface AddModalProps {
     isOpen: boolean;
+    onClose: () => void;
     onOpenChange: () => void;
     setData: Dispatch<SetStateAction<RecordType>>;
     getTableData: any
 }
 
-const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setData, getTableData }) => {
+const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onClose, onOpenChange, setData, getTableData }) => {
     const addEquipment = trpc.equipments.addEquipment.useMutation({
-        onSettled: async () => {
+        onSuccess: async () => {
             const { data } = await getTableData.refetch();
             toast.success('You have successfully added new equipment.');
+            onClose();
             setData(data);
-        }
+        },
     });
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -24,10 +27,22 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setD
 
         const target = event.target as HTMLFormElement;
         const form = new FormData(target);
-        const { name, stock, is_available } = Object.fromEntries(form.entries()) as any;
+        const { name, stock, availability_status } = Object.fromEntries(form.entries()) as any;
+
+        if (name === '') {
+            toast.error('Please provide the equipment name.');
+            return;
+        } else if (stock <= 0) {
+            toast.error('The stock must exceed zero.');
+            return;
+        } else if (availability_status == undefined) {
+            toast.error('Choose the equipment availability status.');
+            return;
+        }
+
         const newEquipment = {
             name: name,
-            is_available: is_available == 'available',
+            is_available: availability_status == 'available',
             stock: Number(stock),
         } as Equipment;
 
@@ -65,15 +80,15 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setD
                                 />
                                 <Select
                                     className='mb-2'
-                                    name='status'
+                                    name='availability_status'
                                     placeholder="Select Status"
                                     labelPlacement="outside"
-                                // defaultSelectedKeys={['Available']}
+                                    defaultSelectedKeys={['Available']}
                                 >
                                     {
                                         ['available', 'not available'].map(status => (
-                                            <SelectItem key={status} value={status} textValue={status}>
-                                                {status}
+                                            <SelectItem key={status} value={status} textValue={capitalize(status)}>
+                                                {capitalize(status)}
                                             </SelectItem>
                                         ))
                                     }
@@ -88,7 +103,6 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onOpenChange, setD
                                 type='submit'
                                 color="primary"
                                 form='add-equipment'
-                                onClick={onClose}
                             >
                                 Add
                             </Button>

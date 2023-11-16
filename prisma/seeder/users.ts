@@ -311,20 +311,34 @@ const users: User[] = [
 ];
 
 export const populateUsers = async () => {
-    for (let user of users) {
-        const createdUser = await prisma.users.upsert({
-            where: { email: user.email },
-            update: {},
-            create: {
-                id: new ObjectId().toString(),
-                firstname: user.firstname,
-                lastname: user.lastname,
-                email: user.email,
-                role: user.role,
-                college: user.college,
-            },
-        });
+    await prisma.users.deleteMany();
 
-        console.log(createdUser);
-    }
+    // for (let user of users) {
+
+    const createdUser = await prisma.users.createMany({
+        data: [
+            {
+                id: new ObjectId('6555a86c47783f96117a0324').toString(),
+                clerkUserId: 'user_2XqiORxGDitSYzmSKhuMOWGftLw',
+                firstname: 'Bernard',
+                lastname: 'Sapida',
+                email: 'bernard.sapida@cvsu.edu.ph',
+                role: 'Admin',
+                college: 'CSPEAR',
+            },
+            {
+                id: new ObjectId('6555a86c47783f96117a0325').toString(),
+                clerkUserId: 'user_2Y4QxBl11OeY0bCGVRtV1gfNNnc',
+                firstname: 'Bernard',
+                lastname: 'Sapida',
+                email: 'bernardsapida1706@gmail.com',
+                role: 'Student',
+                college: 'CEIT',
+            }
+        ]
+    });
+
+    console.log(createdUser);
+
+    // }
 }

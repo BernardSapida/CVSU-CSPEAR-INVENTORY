@@ -9,7 +9,7 @@ export const equipmentsRouter = router({
   addEquipment:
     publicProcedure.input(z.object({
       name: z.string(),
-      stock: z.number(),
+      stock: z.number().positive(),
       is_available: z.boolean()
     })).mutation(async ({ input }) => {
       return addEquipment(input as Equipment);

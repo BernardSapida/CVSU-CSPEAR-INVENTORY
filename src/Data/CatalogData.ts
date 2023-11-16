@@ -5,9 +5,9 @@ const columns = [
     { name: "ACTIONS", uid: "actions" },
 ];
 
-const borrowStatusOptions = [
+const availabilityStatusOptions = [
     { name: "Available", uid: "available" },
     { name: "Not Available", uid: "not available" },
 ];
 
-export { columns, borrowStatusOptions };
+export { columns, availabilityStatusOptions };

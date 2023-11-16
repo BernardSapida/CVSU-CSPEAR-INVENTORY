@@ -1,12 +1,16 @@
 'use client';
 
 import { trpc } from '@/lib/trpc/client';
-import { columns, statusOptions } from "../../../Data/AdminCatalogData";
+import { columns, availabilityStatusOptions } from "../../../Data/AdminCatalogData";
 import CustomTable from '@/components/CustomTable';
+import { UserContext } from '@/store/UserContext';
+import { useContext } from 'react';
 
 function EquipmentCatalog() {
+    const { user } = useContext(UserContext);
     const INITIAL_VISIBLE_COLUMNS = ["name", "stock", "is_available", "actions"];
     const getEquipments = trpc.equipments.getEquipments.useQuery();
+    const equipments = getEquipments.data;
 
     return (
         <>
@@ -15,10 +19,10 @@ function EquipmentCatalog() {
             <div className='mt-5'>
                 <CustomTable
                     columns={columns}
-                    records={getEquipments.data}
-                    statusOptions={statusOptions}
+                    records={equipments}
+                    availabilityStatusOptions={availabilityStatusOptions}
                     INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
-                    role={'Admin'}
+                    user={user}
                     type={'CATALOG'}
                     isLoading={getEquipments.isLoading}
                     getTableData={getEquipments}

@@ -9,13 +9,16 @@ import { trpc } from '@/lib/trpc/client';
 import { UserContext } from '@/store/UserContext';
 import { useContext } from 'react';
 import { toast } from 'sonner';
+import { Prisma } from '@prisma/client';
 
 function BorrowRequest() {
     const INITIAL_VISIBLE_COLUMNS = ["name", "quantity", "stock", "is_available", "actions"];
     const { user } = useContext(UserContext);
-    const getBorrowItems = trpc.borrowItems.getBorrowItems.useQuery();
+    const getBorrowItems = trpc.borrowItems.getBorrowItems.useQuery({ user_id: user?.id! });
     const sendBorrowRequest = trpc.borrowItems.sendBorrowRequest.useMutation();
     const equipments = getBorrowItems.data?.equipments;
+
+    console.log(equipments);
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
@@ -42,6 +45,7 @@ function BorrowRequest() {
                 updateEquipmentQuantity(equipmentId, quantity);
                 continue;
             }
+
             if (
                 key === 'borrow_date' ||
                 key === 'return_date'
@@ -95,11 +99,19 @@ function BorrowRequest() {
     const updateEquipmentQuantity = (equipmentId: string, equipmentQuantity: number) => {
         if (equipments === undefined) return;
 
-        for (let equipment of equipments) {
-            if (equipment.id == equipmentId) {
-                equipment.quantity = equipmentQuantity;
-                return;
-            }
+        if (
+            equipments &&
+            typeof equipments === 'object' &&
+            Array.isArray(equipments)
+        ) {
+            // for (let equipment of equipments) {
+            //     const equipmentObject = equipments as Prisma.JsonValue;
+
+            //     if (equipmentObject.id == equipmentId) {
+            //         equipment.quantity = equipmentQuantity;
+            //         return;
+            //     }
+            // }
         }
     }
 

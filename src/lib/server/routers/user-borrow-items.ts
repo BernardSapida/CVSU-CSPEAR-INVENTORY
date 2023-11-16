@@ -3,8 +3,12 @@ import { addEquipmentToBorrow, getAdminBorrowRequest, getBorrowItems, removeEqui
 import { z } from 'zod';
 
 export const borrowItemsRouter = router({
-  getBorrowItems: publicProcedure.query(async () => {
-    return getBorrowItems();
+  getBorrowItems: publicProcedure.input(
+    z.object({
+      user_id: z.string(),
+    })
+  ).query(async ({ input }) => {
+    return getBorrowItems(input.user_id);
   }),
   sendBorrowRequest: publicProcedure
     .input(

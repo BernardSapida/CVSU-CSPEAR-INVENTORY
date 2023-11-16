@@ -6,6 +6,7 @@ import { trpc } from '@/lib/trpc/client';
 
 interface EditModalProps {
     equipment: Record<string, any>;
+    onClose: () => void;
     isOpen: boolean;
     onOpenChange: () => void;
     setData: Dispatch<SetStateAction<RecordType>>;
@@ -13,11 +14,12 @@ interface EditModalProps {
 
 }
 
-const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpenChange, setData, getTableData }) => {
+const EditModal: FunctionComponent<EditModalProps> = ({ equipment, onClose, isOpen, onOpenChange, setData, getTableData }) => {
     const updateEquipment = trpc.equipments.updateEquipment.useMutation({
-        onSettled: async () => {
+        onSuccess: async () => {
             const { data } = await getTableData.refetch();
             toast.success('You have successfully updated the equipment.')
+            onClose();
             setData(data);
         }
     });
@@ -27,13 +29,24 @@ const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpe
 
         const target = event.target as HTMLFormElement;
         const form = new FormData(target);
-        const { name, stock, is_available } = Object.fromEntries(form.entries()) as any;
+        const { name, stock, availability_status } = Object.fromEntries(form.entries()) as any;
+
+        if (name === '') {
+            toast.error('Please provide the equipment name.');
+            return;
+        } else if (stock <= 0) {
+            toast.error('The stock must exceed zero.');
+            return;
+        } else if (availability_status == undefined) {
+            toast.error('Choose the equipment availability status.');
+            return;
+        }
 
         updateEquipment.mutate({
             id: equipment.id,
             name,
             stock: Number(stock),
-            is_available: is_available == 'available'
+            is_available: availability_status == 'available'
         });
     }
 
@@ -71,15 +84,15 @@ const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpe
                                 />
                                 <Select
                                     className='mb-2'
-                                    name='is_available'
+                                    name='availability_status'
                                     placeholder="Select availability status"
                                     labelPlacement="outside"
                                     defaultSelectedKeys={[equipment.is_available ? 'available' : 'not available']}
                                 >
                                     {
                                         ['available', 'not available'].map(status => (
-                                            <SelectItem className='capitalize' key={status} value={status} textValue={capitalize(status)}>
-                                                {status}
+                                            <SelectItem key={status} value={status} textValue={capitalize(status)}>
+                                                {capitalize(status)}
                                             </SelectItem>
                                         ))
                                     }
@@ -93,7 +106,6 @@ const EditModal: FunctionComponent<EditModalProps> = ({ equipment, isOpen, onOpe
                             <Button
                                 type='submit'
                                 color="primary"
-                                onPress={() => onClose()}
                                 form='edit-equipment'
                             >
                                 Update

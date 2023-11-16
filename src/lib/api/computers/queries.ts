@@ -23,7 +23,6 @@ export const registerUser = async (firstname: string, lastname: string, email: s
     const userBorrowItems = await db.userBorrowItems.create({
         data: {
             id: new ObjectId().toString(),
-            equipments: [],
             purpose: '',
             borrow_date: new Date(),
             return_date: new Date(),
@@ -81,6 +80,9 @@ export const getBorrowItems = async (user_id: string) => {
     const borrowItems = await db.userBorrowItems.findFirst({
         where: {
             user_id: user_id
+        },
+        select: {
+            equipments: true,
         }
     });
     return borrowItems;
@@ -96,7 +98,7 @@ export const addEquipmentToBorrow = async (equipment: BorrowEquipment, user_id: 
         },
         data: {
             equipments: {
-                push: equipment
+                create: equipment
             }
         }
     });
@@ -112,9 +114,7 @@ export const removeEquipmentToBorrow = async (user_id: string, equipmentId: stri
         data: {
             equipments: {
                 deleteMany: {
-                    where: {
-                        id: equipmentId
-                    }
+                    id: equipmentId
                 }
             }
         }
@@ -124,8 +124,34 @@ export const removeEquipmentToBorrow = async (user_id: string, equipmentId: stri
 }
 
 export const sendBorrowRequest = async (borrowRequest: AdminBorrowRequest) => {
+    const pushBorrowRequest = await db.equipments.create({
+        data: {
+            id: borrowRequest.equipments[0].id,
+            name: borrowRequest.name,
+            is_available: true,
+            stock: 5,
+        }
+    });
     const borrowItems = await db.adminBorrowRequests.create({
-        data: { ...borrowRequest }
+        data: {
+            id: borrowRequest.id,
+            name: borrowRequest.name,
+            email: borrowRequest.email,
+            college: borrowRequest.college,
+            role: borrowRequest.role,
+            equipments: {
+                create: borrowRequest.equipments
+            },
+            purpose: borrowRequest.college,
+            borrow_date: borrowRequest.borrow_date,
+            return_date: borrowRequest.return_date,
+            user_id: borrowRequest.college,
+            borrow_status: borrowRequest.borrow_status,
+            condition: borrowRequest.condition,
+            note: borrowRequest.college,
+            created_at: borrowRequest.college,
+
+        }
     });
 
     const deletedBorrowItems = await db.userBorrowItems.delete({
@@ -137,7 +163,6 @@ export const sendBorrowRequest = async (borrowRequest: AdminBorrowRequest) => {
     const newBorrowItem = await db.userBorrowItems.create({
         data: {
             id: new ObjectId().toString(),
-            equipments: [],
             borrow_date: new Date(),
             return_date: new Date(),
             purpose: '',

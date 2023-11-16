@@ -254,7 +254,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     const topContent = useMemo(() => {
         return (
             <div className="flex justify-center flex-col gap-4">
-                <div className="flex justify-between gap-3 items-end">
+                <div className="flex justify-between gap-3 items-center">
                     <Skeleton
                         className='rounded-lg w-full sm:max-w-[44%]'
                         isLoaded={!isLoading}
@@ -573,12 +573,14 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
             </Table>
             <AddModal
                 isOpen={addDisclosure.isOpen}
+                onClose={addDisclosure.onClose}
                 onOpenChange={addDisclosure.onOpenChange}
                 setData={setData}
                 getTableData={getTableData}
             />
             <EditModal
                 isOpen={editDisclosure.isOpen}
+                onClose={editDisclosure.onClose}
                 onOpenChange={editDisclosure.onOpenChange}
                 equipment={activeEquipment}
                 setData={setData}

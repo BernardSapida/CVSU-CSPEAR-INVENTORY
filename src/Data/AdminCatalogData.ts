@@ -5,7 +5,7 @@ const columns = [
     { name: "ACTIONS", uid: "actions" },
 ];
 
-const statusOptions = [
+const availabilityStatusOptions = [
     { name: "Available", uid: "available" },
     { name: "Not Available", uid: "not available" },
 ];
@@ -31,4 +31,4 @@ const equipments = [
     }
 ];
 
-export { columns, equipments, statusOptions };
+export { columns, equipments, availabilityStatusOptions };

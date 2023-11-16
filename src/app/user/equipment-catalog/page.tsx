@@ -2,7 +2,7 @@
 
 import CustomTable from '@/components/CustomTable';
 import { trpc } from '@/lib/trpc/client';
-import { columns, borrowStatusOptions } from "../../../Data/CatalogData";
+import { columns, availabilityStatusOptions } from "../../../Data/CatalogData";
 import { useContext } from 'react';
 import { UserContext } from '@/store/UserContext';
 
@@ -20,7 +20,7 @@ function EquipmentCatalog() {
                 <CustomTable
                     columns={columns}
                     records={equipments}
-                    borrowStatusOptions={borrowStatusOptions}
+                    availabilityStatusOptions={availabilityStatusOptions}
                     INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
                     user={user}
                     type={'CATALOG'}

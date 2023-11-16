@@ -31,7 +31,7 @@ export default function RootLayout({
               <Providers>
                 <main className="flex">
                   <Navbar />
-                  <section className='w-full px-5 h-screen overflow-y-auto'>
+                  <section className='w-full p-5 h-screen overflow-y-auto'>
                     {children}
                   </section>
                   <Toaster richColors position="top-center" />
