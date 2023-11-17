@@ -36,11 +36,11 @@ export default function Nav() {
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
     >
-      <NavbarContent className="sm:hidden" justify="start">
+      <NavbarContent className="md:hidden" justify="start">
         <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
       </NavbarContent>
 
-      <NavbarContent className="sm:hidden pr-3" justify="center">
+      <NavbarContent className="md:hidden pr-3" justify="center">
         <Skeleton isLoaded={isLoaded} className='rounded-lg'>
           <NavbarBrand>
             <Image src={'/images/gymtory-logo.png'} height={30} width={30} alt='Gymtory Logo' />
@@ -49,7 +49,7 @@ export default function Nav() {
         </Skeleton>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+      <NavbarContent className="hidden md:flex gap-4" justify="center">
         <Skeleton isLoaded={isLoaded} className='rounded-lg'>
           <NavbarBrand>
             <Image src={'/images/gymtory-logo.png'} height={30} width={30} alt='Gymtory Logo' />

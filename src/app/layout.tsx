@@ -31,7 +31,7 @@ export default function RootLayout({
               <UserContextProvider>
                 <main>
                   <Nav />
-                  <section className='m-auto w-9/12 mb-20'>
+                  <section className='m-auto w-11/12 md:w-10/12 mb-20'>
                     {children}
                   </section>
                   <Toaster richColors position="bottom-right" />

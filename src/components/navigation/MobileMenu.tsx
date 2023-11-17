@@ -87,7 +87,7 @@ const MobileMenu: FunctionComponent<MobileMenuProps> = ({ role }) => {
         return (
             <>
                 {(menus[role != 'Admin' ? 'user' : 'admin']).map((menu, index) => (
-                    <NavbarItem className='my-4' key={`${menu.name}-${index}`}>
+                    <NavbarItem className='my-1' key={`${menu.name}-${index}`}>
                         <Link
                             className="w-full"
                             href={menu.path}
