@@ -22,7 +22,7 @@ export const getUserUnseenNotificationCount = async (userId: string) => {
     const notificationCount = await db.userNotifications.findMany({
         where: {
             borrowRequest: {
-                userId: '655739a7c2c890be09ad7d7a'
+                userId: userId
             },
             isViewed: false
         },
