@@ -8,8 +8,6 @@ import moment from 'moment';
 function Notification() {
     const { data: notifications, isLoading } = trpc.notification.getUserNotification.useQuery();
 
-    console.log(notifications)
-
     return (
         <>
             <Skeleton

@@ -25,8 +25,6 @@ function BorrowRequest({ params }: { params: { borrowRequestId: string } }) {
         }
     });
 
-    console.log(getBorrowRequestById.data)
-
     useEffect(() => {
         viewAdminNotification.mutate({ borrowRequestId });
     }, [borrowRequestId]);
