@@ -10,7 +10,7 @@ const UserAvatar: FunctionComponent<UserAvatarProps> = () => {
 
     return (
         <Skeleton
-            className='mt-auto rounded-lg'
+            className='p-1 rounded-lg'
             isLoaded={!!user}
         >
             <div className='flex items-center gap-2'>
