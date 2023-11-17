@@ -28,6 +28,11 @@ const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
     const form = new FormData(target);
     const { role } = Object.fromEntries(form.entries()) as { role: Role };
 
+    if (role === "UNKNOWN") {
+      toast.error('You must provide a user role.');
+      return;
+    }
+
     updateUserRole.mutate({ role });
     toast.success('You have successfully updated your Role.');
     setUser({ ...user!, role });

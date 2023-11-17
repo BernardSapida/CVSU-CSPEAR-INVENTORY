@@ -2,8 +2,7 @@
 
 import { FunctionComponent } from 'react';
 
-import { toast } from 'sonner';
-import { AccountCard, AccountCardBody, AccountCardFooter } from "./AccountCard";
+import { AccountCard, AccountCardBody } from "./AccountCard";
 
 interface RoleCardProps {
   role: string;

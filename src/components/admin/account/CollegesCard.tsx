@@ -37,6 +37,11 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ user_id, college }) 
         const form = new FormData(target);
         const { college } = Object.fromEntries(form.entries()) as { college: College };
 
+        if (college === "UNKNOWN") {
+            toast.error('You are required to provide the college department you belong to.');
+            return;
+        }
+
         updateUserCollege.mutate({ college });
         toast.success('You have successfully updated your colleges.');
         setUser({ ...user!, college });
