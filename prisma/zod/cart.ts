@@ -3,13 +3,16 @@ import { CompleteCartItems, relatedCartItemsSchema, CompleteUsers, relatedUsersS
 
 export const cartSchema = z.object({
   id: z.string(),
+  submitted: z.boolean(),
   userId: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 })
 
 export interface CompleteCart extends z.infer<typeof cartSchema> {
   cartItems: CompleteCartItems[]
   user: CompleteUsers
-  BorrowRequests?: CompleteBorrowRequests | null
+  borrowRequests?: CompleteBorrowRequests | null
 }
 
 /**
@@ -20,5 +23,5 @@ export interface CompleteCart extends z.infer<typeof cartSchema> {
 export const relatedCartSchema: z.ZodSchema<CompleteCart> = z.lazy(() => cartSchema.extend({
   cartItems: relatedCartItemsSchema.array(),
   user: relatedUsersSchema,
-  BorrowRequests: relatedBorrowRequestsSchema.nullish(),
+  borrowRequests: relatedBorrowRequestsSchema.nullish(),
 }))

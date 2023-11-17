@@ -5,11 +5,12 @@ export const adminNotificationsSchema = z.object({
   id: z.string(),
   isViewed: z.boolean(),
   createdAt: z.date(),
+  updatedAt: z.date(),
   borrowRequestId: z.string(),
 })
 
 export interface CompleteAdminNotifications extends z.infer<typeof adminNotificationsSchema> {
-  borrowRequest: CompleteBorrowRequests
+  borrowRequests: CompleteBorrowRequests
 }
 
 /**
@@ -18,5 +19,5 @@ export interface CompleteAdminNotifications extends z.infer<typeof adminNotifica
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const relatedAdminNotificationsSchema: z.ZodSchema<CompleteAdminNotifications> = z.lazy(() => adminNotificationsSchema.extend({
-  borrowRequest: relatedBorrowRequestsSchema,
+  borrowRequests: relatedBorrowRequestsSchema,
 }))

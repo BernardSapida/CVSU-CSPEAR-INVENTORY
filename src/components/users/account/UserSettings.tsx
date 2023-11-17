@@ -34,7 +34,6 @@ const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
         isLoaded={!!user}
       >
         <CollegeCard
-          user_id={user?.id ?? ''}
           college={user?.college ?? ''}
         />
       </Skeleton>
@@ -43,7 +42,6 @@ const UserSettings: FunctionComponent<UserSettingsProps> = ({ user }) => {
         isLoaded={!!user}
       >
         <RoleCard
-          user_id={user?.id ?? ''}
           role={user?.role ?? ''}
         />
       </Skeleton>

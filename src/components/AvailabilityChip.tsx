@@ -5,12 +5,12 @@ import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { LiaTimesCircle } from 'react-icons/lia';
 
 interface AvailabilityChipProps {
-    is_available: boolean;
+    isAvailable: boolean;
 }
 
-const AvailabilityChip: FunctionComponent<AvailabilityChipProps> = ({ is_available }) => {
-    const getIcon = (is_available: boolean) => {
-        if (is_available) {
+const AvailabilityChip: FunctionComponent<AvailabilityChipProps> = ({ isAvailable }) => {
+    const getIcon = (isAvailable: boolean) => {
+        if (isAvailable) {
             return <AiOutlineCheckCircle />
         } else {
             return <LiaTimesCircle />;
@@ -20,11 +20,11 @@ const AvailabilityChip: FunctionComponent<AvailabilityChipProps> = ({ is_availab
     return <Chip
         size='sm'
         variant={'flat'}
-        startContent={getIcon(is_available)}
-        color={getAvailabilityColor(is_available)}
+        startContent={getIcon(isAvailable)}
+        color={getAvailabilityColor(isAvailable)}
         className='text-tiny capitalize'
     >
-        {is_available ? 'Available' : 'Not Available'}
+        {isAvailable ? 'Available' : 'Not Available'}
     </Chip>;
 }
 

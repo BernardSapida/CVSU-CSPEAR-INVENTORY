@@ -4,7 +4,7 @@ export const capitalize = (word: string) => {
     });
 }
 
-export const formatUnderscoreStatus = (word: string) => {
+export const formatStatus = (word: string) => {
     return word.replace(/\s+/g, '');
 }
 

@@ -9,11 +9,10 @@ import { AccountCard, AccountCardBody, AccountCardFooter } from "./AccountCard";
 import { UserContext } from '@/store/UserContext';
 
 interface CollegeCardProps {
-  user_id: string;
   college: string;
 }
 
-const CollegeCard: FunctionComponent<CollegeCardProps> = ({ user_id, college }) => {
+const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
   const { user, setUser } = useContext(UserContext);
   const colleges: Record<string, string>[] = [
     { abbr: "UNKNOWN", value: "Choose your colleges" },
@@ -28,7 +27,7 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ user_id, college }) 
     { abbr: "CVMBS", value: "College of Veterinary Medicine and Biomedical Sciences" },
     { abbr: "COM", value: "College of Medicine" },
   ];
-  const updateUserCollege = trpc.userAccount.updateUserCollege.useMutation();
+  const updateUserCollege = trpc.users.updateUserCollege.useMutation();
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -37,7 +36,7 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ user_id, college }) 
     const form = new FormData(target);
     const { college } = Object.fromEntries(form.entries()) as { college: College };
 
-    updateUserCollege.mutate({ user_id, college });
+    updateUserCollege.mutate({ college });
     toast.success('You have successfully updated your colleges.');
     setUser({ ...user!, college });
   };

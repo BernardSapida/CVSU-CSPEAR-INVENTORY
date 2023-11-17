@@ -1,23 +1,22 @@
 import { publicProcedure, router } from "@/lib/server/trpc";
-import { getUserByEmail, registerUser } from "@/lib/api/computers/queries"
-import { z } from 'zod';
+import { getUserByClerkUserId } from "@/lib/api/users/queries"
+import { registerUser } from "@/lib/api/users/mutations"
 import { currentUser } from '@clerk/nextjs';
 import { capitalize } from '@/utils/text';
 
 export const authCallbackRouter = router({
-  handleAuth: publicProcedure.mutation(async () => {
+  handleAuth: publicProcedure.mutation(async ({ ctx }) => {
     const clerkUser = await currentUser();
     const email = clerkUser?.emailAddresses[0].emailAddress!;
+    const clerkUserId = ctx.user?.clerkUserId!;
 
-    const user = await getUserByEmail(email);
-
-    console.log(user);
+    const user = await getUserByClerkUserId(clerkUserId);
 
     if (!user) {
       const firstname = capitalize(clerkUser?.firstName!);
       const lastname = capitalize(clerkUser?.lastName!);
 
-      return await registerUser(firstname, lastname, email);
+      return await registerUser(clerkUserId, firstname, lastname, email);
     }
 
     return user;

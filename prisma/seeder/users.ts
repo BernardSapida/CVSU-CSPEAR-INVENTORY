@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { ObjectId } from 'mongodb';
-
-const prisma = new PrismaClient();
+import prisma from '@/utils/prisma';
 
 const users: User[] = [
     {

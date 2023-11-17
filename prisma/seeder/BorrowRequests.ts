@@ -1,16 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { ObjectId } from 'mongodb';
-
-const prisma = new PrismaClient();
+import prisma from '@/utils/prisma';
 
 const borrowRequests: BorrowRequests[] = [
     {
-        id: new ObjectId().toString(),
-        name: 'Bernard Sapida',
-        email: 'bernardsapida1706@gmail.com',
-        college: 'CEIT',
-        role: 'Student',
-        title: 'Borrow Request #6555b09ac0a091bded884c98',
+        id: new ObjectId('6555b6c2eee780981dc57da1').toString(),
         purpose: '',
         borrowDate: new Date(),
         returnDate: new Date(),

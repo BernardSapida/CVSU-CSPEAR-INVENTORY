@@ -21,7 +21,7 @@ const DeleteModal: FunctionComponent<DeleteModalProps> = ({ equipment, isOpen, o
     });
 
     const deleteHandler = (onClose: () => void) => {
-        deleteEquipment.mutate({ id: equipment.id })
+        deleteEquipment.mutate({ equipmentId: equipment.id })
         onClose();
     }
 

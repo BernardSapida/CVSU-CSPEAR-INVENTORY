@@ -9,7 +9,7 @@ import { UserContext } from '@/store/UserContext';
 function EquipmentCatalog() {
     const { user } = useContext(UserContext);
     const getEquipments = trpc.equipments.getEquipments.useQuery();
-    const INITIAL_VISIBLE_COLUMNS = ["name", "stock", "is_available", "actions"];
+    const INITIAL_VISIBLE_COLUMNS = ["name", "stock", "isAvailable", "actions"];
     const equipments = getEquipments.data;
 
     return (

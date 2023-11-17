@@ -1,4 +1,4 @@
-type RecordType = Equipment[] | CartItems[] | any;
+type RecordType = Equipment[] | CartItems[] | BorrowRequests[] | any;
 
 interface CustomizableTableProps {
     columns: ({
@@ -46,10 +46,10 @@ type Equipment = {
     id: string;
     name: string;
     stock: number;
-    is_available: boolean;
+    isAvailable: boolean;
 }
 
-type CartItems = {
+type CartItem = {
     id: string,
     name: string;
     quantity: number;
@@ -60,7 +60,8 @@ type CartItems = {
 }
 
 interface Cart {
-    id: string,
-    cartItems: CartItems[],
+    id?: string,
+    cartItems: CartItem[],
+    isSubmitted: boolean;
     userId: string,
 }

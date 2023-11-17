@@ -7,6 +7,8 @@ export const cartItemsSchema = z.object({
   quantity: z.number().int(),
   stock: z.number().int(),
   isAvailable: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
   cartId: z.string(),
 })
 

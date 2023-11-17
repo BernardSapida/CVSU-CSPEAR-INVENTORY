@@ -1,13 +1,15 @@
 interface UserNotification {
     id: string,
     isViewed: boolean,
-    createdAt: Date
+    createdAt?: Date,
+    updatedAt?: Date,
     borrowRequestId: string,
 }
 
 interface AdminNotification {
     id: string,
     isViewed: boolean,
-    createdAt: Date
+    createdAt?: Date,
+    updatedAt?: Date,
     borrowRequestId: string,
 }

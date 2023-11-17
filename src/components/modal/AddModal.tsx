@@ -42,7 +42,7 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onClose, onOpenCha
 
         const newEquipment = {
             name: name,
-            is_available: availability_status == 'available',
+            isAvailable: availability_status == 'available',
             stock: Number(stock),
         } as Equipment;
 
@@ -83,7 +83,7 @@ const AddModal: FunctionComponent<AddModalProps> = ({ isOpen, onClose, onOpenCha
                                     name='availability_status'
                                     placeholder="Select Status"
                                     labelPlacement="outside"
-                                    defaultSelectedKeys={['Available']}
+                                    defaultSelectedKeys={['available']}
                                 >
                                     {
                                         ['available', 'not available'].map(status => (

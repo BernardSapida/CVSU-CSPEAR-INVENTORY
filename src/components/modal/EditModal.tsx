@@ -43,10 +43,10 @@ const EditModal: FunctionComponent<EditModalProps> = ({ equipment, onClose, isOp
         }
 
         updateEquipment.mutate({
-            id: equipment.id,
+            equipmentId: equipment.id,
             name,
             stock: Number(stock),
-            is_available: availability_status == 'available'
+            isAvailable: availability_status == 'available'
         });
     }
 
@@ -87,7 +87,7 @@ const EditModal: FunctionComponent<EditModalProps> = ({ equipment, onClose, isOp
                                     name='availability_status'
                                     placeholder="Select availability status"
                                     labelPlacement="outside"
-                                    defaultSelectedKeys={[equipment.is_available ? 'available' : 'not available']}
+                                    defaultSelectedKeys={[equipment.isAvailable ? 'available' : 'not available']}
                                 >
                                     {
                                         ['available', 'not available'].map(status => (

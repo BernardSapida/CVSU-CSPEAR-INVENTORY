@@ -2,13 +2,13 @@ import { Chip } from '@nextui-org/react';
 import { FunctionComponent } from 'react';
 
 interface NotificationChipProps {
-    is_viewed: boolean;
+    isViewed: boolean;
 }
 
-const NotificationChip: FunctionComponent<NotificationChipProps> = ({ is_viewed }) => {
+const NotificationChip: FunctionComponent<NotificationChipProps> = ({ isViewed }) => {
     return <>
         {
-            !is_viewed &&
+            !isViewed &&
             <Chip
                 size='sm'
                 variant={'shadow'}

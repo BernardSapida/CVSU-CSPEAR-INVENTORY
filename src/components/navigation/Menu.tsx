@@ -8,7 +8,7 @@ import { FunctionComponent } from 'react';
 import { GrNotification, GrUserSettings } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 import { LuClipboardList, LuHistory } from 'react-icons/lu';
-import { MdPendingActions } from 'react-icons/md';
+import { MdPendingActions, MdOutlineShoppingCart } from 'react-icons/md';
 
 interface MenuProps {
     role: Role | undefined;
@@ -29,9 +29,9 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
                 icon: <LuClipboardList />,
             },
             {
-                name: "Borrow Request",
-                path: "/user/borrow-request",
-                icon: <MdPendingActions />,
+                name: "Cart",
+                path: "/user/cart",
+                icon: <MdOutlineShoppingCart />,
             },
             {
                 name: "My Account",
@@ -44,9 +44,9 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
                 icon: <GrNotification />,
             },
             {
-                name: "History",
-                path: "/user/history",
-                icon: <LuHistory />,
+                name: "Borrow Requests",
+                path: "/user/borrow-request",
+                icon: <MdPendingActions />,
             },
         ],
         admin: [

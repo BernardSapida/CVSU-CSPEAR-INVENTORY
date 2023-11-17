@@ -2,7 +2,7 @@
 
 import CustomTable from '@/components/CustomTable';
 import { trpc } from '@/lib/trpc/client';
-import { formatUnderscoreStatus, getFormattedBorrowStatus } from '@/utils/text';
+import { formatStatus, getFormattedBorrowStatus } from '@/utils/text';
 import { Button, Input, Select, SelectItem, Skeleton, Textarea } from '@nextui-org/react';
 import moment from 'moment';
 import { useEffect } from 'react';
@@ -10,13 +10,13 @@ import { TbSend } from 'react-icons/tb';
 import { toast } from 'sonner';
 import { columns } from "../../../../Data/ViewRequestData";
 
-function BorrowRequest({ params }: { params: { request_id: string } }) {
-    const { request_id } = params;
+function BorrowRequest({ params }: { params: { borrowRequestId: string } }) {
+    const { borrowRequestId } = params;
     const INITIAL_VISIBLE_COLUMNS = ["name", "quantity"];
-    const getAdminBorrowRequestById = trpc.adminBorrowRequest.getAdminBorrowRequestById.useQuery({ request_id });
-    const { data, isLoading } = getAdminBorrowRequestById;
+    const getBorrowRequestById = trpc.borrowRequest.getBorrowRequestById.useQuery({ borrowRequestId });
+    const { data, isLoading } = getBorrowRequestById;
     const viewAdminNotification = trpc.notification.viewAdminNotification.useMutation();
-    const updateAdminBorrowRequestById = trpc.adminBorrowRequest.updateAdminBorrowRequestById.useMutation({
+    const updateAdminBorrowRequestById = trpc.borrowRequest.updateBorrowRequestById.useMutation({
         onSuccess: () => {
             toast.success('You have successfully updated the borrow request.');
         },
@@ -25,20 +25,22 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
         }
     });
 
+    console.log(getBorrowRequestById.data)
+
     useEffect(() => {
-        viewAdminNotification.mutate({ request_id });
-    }, [request_id]);
+        viewAdminNotification.mutate({ borrowRequestId });
+    }, [borrowRequestId]);
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
 
         const target = event.target as HTMLFormElement;
         const form = new FormData(target);
-        const { borrow_status, condition, note } = Object.fromEntries(form.entries()) as { borrow_status: string, condition: string, note: string };
+        const { borrowStatus, condition, note } = Object.fromEntries(form.entries()) as { borrowStatus: string, condition: string, note: string };
 
         updateAdminBorrowRequestById.mutate({
-            id: request_id,
-            borrow_status: formatUnderscoreStatus(borrow_status),
+            id: borrowRequestId,
+            borrowStatus: formatStatus(borrowStatus),
             condition: condition,
             note: note
         })
@@ -52,11 +54,11 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                 <div className='w-full my-5'>
                     <CustomTable
                         columns={columns}
-                        records={data?.equipments}
+                        records={data?.cart.cartItems}
                         INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
                         type={'VIEW-REQUEST'}
                         isLoading={isLoading}
-                        getTableData={getAdminBorrowRequestById}
+                        getTableData={getBorrowRequestById}
                     />
                 </div>
                 <form id='borrow-request' onSubmit={handleSubmit}>
@@ -66,97 +68,47 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                             <hr />
                             <div className='mt-3'>
                                 <Skeleton
-                                    className='rounded-lg mb-2'
+                                    className='rounded-lg mb-5'
                                     isLoaded={!isLoading}
                                 >
-                                    <Input
-                                        name='name'
-                                        labelPlacement='inside'
-                                        label="Name"
-                                        placeholder='Fullname'
-                                        defaultValue={data?.name}
-                                        type='text'
-                                        className='mb-2'
-                                        disabled
-                                    />
-                                </Skeleton>
+                                    <p className='text-tiny font-semibold'>Name</p>
+                                    <p>{`${data?.user?.firstname} ${data?.user?.lastname}`}</p>
+                                </Skeleton >
                                 <Skeleton
-                                    className='rounded-lg mb-2'
+                                    className='rounded-lg mb-5'
                                     isLoaded={!isLoading}
                                 >
-                                    <Input
-                                        name='email'
-                                        labelPlacement='inside'
-                                        label="Email Address"
-                                        placeholder='Email address'
-                                        defaultValue={data?.email}
-                                        type='email'
-                                        className='mb-2'
-                                        disabled
-                                    />
-                                </Skeleton>
+                                    <p className='text-tiny font-semibold'>Email Address</p>
+                                    <p>{data?.user?.email}</p>
+                                </Skeleton >
                                 <Skeleton
-                                    className='rounded-lg mb-2'
+                                    className='rounded-lg mb-5'
                                     isLoaded={!isLoading}
                                 >
-                                    <Input
-                                        name='Role'
-                                        labelPlacement='inside'
-                                        label="Role"
-                                        placeholder='Role'
-                                        defaultValue={data?.role}
-                                        type='text'
-                                        className='mb-2'
-                                        disabled
-                                    />
-                                </Skeleton>
+                                    <p className='text-tiny font-semibold'>Role</p>
+                                    <p>{data?.user?.role}</p>
+                                </Skeleton >
                                 <Skeleton
-                                    className='rounded-lg mb-2'
+                                    className='rounded-lg mb-5'
                                     isLoaded={!isLoading}
                                 >
-                                    <Input
-                                        name='borrow_date'
-                                        labelPlacement='inside'
-                                        label="Borrow Date"
-                                        defaultValue={moment(data?.borrow_date).format('YYYY-MM-DD')}
-                                        placeholder='#'
-                                        type='date'
-                                        disabled
-                                    />
-                                </Skeleton>
+                                    <p className='text-tiny font-semibold'>Borrow Date</p>
+                                    <p>{moment(data?.borrowDate).format('MMMM DD, YYYY')}</p>
+                                </Skeleton >
                                 <Skeleton
-                                    className='rounded-lg mb-2'
+                                    className='rounded-lg mb-5'
                                     isLoaded={!isLoading}
                                 >
-                                    <Input
-                                        name='return_date'
-                                        labelPlacement='inside'
-                                        label="Return Date"
-                                        placeholder='#'
-                                        defaultValue={moment(data?.return_date).format('YYYY-MM-DD')}
-                                        type='date'
-                                        disabled
-                                    />
-                                </Skeleton>
+                                    <p className='text-tiny font-semibold'>Return Date</p>
+                                    <p>{moment(data?.returnDate).format('MMMM DD, YYYY')}</p>
+                                </Skeleton >
                                 <Skeleton
-                                    className='rounded-lg mb-2'
+                                    className='rounded-lg mb-5'
                                     isLoaded={!isLoading}
                                 >
-                                    <Textarea
-                                        name='purpose'
-                                        label="Purpose"
-                                        placeholder='What is the purpose of request'
-                                        minRows={1}
-                                        maxRows={8}
-                                        classNames={{
-                                            inputWrapper: [
-                                                "h-max",
-                                            ],
-                                        }}
-                                        defaultValue={data?.purpose}
-                                        disabled
-                                    />
-                                </Skeleton>
+                                    <p className='text-tiny font-semibold'>Purpose</p>
+                                    <p>{data?.purpose}</p>
+                                </Skeleton >
                             </div>
                         </div>
                         <div className='w-full h-max p-3 rounded-xl'>
@@ -168,14 +120,14 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                     isLoaded={!isLoading}
                                 >
                                     {
-                                        !isLoading &&
+                                        !isLoading && data?.borrowStatus &&
                                         <Select
-                                            name='borrow_status'
+                                            name='borrowStatus'
                                             label="Borrow Status"
                                             placeholder="Select Status"
                                             labelPlacement="inside"
                                             aria-label='Borrow status select'
-                                            defaultSelectedKeys={[getFormattedBorrowStatus(data?.borrow_status!)]}
+                                            defaultSelectedKeys={[getFormattedBorrowStatus(data?.borrowStatus!)]}
                                         >
                                             {
                                                 ['Pending', 'To Pickup', 'Picked Up', 'Returned'].map(status => (
@@ -196,10 +148,10 @@ function BorrowRequest({ params }: { params: { request_id: string } }) {
                                     isLoaded={!isLoading}
                                 >
                                     {
-                                        !isLoading &&
+                                        !isLoading && data?.condition &&
                                         <Select
                                             name='condition'
-                                            label="Equipments Condition"
+                                            label="Condition"
                                             placeholder="Select condition"
                                             labelPlacement="inside"
                                             aria-label='Equipment condition select'

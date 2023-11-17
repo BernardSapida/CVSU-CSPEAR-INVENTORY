@@ -5,6 +5,7 @@ export const userNotificationsSchema = z.object({
   id: z.string(),
   isViewed: z.boolean(),
   createdAt: z.date(),
+  updatedAt: z.date(),
   borrowRequestId: z.string(),
 })
 

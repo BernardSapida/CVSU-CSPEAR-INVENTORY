@@ -8,7 +8,7 @@ import { useContext } from 'react';
 
 function EquipmentCatalog() {
     const { user } = useContext(UserContext);
-    const INITIAL_VISIBLE_COLUMNS = ["name", "stock", "is_available", "actions"];
+    const INITIAL_VISIBLE_COLUMNS = ["name", "stock", "isAvailable", "actions"];
     const getEquipments = trpc.equipments.getEquipments.useQuery();
     const equipments = getEquipments.data;
 

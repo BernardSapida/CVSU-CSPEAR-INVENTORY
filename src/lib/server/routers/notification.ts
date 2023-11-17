@@ -1,21 +1,32 @@
 import { publicProcedure, router } from "@/lib/server/trpc";
-import { getUserNotification, getAdminNotification, getUserHistory, viewAdminNotification } from "@/lib/api/computers/queries"
+import { getAdminNotification, getUserBorrowRequest, getUserNotification } from "@/lib/api/notification/queries"
 import { z } from 'zod';
+import { viewAdminNotification, viewUserNotification } from '@/lib/api/notification/mutations';
 
 export const notificationRouter = router({
-  getUserNotification: publicProcedure.query(async () => {
-    return getUserNotification();
-  }),
-  getAdminNotification: publicProcedure.query(async () => {
-    return getAdminNotification();
-  }),
-  viewAdminNotification:
-    publicProcedure.input(z.object({
-      request_id: z.string()
-    })).mutation(async ({ input }) => {
-      return viewAdminNotification(input.request_id);
+    getUserNotification: publicProcedure.query(async ({ ctx }) => {
+        const userId = ctx.user?.id!;
+        return getUserNotification(userId);
     }),
-  getUserHistory: publicProcedure.query(async () => {
-    return getUserHistory();
-  }),
+    getAdminNotification: publicProcedure.query(async ({ ctx }) => {
+        const userId = ctx.user?.id!;
+        return getAdminNotification(userId);
+    }),
+    getUserBorrowRequest: publicProcedure.query(async ({ ctx }) => {
+        const userId = ctx.user?.id!;
+        return getUserBorrowRequest(userId);
+    }),
+    viewUserNotification: publicProcedure.input(z.object({
+        notificationId: z.string()
+    })).mutation(async ({ input }) => {
+        return viewUserNotification(input.notificationId);
+    }),
+    viewAdminNotification: publicProcedure.input(z.object({
+        borrowRequestId: z.string()
+    })).mutation(async ({ input }) => {
+        return viewAdminNotification(input.borrowRequestId);
+    }),
+    // getUserHistory: publicProcedure.query(async () => {
+    //     return getUserHistory();
+    // }),
 });

@@ -60,8 +60,8 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     const addDisclosure = useDisclosure();
     const editDisclosure = useDisclosure();
     const deleteDisclosure = useDisclosure();
-    const addBorrowItem = trpc.borrowItems.addBorrowItem.useMutation();
-    const removeBorrowItem = trpc.borrowItems.removeBorrowItem.useMutation();
+    const addCartItem = trpc.cartItems.addCartItem.useMutation();
+    const removeCartItem = trpc.cartItems.removeCartItem.useMutation();
     const hasSearchFilter = Boolean(filterValue);
 
     useEffect(() => {
@@ -87,7 +87,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
 
         if (availabilityStatusFilter !== "all" && Array.from(availabilityStatusFilter).length !== availabilityStatusOptions?.length) {
             filteredItems = filteredItems.filter((record) =>
-                Array.from(availabilityStatusFilter).includes(record.is_available ? 'available' : 'not available')
+                Array.from(availabilityStatusFilter).includes(record.isAvailable ? 'available' : 'not available')
             );
         }
 
@@ -125,7 +125,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
         });
     }, [sortDescriptor, items]);
 
-    const updateDeleteEquipment: (eq?: any, action?: any) => void = (eq: any, action: any) => {
+    const updateDeleteEquipment: (eq?: Equipment, action?: any) => void = (eq: any, action: any) => {
         setActiveEquipment(eq);
 
         if (action == "update") {
@@ -137,18 +137,19 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
         }
     }
 
-    const addToBorrow: (eq: any) => void = (eq: any) => {
+    const addToBorrow: (eq: Equipment) => void = (eq: any) => {
         if (!user) return;
 
-        const newEquipment: BorrowEquipment = { ...eq, quantity: 1 };
-        addBorrowItem.mutate({ ...newEquipment, user_id: user.id });
+        const addedItem: CartItem = { ...eq, quantity: 1 };
+        addCartItem.mutate({ ...addedItem });
         toast.success('Equipment has been added');
     }
 
-    const removeEquipment: (eq: any) => void = (eq: any) => {
+    const removeEquipment: (eq: Equipment) => void = (eq: any) => {
         if (!user) return;
 
-        removeBorrowItem.mutate({ id: eq.id, user_id: user.id });
+        removeCartItem.mutate({ itemId: eq.id });
+
         setData((prevState: any) => {
             const newList = [...prevState.filter((e: any) => e.id != eq.id)];
             return newList;
@@ -176,15 +177,28 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
         }
     })()!;
 
-    const renderCell = useCallback((equipment: any, columnKey: any) => {
-        const cellValue = equipment[columnKey];
+    const renderCell = useCallback((tableRecord: any, columnKey: any) => {
+        const cellValue = tableRecord[columnKey];
+
+        if (user?.role === 'Admin' && type === 'REQUEST') {
+            switch (columnKey) {
+                case 'name':
+                    return (`${tableRecord.user.firstname} ${tableRecord.user.lastname}`);
+                case 'email':
+                    return tableRecord.user.email;
+                case 'college':
+                    return tableRecord.user.college;
+                case 'role':
+                    return tableRecord.user.role;
+            }
+        }
 
         switch (columnKey) {
-            case "is_available":
+            case "isAvailable":
                 return (
-                    <AvailabilityChip is_available={cellValue} />
+                    <AvailabilityChip isAvailable={cellValue} />
                 );
-            case "borrow_status":
+            case "borrowStatus":
                 return (
                     <RequestStatusChip status={cellValue} />
                 );
@@ -197,23 +211,23 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                     type == 'VIEW-REQUEST' ?
                         cellValue :
                         <Input
-                            aria-label={equipment.id}
-                            name={equipment.id}
+                            aria-label={tableRecord.id}
+                            name={tableRecord.id}
                             type='number'
                             min="1"
-                            max={equipment.stock.toString()}
+                            max={tableRecord.stock.toString()}
                             variant='bordered'
                             size='sm'
                             defaultValue={cellValue}
                         />
                 );
             case "actions":
-                return <TableActions role={user?.role} type={type} CB={CB} equipment={equipment} />;
+                return <TableActions role={user?.role} type={type} CB={CB} equipment={tableRecord} />;
             case "stock":
                 return `${cellValue}pcs`
-            case "borrow_date":
+            case "borrowDate":
                 return moment(cellValue).format('MMM D, YYYY')
-            case "return_date":
+            case "returnDate":
                 return moment(cellValue).format('MMM D, YYYY')
             default:
                 return cellValue;
@@ -326,7 +340,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                                             variant="flat"
                                             aria-label='Status dropdown'
                                         >
-                                            Availability Status
+                                            Availability
                                         </Button>
                                     </DropdownTrigger>
                                     <DropdownMenu
@@ -360,7 +374,7 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
                                             variant="flat"
                                             aria-label='Status dropdown'
                                         >
-                                            Borrow Status
+                                            Availability
                                         </Button>
                                     </DropdownTrigger>
                                     <DropdownMenu

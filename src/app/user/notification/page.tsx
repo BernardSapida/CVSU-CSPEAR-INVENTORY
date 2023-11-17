@@ -6,7 +6,10 @@ import { Skeleton } from '@nextui-org/react';
 import moment from 'moment';
 
 function Notification() {
-    const { data: notifications, isLoading } = trpc.notification.getUserNotification.useQuery();
+    const { data, isLoading } = trpc.notification.getUserNotification.useQuery();
+    const notifications = data?.borrowRequests;
+
+    console.log(notifications);
 
     return (
         <>
@@ -24,8 +27,8 @@ function Notification() {
                             <Skeleton className='rounded-lg'>
                                 <Card
                                     title={''}
-                                    borrow_status={''}
-                                    is_viewed={true}
+                                    borrowStatus={''}
+                                    isViewed={true}
                                     time={moment('').fromNow()}
                                     url={''}
                                 />
@@ -33,8 +36,8 @@ function Notification() {
                             <Skeleton className='rounded-lg'>
                                 <Card
                                     title={''}
-                                    borrow_status={''}
-                                    is_viewed={true}
+                                    borrowStatus={''}
+                                    isViewed={true}
                                     time={moment('').fromNow()}
                                     url={''}
                                 />
@@ -42,21 +45,21 @@ function Notification() {
                             <Skeleton className='rounded-lg'>
                                 <Card
                                     title={''}
-                                    borrow_status={''}
-                                    is_viewed={true}
+                                    borrowStatus={''}
+                                    isViewed={true}
                                     time={moment('').fromNow()}
                                     url={''}
                                 />
                             </Skeleton>
                         </> :
-                        notifications?.map(({ id, request_id, title, borrow_status, is_viewed, created_at }) => (
+                        notifications?.map((notification: any) => (
                             <Card
-                                key={id}
-                                title={title.slice(0, 26)}
-                                borrow_status={borrow_status}
-                                is_viewed={is_viewed}
-                                time={moment(created_at).fromNow()}
-                                url={`/user/view-borrow-request/${request_id}`}
+                                key={notification.userNotifications[0].id}
+                                title={`Request #${notification.userNotifications[0].id.slice(5, 15)}`}
+                                borrowStatus={notification.userNotifications[0].borrowRequest.borrowStatus}
+                                isViewed={notification.userNotifications[0].isViewed}
+                                time={moment(notification.userNotifications[0].createdAt).fromNow()}
+                                url={`/user/view-borrow-request/${notification.userNotifications[0].borrowRequest.id}`}
                             />
                         ))
                 }

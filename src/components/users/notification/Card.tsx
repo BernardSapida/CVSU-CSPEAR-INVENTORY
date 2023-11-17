@@ -7,22 +7,22 @@ import NotificationChip from '@/components/NotificationChip';
 
 interface CardProps {
     title: string;
-    borrow_status: string;
+    borrowStatus: string;
     time: string;
-    is_viewed: boolean;
+    isViewed: boolean;
     url: string;
 }
 
-const Card: FunctionComponent<CardProps> = ({ title, borrow_status, time, is_viewed, url }) => {
+const Card: FunctionComponent<CardProps> = ({ title, borrowStatus, time, isViewed, url }) => {
     return (
         <div className='p-3 border-1 shadow rounded-md flex justify-between items-center'>
             <div>
                 <div className='flex gap-1'>
                     <p className='mb-2'><strong>{title}</strong></p>
-                    <IconChip status={borrow_status} />
-                    <NotificationChip is_viewed={is_viewed} />
+                    <IconChip status={borrowStatus} />
+                    <NotificationChip isViewed={isViewed} />
                 </div>
-                <p className='text-sm'>{getNotificationMessage(borrow_status)}</p>
+                <p className='text-sm'>{getNotificationMessage(borrowStatus)}</p>
 
             </div>
             <div className='text-right'>

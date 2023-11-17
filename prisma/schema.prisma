@@ -34,6 +34,7 @@ enum Condition {
 }
 
 enum Role {
+  UNKNOWN
   Student
   Faculty
   Admin
@@ -54,75 +55,90 @@ enum College {
 }
 
 model Users {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  clerkUserId String  @unique
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  clerkUserId String   @unique
   firstname   String
   lastname    String
-  email       String  @unique
+  email       String   @unique
   role        Role
   college     College
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  cart Cart?
+  cart           Cart[]
+  borrowRequests BorrowRequests[]
 }
 
 model Equipments {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   stock       Int
   isAvailable Boolean
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Cart {
-  id             String          @id @default(auto()) @map("_id") @db.ObjectId
-  cartItems      CartItems[]
-  user           Users           @relation(fields: [userId], references: [id])
-  userId         String          @unique @db.ObjectId
-  BorrowRequests BorrowRequests?
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  cartItems CartItems[]
+  submitted Boolean
+  user      Users       @relation(fields: [userId], references: [id])
+  userId    String      @db.ObjectId
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  borrowRequests BorrowRequests?
 }
 
 model CartItems {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   quantity    Int
   stock       Int
   isAvailable Boolean
-  cart        Cart    @relation(fields: [cartId], references: [id])
-  cartId      String  @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cart   Cart   @relation(fields: [cartId], references: [id])
+  cartId String @db.ObjectId
 }
 
 model BorrowRequests {
-  id                 String              @id @default(auto()) @map("_id") @db.ObjectId
-  name               String
-  email              String
-  college            College
-  role               Role
-  title              String
-  purpose            String
-  borrowDate         DateTime
-  returnDate         DateTime
-  borrowStatus       BorrowStatus
-  condition          Condition
-  note               String
-  userId             String
-  createdAt          DateTime            @default(now())
-  cart               Cart                @relation(fields: [cartId], references: [id])
-  cartId             String              @unique @db.ObjectId
-  UserNotifications  UserNotifications[]
-  AdminNotifications AdminNotifications?
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  borrowDate   DateTime
+  returnDate   DateTime
+  purpose      String
+  borrowStatus BorrowStatus
+  condition    Condition
+  note         String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  user   Users  @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+  cart   Cart   @relation(fields: [cartId], references: [id])
+  cartId String @unique @db.ObjectId
+
+  userNotifications  UserNotifications[]
+  adminNotifications AdminNotifications?
 }
 
 model UserNotifications {
-  id               String         @id @default(auto()) @map("_id") @db.ObjectId
-  isViewed         Boolean
-  createdAt        DateTime       @default(now())
-  borrowRequest    BorrowRequests @relation(fields: [borrowRequestId], references: [id])
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  isViewed  Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  borrowRequest   BorrowRequests @relation(fields: [borrowRequestId], references: [id])
   borrowRequestId String         @db.ObjectId
 }
 
 model AdminNotifications {
-  id               String         @id @default(auto()) @map("_id") @db.ObjectId
-  isViewed         Boolean
-  createdAt        DateTime       @default(now())
-  borrowRequest    BorrowRequests @relation(fields: [borrowRequestId], references: [id])
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  isViewed  Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  borrowRequests   BorrowRequests @relation(fields: [borrowRequestId], references: [id])
   borrowRequestId String         @unique @db.ObjectId
 }

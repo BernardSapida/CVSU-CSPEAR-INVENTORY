@@ -1,7 +1,15 @@
-import { currentUser } from '@clerk/nextjs';
+'use client'
 
-export default async function Home() {
-  const user = await currentUser();
+import { trpc } from '@/lib/trpc/client';
+
+// import { currentUser } from '@clerk/nextjs';
+
+export default function Home() {
+  // const user = await currentUser();
+  const { data: users, } = trpc.users.getUsers.useQuery();
+
+  console.log("GET USERS");
+  console.log(users);
 
   return (
     <main className="space-y-6">

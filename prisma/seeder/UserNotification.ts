@@ -1,14 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { ObjectId } from 'mongodb';
-
-const prisma = new PrismaClient();
+import prisma from '@/utils/prisma';
 
 const notifications: UserNotification[] = [
     {
         id: new ObjectId().toString(),
         isViewed: false,
-        createdAt: new Date(),
-        borrowRequestId: new ObjectId('6555b766ad3f904a4d844ce0').toString(),
+        borrowRequestId: new ObjectId('6555b6c2eee780981dc57da1').toString(),
     },
 ];
 
@@ -18,7 +16,6 @@ export const populateUserNotification = async () => {
             data: {
                 id: notification.id,
                 isViewed: notification.isViewed,
-                createdAt: notification.createdAt,
                 borrowRequestId: notification.borrowRequestId,
             },
         });

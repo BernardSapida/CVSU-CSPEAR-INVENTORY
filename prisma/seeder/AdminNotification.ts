@@ -1,14 +1,13 @@
 import { AdminNotifications, PrismaClient } from '@prisma/client';
 import { ObjectId } from 'mongodb';
-
-const prisma = new PrismaClient();
+import prisma from '@/utils/prisma';
 
 const notifications: AdminNotification[] = [
     {
         id: new ObjectId().toString(),
         isViewed: false,
         createdAt: new Date(),
-        borrowRequestId: new ObjectId('6555b766ad3f904a4d844ce0').toString(),
+        borrowRequestId: new ObjectId('6555b6c2eee780981dc57da1').toString(),
     },
 ];
 

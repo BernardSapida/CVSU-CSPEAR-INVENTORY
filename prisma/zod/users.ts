@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { Role, College } from "@prisma/client"
-import { CompleteCart, relatedCartSchema } from "./index"
+import { CompleteCart, relatedCartSchema, CompleteBorrowRequests, relatedBorrowRequestsSchema } from "./index"
 
 export const usersSchema = z.object({
   id: z.string(),
@@ -10,10 +10,13 @@ export const usersSchema = z.object({
   email: z.string(),
   role: z.nativeEnum(Role),
   college: z.nativeEnum(College),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 })
 
 export interface CompleteUsers extends z.infer<typeof usersSchema> {
-  cart?: CompleteCart | null
+  cart: CompleteCart[]
+  borrowRequests: CompleteBorrowRequests[]
 }
 
 /**
@@ -22,5 +25,6 @@ export interface CompleteUsers extends z.infer<typeof usersSchema> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const relatedUsersSchema: z.ZodSchema<CompleteUsers> = z.lazy(() => usersSchema.extend({
-  cart: relatedCartSchema.nullish(),
+  cart: relatedCartSchema.array(),
+  borrowRequests: relatedBorrowRequestsSchema.array(),
 }))

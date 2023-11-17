@@ -5,4 +5,6 @@ export const equipmentsSchema = z.object({
   name: z.string(),
   stock: z.number().int(),
   isAvailable: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 })

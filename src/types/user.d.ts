@@ -1,4 +1,4 @@
-type Role = 'Student' | 'Faculty' | 'Admin';
+type Role = 'Student' | 'Faculty' | 'Admin' | 'UNKNOWN';
 type College = 'CAFENR' | 'CAS' | 'CCJ' | 'CED' | 'CEMDS' | 'CEIT' | 'CON' | 'CSPEAR' | 'CVMBS' | 'COM' | 'UNKNOWN';
 type TableType = 'CRUD' | 'CATALOG' | 'REQUEST' | 'VIEW-REQUEST';
 type Condition = "Good" | "Misplaced" | "Damaged";

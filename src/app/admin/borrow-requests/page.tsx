@@ -10,12 +10,12 @@ import { Skeleton } from '@nextui-org/react';
 function BorrowRequests({ params }: { params: { request_id: string } }) {
     const { user } = useContext(UserContext);
     const INITIAL_VISIBLE_COLUMNS = ["id", "name", "email", "college", "role", "borrow_status", "condition", "borrow_date", "return_date", 'actions'];
-    const getAdminBorrowRequest = trpc.adminBorrowRequest.getAdminBorrowRequest.useQuery();
-    const borrowRequestsList = getAdminBorrowRequest.data;
+    const getBorrowRequests = trpc.borrowRequest.getBorrowRequests.useQuery();
+    const borrowRequestsList = getBorrowRequests.data;
 
     return (
         <>
-            <Skeleton className='my-6 rounded-lg w-max' isLoaded={!getAdminBorrowRequest.isLoading}>
+            <Skeleton className='my-6 rounded-lg w-max' isLoaded={!getBorrowRequests.isLoading}>
                 <h1 className="text-3xl font-semibold">Borrow Requests</h1>
             </Skeleton>
             <hr />
@@ -28,8 +28,8 @@ function BorrowRequests({ params }: { params: { request_id: string } }) {
                     INITIAL_VISIBLE_COLUMNS={INITIAL_VISIBLE_COLUMNS}
                     user={user}
                     type={'REQUEST'}
-                    isLoading={getAdminBorrowRequest.isLoading}
-                    getTableData={getAdminBorrowRequest}
+                    isLoading={getBorrowRequests.isLoading}
+                    getTableData={getBorrowRequests}
                 />
             </div>
         </>

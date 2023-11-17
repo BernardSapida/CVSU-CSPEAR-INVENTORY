@@ -8,6 +8,8 @@ import moment from 'moment';
 function Notification() {
     const { data: notifications, isLoading } = trpc.notification.getAdminNotification.useQuery();
 
+    console.log(notifications)
+
     return (
         <>
             <Skeleton
@@ -19,14 +21,14 @@ function Notification() {
             <hr />
             <div className="space-y-3 py-3">
                 {
-                    notifications?.map(({ id, request_id, title, description, is_viewed, created_at }) => (
+                    notifications?.map(({ id, isViewed, createdAt, borrowRequests: { user: { firstname, lastname } }, borrowRequestId }) => (
                         <Card
                             key={id}
-                            title={title.slice(0, 26)}
-                            description={description}
-                            is_viewed={is_viewed}
-                            time={moment(created_at).fromNow()}
-                            url={`/admin/borrow-requests/${request_id}`}
+                            title={`Request #${id.slice(5, 15)}`}
+                            description={`${firstname} ${lastname} has sent a borrow request.`}
+                            isViewed={isViewed}
+                            time={moment(createdAt).fromNow()}
+                            url={`/admin/borrow-requests/${borrowRequestId}`}
                         />
                     ))
                 }

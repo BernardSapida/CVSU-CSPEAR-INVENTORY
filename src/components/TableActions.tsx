@@ -6,10 +6,10 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 
 interface TableActionsProps {
-    equipment: any;
+    equipment: Equipment;
     role?: Role;
     type: TableType;
-    CB: ((eq?: any, action?: any) => void);
+    CB: ((eq: Equipment, action?: any) => void);
 }
 
 const TableActions: FunctionComponent<TableActionsProps> = ({ equipment, role, type, CB }) => {
