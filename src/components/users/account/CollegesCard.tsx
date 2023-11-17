@@ -55,7 +55,7 @@ const CollegeCard: FunctionComponent<CollegeCardProps> = ({ college }) => {
         <form onSubmit={handleSubmit} id='college-form'>
           <Select
             name='college'
-            placeholder="Select your colleges"
+            placeholder="Choose your colleges"
             labelPlacement="outside"
             defaultSelectedKeys={[college]}
           >

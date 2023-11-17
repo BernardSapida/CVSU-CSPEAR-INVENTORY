@@ -13,5 +13,7 @@ export const getUserByClerkUserId = async (clerkUserId: string) => {
             clerkUserId: clerkUserId
         }
     });
+    console.log("FOUND");
+    console.log(user);
     return user;
 };

@@ -1,9 +1,11 @@
 import * as z from "zod"
+import { BorrowStatus } from "@prisma/client"
 import { CompleteBorrowRequests, relatedBorrowRequestsSchema } from "./index"
 
 export const userNotificationsSchema = z.object({
   id: z.string(),
   isViewed: z.boolean(),
+  borrowStatus: z.nativeEnum(BorrowStatus),
   createdAt: z.date(),
   updatedAt: z.date(),
   borrowRequestId: z.string(),

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, createContext, useEffect } from "react";
+import { toast } from 'sonner';
 
 interface UserContextProps {
     children: React.ReactNode
@@ -25,7 +26,8 @@ export const UserContextProvider = ({ children }: UserContextProps) => {
         const loggedUser = localStorage.getItem('user');
 
         if (loggedUser) {
-            setUser(JSON.parse(loggedUser));
+            const parsedUser = JSON.parse(loggedUser);
+            setUser(parsedUser);
         }
     }, []);
 

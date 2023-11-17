@@ -1,7 +1,7 @@
 import { db } from "@/lib/db/index";
 
 export const viewUserNotification = async (notificationId: string) => {
-    await db.userNotifications.update({
+    const viewNotification = await db.userNotifications.update({
         where: {
             id: notificationId
         },

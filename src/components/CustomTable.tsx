@@ -79,10 +79,18 @@ const CustomTable: FunctionComponent<CustomizableTableProps> = ({
     const filteredItems = useMemo(() => {
         let filteredItems = [...data];
 
-        if (hasSearchFilter) {
-            filteredItems = filteredItems.filter((obj) =>
-                obj?.name?.toLowerCase().includes(filterValue.toLowerCase()),
-            );
+        if (user?.role === 'Admin' && type === 'REQUEST') {
+            if (hasSearchFilter) {
+                filteredItems = filteredItems.filter((obj) =>
+                    (`${obj?.user?.firstname} ${obj?.user?.lastname}`)?.toLowerCase().includes(filterValue.toLowerCase()),
+                );
+            }
+        } else {
+            if (hasSearchFilter) {
+                filteredItems = filteredItems.filter((obj) =>
+                    obj?.name?.toLowerCase().includes(filterValue.toLowerCase()),
+                );
+            }
         }
 
         if (availabilityStatusFilter !== "all" && Array.from(availabilityStatusFilter).length !== availabilityStatusOptions?.length) {

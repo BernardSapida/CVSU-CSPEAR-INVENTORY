@@ -56,16 +56,20 @@ function BorrowRequest() {
                                 />
                             </Skeleton>
                         </> :
-                        borrowRequests?.map(({ id, borrowStatus, condition, createdAt }) => (
-                            <Card
-                                key={id}
-                                title={`Request #${id.slice(5, 15)}`}
-                                borrowStatus={borrowStatus}
-                                condition={condition}
-                                time={moment(createdAt).fromNow()}
-                                url={`/user/view-borrow-request/${id}`}
-                            />
-                        ))
+                        (
+                            borrowRequests && borrowRequests?.length > 0 ?
+                                borrowRequests?.map(({ id, borrowStatus, condition, createdAt }) => (
+                                    <Card
+                                        key={id}
+                                        title={`Request #${id.slice(5, 15)}`}
+                                        borrowStatus={borrowStatus}
+                                        condition={condition}
+                                        time={moment(createdAt).fromNow()}
+                                        url={`/user/view-borrow-request/${id}`}
+                                    />
+                                )) :
+                                <p className='text-center mt-10'>No borrow requests</p>
+                        )
                 }
             </div>
         </>

@@ -6,10 +6,9 @@ import { Skeleton } from '@nextui-org/react';
 import moment from 'moment';
 
 function Notification() {
-    const { data, isLoading } = trpc.notification.getUserNotification.useQuery();
-    const notifications = data?.borrowRequests;
+    const { data: notifications, isLoading } = trpc.notification.getUserNotification.useQuery();
 
-    console.log(notifications);
+    console.log(notifications)
 
     return (
         <>
@@ -27,6 +26,7 @@ function Notification() {
                             <Skeleton className='rounded-lg'>
                                 <Card
                                     title={''}
+                                    notificationId={''}
                                     borrowStatus={''}
                                     isViewed={true}
                                     time={moment('').fromNow()}
@@ -36,6 +36,7 @@ function Notification() {
                             <Skeleton className='rounded-lg'>
                                 <Card
                                     title={''}
+                                    notificationId={''}
                                     borrowStatus={''}
                                     isViewed={true}
                                     time={moment('').fromNow()}
@@ -45,6 +46,7 @@ function Notification() {
                             <Skeleton className='rounded-lg'>
                                 <Card
                                     title={''}
+                                    notificationId={''}
                                     borrowStatus={''}
                                     isViewed={true}
                                     time={moment('').fromNow()}
@@ -52,16 +54,22 @@ function Notification() {
                                 />
                             </Skeleton>
                         </> :
-                        notifications?.map((notification: any) => (
-                            <Card
-                                key={notification.userNotifications[0].id}
-                                title={`Request #${notification.userNotifications[0].id.slice(5, 15)}`}
-                                borrowStatus={notification.userNotifications[0].borrowRequest.borrowStatus}
-                                isViewed={notification.userNotifications[0].isViewed}
-                                time={moment(notification.userNotifications[0].createdAt).fromNow()}
-                                url={`/user/view-borrow-request/${notification.userNotifications[0].borrowRequest.id}`}
-                            />
-                        ))
+                        (
+                            notifications && notifications?.length > 0 ?
+                                notifications?.map((notification: any) => (
+                                    <Card
+                                        key={notification.id}
+                                        notificationId={notification.id}
+                                        title={`Request #${notification.borrowRequest.id.slice(5, 15)}`}
+                                        borrowStatus={notification.borrowStatus}
+                                        isViewed={notification.isViewed}
+                                        time={moment(notification.createdAt).fromNow()}
+                                        url={`/user/view-borrow-request/${notification.borrowRequest.id}`}
+                                    />
+                                )) :
+                                <p className='text-center mt-10'>No notifications</p>
+
+                        )
                 }
             </div >
         </>

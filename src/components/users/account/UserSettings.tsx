@@ -4,6 +4,7 @@ import EmailCard from './EmailCard';
 import CollegeCard from './CollegesCard';
 import RoleCard from './RoleCard';
 import { Skeleton } from '@nextui-org/react';
+import { toast } from 'sonner';
 
 interface UserSettingsProps {
   user?: User

@@ -8,6 +8,7 @@ export const addEquipment = async (name: string, isAvailable: boolean, stock: nu
             stock: stock
         }
     });
+
     return addedEquipment;
 };
 

@@ -69,7 +69,7 @@ export const updateCartItemQuantity = async (itemId: string, quantity: number) =
 };
 
 export const updateBorrowRequestById = async (borrowRequestId: string, borrowStatus: BorrowStatus, condition: Condition, note: string) => {
-    await db.borrowRequests.update({
+    const updatedBorrowRequest = await db.borrowRequests.update({
         where: {
             id: borrowRequestId
         },
@@ -77,6 +77,14 @@ export const updateBorrowRequestById = async (borrowRequestId: string, borrowSta
             borrowStatus: borrowStatus,
             condition: condition,
             note: note,
+        }
+    });
+
+    const userNotification = await db.userNotifications.create({
+        data: {
+            isViewed: false,
+            borrowStatus: borrowStatus,
+            borrowRequestId: borrowRequestId
         }
     });
 };

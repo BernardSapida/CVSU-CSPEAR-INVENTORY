@@ -20,6 +20,13 @@ export const registerUser = async (
         },
     });
 
+    await db.cart.create({
+        data: {
+            userId: user.id,
+            submitted: false
+        }
+    });
+
     return user;
 }
 

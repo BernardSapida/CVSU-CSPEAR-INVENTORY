@@ -1,31 +1,37 @@
 import { db } from "@/lib/db/index";
 
 export const getUserNotification = async (userId: string) => {
-    const notification = await db.users.findFirst({
+    const notification = await db.userNotifications.findMany({
         where: {
-            id: userId,
+            borrowRequest: {
+                userId: userId
+            }
         },
-        select: {
-            borrowRequests: {
-                select: {
-                    createdAt: true,
-                    userNotifications: {
-                        select: {
-                            id: true,
-                            isViewed: true,
-                            createdAt: true,
-                            borrowRequest: true
-                        }
-                    }
-                },
-                orderBy: [
-                    { createdAt: 'desc' }
-                ],
-            },
-        }
+        include: {
+            borrowRequest: true
+        },
+        orderBy: [
+            { createdAt: 'desc' }
+        ]
     });
 
     return notification;
+};
+
+export const getUserUnseenNotificationCount = async (userId: string) => {
+    const notificationCount = await db.userNotifications.findMany({
+        where: {
+            borrowRequest: {
+                userId: '655739a7c2c890be09ad7d7a'
+            },
+            isViewed: false
+        },
+        select: {
+            id: true,
+        }
+    });
+
+    return notificationCount.length;
 };
 
 export const getAdminNotification = async (userId: string) => {

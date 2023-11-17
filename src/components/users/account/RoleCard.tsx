@@ -47,23 +47,17 @@ const RoleCard: FunctionComponent<RoleCardProps> = ({ role }) => {
         <form onSubmit={handleSubmit} id='role-form'>
           <Select
             name='role'
-            placeholder="Select your role"
+            placeholder="Choose your role"
             labelPlacement="outside"
             defaultSelectedKeys={[role]}
           >
             {
               Role.map(({ role }) => (
-                role === 'Unknown' ?
-                  <SelectItem
-                    key={role} value={''}
-                    textValue={'Choose your role'}
-                  >
+                role === 'UNKNOWN' ?
+                  <SelectItem key={role} value={role} textValue={'Choose your role'}>
                     {'Choose your role'}
                   </SelectItem> :
-                  <SelectItem
-                    key={role} value={role}
-                    textValue={role}
-                  >
+                  <SelectItem key={role} value={role} textValue={role}>
                     {role}
                   </SelectItem>
               ))

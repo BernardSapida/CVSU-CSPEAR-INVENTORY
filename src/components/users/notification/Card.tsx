@@ -4,8 +4,10 @@ import { getNotificationMessage } from '@/utils/chip-utils';
 import CustomButton from '../../CustomButton';
 import IconChip from '../../RequestStatusChip';
 import NotificationChip from '@/components/NotificationChip';
+import { trpc } from '@/lib/trpc/client';
 
 interface CardProps {
+    notificationId: string;
     title: string;
     borrowStatus: string;
     time: string;
@@ -13,7 +15,13 @@ interface CardProps {
     url: string;
 }
 
-const Card: FunctionComponent<CardProps> = ({ title, borrowStatus, time, isViewed, url }) => {
+const Card: FunctionComponent<CardProps> = ({ notificationId, title, borrowStatus, time, isViewed, url }) => {
+    const viewUserNotification = trpc.notification.viewUserNotification.useMutation();
+
+    const viewNotification = () => {
+        viewUserNotification.mutate({ notificationId });
+    }
+
     return (
         <div className='p-3 border-1 shadow rounded-md flex justify-between items-center'>
             <div>
@@ -30,6 +38,7 @@ const Card: FunctionComponent<CardProps> = ({ title, borrowStatus, time, isViewe
                 <CustomButton
                     label={'View notification'}
                     url={url}
+                    cb={viewNotification}
                 />
             </div>
         </div >

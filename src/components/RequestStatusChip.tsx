@@ -14,9 +14,9 @@ const RequestStatusChip: FunctionComponent<RequestStatusChipProps> = ({ status }
         switch (status.toLowerCase()) {
             case 'pending':
                 return <BiTimeFive />;
-            case 'to pickup':
+            case 'topickup':
                 return <BiWalk />;
-            case 'picked up':
+            case 'pickedup':
                 return <BsBoxSeam />;
             case 'returned':
                 return <AiOutlineCheckCircle />;

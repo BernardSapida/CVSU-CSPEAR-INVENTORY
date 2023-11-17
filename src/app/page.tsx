@@ -7,12 +7,10 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('/auth-callback');
+    router.push('/auth-callback');
   }, [])
 
   return (
-    <main className="space-y-6">
-
-    </main>
+    <main className="space-y-6"></main>
   );
 }

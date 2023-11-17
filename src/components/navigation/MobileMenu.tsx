@@ -1,22 +1,22 @@
 'use client'
 
-import { Skeleton } from '@nextui-org/react';
+import { NavbarItem, Skeleton } from '@nextui-org/react';
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import { FunctionComponent } from 'react';
 
 import { GrNotification, GrUserSettings } from 'react-icons/gr';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import { LuClipboardList, LuHistory } from 'react-icons/lu';
-import { MdPendingActions, MdOutlineShoppingCart } from 'react-icons/md';
+import { LuClipboardList } from 'react-icons/lu';
+import { MdOutlineShoppingCart, MdPendingActions } from 'react-icons/md';
 
-interface MenuProps {
+interface MobileMenuProps {
     role: Role | undefined;
 }
 
-const Menu: FunctionComponent<MenuProps> = ({ role }) => {
+const MobileMenu: FunctionComponent<MobileMenuProps> = ({ role }) => {
     const pathname = usePathname();
-    const menu: Record<string, any[]> = {
+    const menus: Record<string, any[]> = {
         user: [
             // {
             //     name: "Dashboard",
@@ -85,24 +85,27 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
 
     if (role) {
         return (
-            <ul>
-                {
-                    (menu[role != 'Admin' ? 'user' : 'admin']).map((l, key) => (
-                        <li key={l.path} className={`my-2 p-2 rounded ${l.path === pathname && 'bg-default-100'}`}>
-                            <Link className={`flex flex-row items-center gap-2 text-sm w-max`} href={l.path}>{l.icon} {l.name}</Link>
-                        </li>
-                    ))
-                }
-            </ul>
+            <>
+                {(menus[role != 'Admin' ? 'user' : 'admin']).map((menu, index) => (
+                    <NavbarItem className='my-4' key={`${menu.name}-${index}`}>
+                        <Link
+                            className="w-full"
+                            href={menu.path}
+                        >
+                            {menu.name}
+                        </Link>
+                    </NavbarItem>
+                ))}
+            </>
         );
     } else {
         return (
-            <ul>
+            <>
                 {
                     [1, 2, 3, 4, 5].map((l, key) => (
                         <Skeleton
                             key={l}
-                            className='my-2 p-2 w-40 rounded'
+                            className='w-20 rounded-lg'
                         >
                             <li key={l}>
                                 {l}
@@ -110,9 +113,9 @@ const Menu: FunctionComponent<MenuProps> = ({ role }) => {
                         </Skeleton >
                     ))
                 }
-            </ul>
+            </>
         );
     }
 }
 
-export default Menu;
+export default MobileMenu;

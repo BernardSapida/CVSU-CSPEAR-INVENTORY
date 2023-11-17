@@ -3,13 +3,13 @@
 import CustomTable from '@/components/CustomTable';
 import { trpc } from '@/lib/trpc/client';
 import { UserContext } from '@/store/UserContext';
+import { Skeleton } from '@nextui-org/react';
 import { useContext } from 'react';
 import { borrowStatusOptions, columns, conditionOptions } from "../../../Data/AdminRequestsData";
-import { Skeleton } from '@nextui-org/react';
 
-function BorrowRequests({ params }: { params: { request_id: string } }) {
+function BorrowRequests() {
     const { user } = useContext(UserContext);
-    const INITIAL_VISIBLE_COLUMNS = ["id", "name", "email", "college", "role", "borrow_status", "condition", "borrow_date", "return_date", 'actions'];
+    const INITIAL_VISIBLE_COLUMNS = ["name", "email", "college", "role", "borrow_status", "condition", "borrow_date", "return_date", 'actions'];
     const getBorrowRequests = trpc.borrowRequest.getBorrowRequests.useQuery();
     const borrowRequestsList = getBorrowRequests.data;
 

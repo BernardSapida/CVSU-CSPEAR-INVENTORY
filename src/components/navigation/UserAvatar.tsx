@@ -13,11 +13,11 @@ const UserAvatar: FunctionComponent<UserAvatarProps> = () => {
             className='mt-auto rounded-lg'
             isLoaded={!!user}
         >
-            <div className='pt-2 flex items-center gap-2 border-t-1'>
+            <div className='flex items-center gap-2'>
                 <UserButton afterSignOutUrl="/" />
-                <div>
-                    <p className='text-sm'>Bernard Sapida</p>
-                    <p className='text-tiny text-default-600'>{user?.role}</p>
+                <div className='hidden lg:block'>
+                    <p className='text-sm font-semibold'>Bernard Sapida</p>
+                    <p className='text-tiny text-default-600'>{user?.role == "UNKNOWN" ? 'User' : user?.role}</p>
                 </div>
             </div>
         </Skeleton>

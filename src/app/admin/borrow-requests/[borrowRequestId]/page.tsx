@@ -16,7 +16,7 @@ function BorrowRequest({ params }: { params: { borrowRequestId: string } }) {
     const getBorrowRequestById = trpc.borrowRequest.getBorrowRequestById.useQuery({ borrowRequestId });
     const { data, isLoading } = getBorrowRequestById;
     const viewAdminNotification = trpc.notification.viewAdminNotification.useMutation();
-    const updateAdminBorrowRequestById = trpc.borrowRequest.updateBorrowRequestById.useMutation({
+    const updateBorrowRequestById = trpc.borrowRequest.updateBorrowRequestById.useMutation({
         onSuccess: () => {
             toast.success('You have successfully updated the borrow request.');
         },
@@ -38,7 +38,7 @@ function BorrowRequest({ params }: { params: { borrowRequestId: string } }) {
         const form = new FormData(target);
         const { borrowStatus, condition, note } = Object.fromEntries(form.entries()) as { borrowStatus: string, condition: string, note: string };
 
-        updateAdminBorrowRequestById.mutate({
+        updateBorrowRequestById.mutate({
             id: borrowRequestId,
             borrowStatus: formatStatus(borrowStatus),
             condition: condition,

@@ -109,7 +109,7 @@ function BorrowRequest({ params }: { params: { borrowRequestId: string } }) {
                                 isLoaded={!isLoading}
                             >
                                 <p className='text-tiny font-semibold'>Borrow Status</p>
-                                <RequestStatusChip status='Pending' />
+                                <RequestStatusChip status={data?.borrowStatus ?? ''} />
                             </Skeleton >
                             <Skeleton
                                 className='rounded-lg mb-5'

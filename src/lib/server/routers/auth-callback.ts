@@ -8,7 +8,10 @@ export const authCallbackRouter = router({
   handleAuth: publicProcedure.mutation(async ({ ctx }) => {
     const clerkUser = await currentUser();
     const email = clerkUser?.emailAddresses[0].emailAddress!;
-    const clerkUserId = ctx.user?.clerkUserId!;
+    const clerkUserId = ctx.session?.user.id!;
+
+    console.log("clerkUserId");
+    console.log(clerkUserId);
 
     const user = await getUserByClerkUserId(clerkUserId);
 

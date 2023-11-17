@@ -124,10 +124,11 @@ model BorrowRequests {
 }
 
 model UserNotifications {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  isViewed  Boolean
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  isViewed     Boolean
+  borrowStatus BorrowStatus
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   borrowRequest   BorrowRequests @relation(fields: [borrowRequestId], references: [id])
   borrowRequestId String         @db.ObjectId
@@ -139,6 +140,6 @@ model AdminNotifications {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  borrowRequests   BorrowRequests @relation(fields: [borrowRequestId], references: [id])
+  borrowRequests  BorrowRequests @relation(fields: [borrowRequestId], references: [id])
   borrowRequestId String         @unique @db.ObjectId
 }

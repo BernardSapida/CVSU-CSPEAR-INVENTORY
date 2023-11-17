@@ -1,12 +1,23 @@
 'use client';
 
 import { UserContext } from '@/store/UserContext';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import UserSettings from "../../../components/users/account/UserSettings";
 import { Skeleton } from '@nextui-org/react';
+import { toast } from 'sonner';
 
 export default function Account() {
   const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    if (user?.role === 'UNKNOWN') {
+      toast.info('Please set your user role.');
+    }
+
+    if (user?.college === 'UNKNOWN') {
+      toast.info('Please set your college.');
+    }
+  }, []);
 
   return (
     <>

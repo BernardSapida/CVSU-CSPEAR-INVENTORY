@@ -5,6 +5,7 @@ import { UserContext } from '@/store/UserContext';
 import { Spinner } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, useContext, useEffect } from 'react';
+import { toast } from 'sonner';
 
 interface PageProps { }
 
@@ -17,11 +18,15 @@ const Page: FunctionComponent<PageProps> = () => {
                 userContext.setUser(data);
 
                 if (data && data.role === 'Admin') {
-                    return router.replace('/admin/equipment-catalog');
+                    return router.push('/admin/equipment-catalog');
                 }
 
                 else if (data && (data.role === 'Student' || data.role === 'Faculty')) {
-                    return router.replace('/user/equipment-catalog');
+                    return router.push('/user/equipment-catalog');
+                }
+
+                else if (data && (data.role === 'UNKNOWN')) {
+                    return router.push('/user/account');
                 }
             }
         },

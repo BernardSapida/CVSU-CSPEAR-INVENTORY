@@ -24,20 +24,19 @@ async function main() {
     // await populateUserNotification();
     // await populateAdminNotification();
 
-    const res = await prisma.adminNotifications.findMany({
-        include: {
-            borrowRequests: {
-                select: {
-                    user: true
-                },
+    const res = await prisma.userNotifications.findMany({
+        where: {
+            borrowRequest: {
+                userId: '655739a7c2c890be09ad7d7a'
             },
+            isViewed: false
         },
-        orderBy: [
-            { createdAt: 'desc' }
-        ]
+        select: {
+            id: true,
+        }
     });
 
-    console.log(res)
+    console.log(res.length)
 }
 
 main()

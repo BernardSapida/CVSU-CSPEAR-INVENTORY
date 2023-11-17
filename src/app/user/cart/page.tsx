@@ -14,12 +14,21 @@ import { z } from 'zod';
 function BorrowRequest() {
     const INITIAL_VISIBLE_COLUMNS = ["name", "quantity", "stock", "is_available", "actions"];
     const { user } = useContext(UserContext);
-    const addBorrowRequest = trpc.borrowRequest.addBorrowRequest.useMutation();
     const getCartItems = trpc.cartItems.getCartItems.useQuery();
+    const addBorrowRequest = trpc.borrowRequest.addBorrowRequest.useMutation({
+        onSuccess: () => {
+            getCartItems.refetch();
+        }
+    });
     const cartItems = getCartItems.data?.cartItems;
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
+
+        if (user?.role === 'UNKNOWN') {
+            toast.info('Please set your college and user role in the account page.');
+            return;
+        }
 
         const NOT_EQUIPMENTS_KEY = ['borrowDate', 'returnDate', 'purpose']
         const target = event.target as HTMLFormElement;
@@ -31,12 +40,12 @@ function BorrowRequest() {
         if (!cart) return;
 
         if (dataKeys.length == 3) {
-            toast.error('The borrow request is empty, please add at least 1 equipment.');
+            toast.error('The cart is empty, please add at least 1 equipment.');
             return;
         }
 
         const schema = z.object({
-            numOfInputs: z.number().gt(3, 'The borrow request is empty, please add at least 1 equipment.'),
+            numOfInputs: z.number().gt(3, 'The cart is empty, please add at least 1 equipment.'),
             borrowDateStr: z.string({ required_error: 'You need to provide the return date.' }).min(1, 'You need to provide the borrow date.'),
             returnDateStr: z.string({ required_error: 'You need to provide the return date.' }).min(1, 'You need to provide the return date.'),
             purpose: z.string({ required_error: 'Please provide a purpose for borrowing.' }).min(1, 'Please provide a purpose for borrowing.'),
