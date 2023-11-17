@@ -17,7 +17,7 @@ export default function Account() {
     if (user?.college === 'UNKNOWN') {
       toast.info('Please set your college.');
     }
-  }, []);
+  }, [user]);
 
   return (
     <>

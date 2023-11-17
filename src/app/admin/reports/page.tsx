@@ -62,10 +62,10 @@ const Report: FunctionComponent<ReportProps> = () => {
                     <p>• Supply Equipments - It contains a record of supply equipment.</p>
                 </Skeleton>
                 <Skeleton className='rounded-lg w-max my-2' isLoaded={isLoaded}>
-                    <p>• Returned  Equipments - It contains records about borrow requests' returned equipment.</p>
+                    <p>• Returned  Equipments - It contains records about borrow requests&apos; returned equipment.</p>
                 </Skeleton>
                 <Skeleton className='rounded-lg w-max my-2' isLoaded={isLoaded}>
-                    <p>• Inventory Write-Off - It contains information about borrow requests' damaged or misplaced equipment.</p>
+                    <p>• Inventory Write-Off - It contains information about borrow requests&apos; damaged or misplaced equipment.</p>
                 </Skeleton>
                 <form className='my-5' id='generate-report' onSubmit={handleSubmit}>
                     <Skeleton className='rounded-lg w-full mb-2' isLoaded={isLoaded}>

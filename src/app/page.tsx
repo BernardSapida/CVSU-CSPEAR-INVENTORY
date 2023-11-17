@@ -8,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     router.push('/auth-callback');
-  }, [])
+  }, [router])
 
   return (
     <main className="space-y-6"></main>
