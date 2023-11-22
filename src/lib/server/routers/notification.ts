@@ -30,7 +30,4 @@ export const notificationRouter = router({
     })).mutation(async ({ input }) => {
         return viewAdminNotification(input.borrowRequestId);
     }),
-    // getUserHistory: publicProcedure.query(async () => {
-    //     return getUserHistory();
-    // }),
 });
