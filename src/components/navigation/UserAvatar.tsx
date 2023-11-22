@@ -16,7 +16,7 @@ const UserAvatar: FunctionComponent<UserAvatarProps> = () => {
             <div className='flex items-center gap-2'>
                 <UserButton afterSignOutUrl="/" />
                 <div className='hidden lg:block'>
-                    <p className='text-sm font-semibold'>Bernard Sapida</p>
+                    <p className='text-sm font-semibold'>{`${user?.firstname} ${user?.lastname}`}</p>
                     <p className='text-tiny text-default-600'>{user?.role == "UNKNOWN" ? 'User' : user?.role}</p>
                 </div>
             </div>
