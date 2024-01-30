@@ -17,12 +17,13 @@ const TableActions: FunctionComponent<TableActionsProps> = ({ equipment, role, t
 
     const UserCatalogActions = (
         <Button
-            startContent={<IoMdAdd />}
+            startContent={equipment.isAvailable && <IoMdAdd />}
             size='sm'
-            color="primary"
+            color={equipment.isAvailable ? "primary" : "default"}
             onClick={() => CB(equipment)}
+            disabled={!equipment.isAvailable}
         >
-            Add to borrow
+            {equipment.isAvailable ? "Add to borrow" : "Not Available"}
         </Button>
     )
 

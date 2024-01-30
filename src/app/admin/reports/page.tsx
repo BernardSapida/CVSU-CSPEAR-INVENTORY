@@ -40,12 +40,12 @@ const Report: FunctionComponent<ReportProps> = () => {
 
         const target = event.target as HTMLFormElement;
         const form = new FormData(target);
-        const { reportMonth } = Object.fromEntries(form.entries()) as { reportMonth: string };
-        const month = Number(moment(reportMonth).format('MM'));
-        const startMonth = moment(new Date(reportMonth)).format('YYYY-MM-DD');
-        const endMonth = moment(new Date(reportMonth).setMonth(month)).format('YYYY-MM-DD');
+        const { reportWeekly } = Object.fromEntries(form.entries()) as { reportWeekly: string };
+        const [year, week] = reportWeekly.split('W');
+        const weekStartDate = moment(reportWeekly).format('YYYY-MM-DD');
+        const weekEndDate =  moment(`${year}W${Number(week)+1}`).format('YYYY-MM-DD');
 
-        getReturnedEquipments.mutate({ startMonth, endMonth });
+        getReturnedEquipments.mutate({ weekStartDate, weekEndDate });
     }
 
     return (
@@ -70,12 +70,12 @@ const Report: FunctionComponent<ReportProps> = () => {
                 <form className='my-5' id='generate-report' onSubmit={handleSubmit}>
                     <Skeleton className='rounded-lg w-full mb-2' isLoaded={isLoaded}>
                         <Input
-                            name='reportMonth'
+                            name='reportWeekly'
                             labelPlacement='inside'
-                            label="Month Report"
-                            defaultValue='2023-11-21'
+                            label="Weekly Report"
+                            defaultValue=''
                             placeholder='#'
-                            type='month'
+                            type='week'
                         />
                     </Skeleton>
                     <div className='flex justify-end'>

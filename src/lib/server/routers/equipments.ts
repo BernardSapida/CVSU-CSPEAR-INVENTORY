@@ -9,14 +9,14 @@ export const equipmentsRouter = router({
     return getEquipments();
   }),
   getReport: publicProcedure.input(z.object({
-    startMonth: z.string(),
-    endMonth: z.string(),
+    weekStartDate: z.string(),
+    weekEndDate: z.string(),
   })).mutation(async ({ input }) => {
     const equipments = await getEquipments();
-    const returnedEquipments = await getReturnedEquipments(input.startMonth, input.endMonth);
-    const goodEquipments = await getGoodEquipments(input.startMonth, input.endMonth);
-    const misplacedEquipments = await getMisplacedEquipments(input.startMonth, input.endMonth);
-    const damagedEquipments = await getDamagedEquipments(input.startMonth, input.endMonth);
+    const returnedEquipments = await getReturnedEquipments(input.weekStartDate, input.weekEndDate);
+    const goodEquipments = await getGoodEquipments(input.weekStartDate, input.weekEndDate);
+    const misplacedEquipments = await getMisplacedEquipments(input.weekStartDate, input.weekEndDate);
+    const damagedEquipments = await getDamagedEquipments(input.weekStartDate, input.weekEndDate);
 
     return [equipments, returnedEquipments, goodEquipments, misplacedEquipments, damagedEquipments];
   }),
