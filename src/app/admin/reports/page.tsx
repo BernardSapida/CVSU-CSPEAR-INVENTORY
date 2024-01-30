@@ -56,7 +56,7 @@ const Report: FunctionComponent<ReportProps> = () => {
             <hr />
             <div className='my-5'>
                 <Skeleton className='rounded-lg w-max my-2' isLoaded={isLoaded}>
-                    <p className='text-xl'>Generate a report with information based on the selected month.</p>
+                    <p className='text-xl'>Generate a report with information based on the selected week.</p>
                 </Skeleton>
                 <Skeleton className='rounded-lg w-max my-2' isLoaded={isLoaded}>
                     <p>• Supply Equipments - It contains a record of supply equipment.</p>
